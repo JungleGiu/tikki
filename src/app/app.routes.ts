@@ -4,6 +4,9 @@ export const routes: Routes = [
   {
     path: '',
     component: PublicLayout,
-    children: [{ path: '', loadChildren: () => import('./features/landing/landing.routes') }],
+    children: [{ path: '', loadChildren: () => import('./features/landing/landing.routes') }
+      ,{ path:'register', loadChildren: () => import('./features/auth/register/registrer.routes') },
+      { path:'login', loadChildren: () => import('./features/auth/login/login.routes') }
+    ],
   },
 ];
