@@ -22,12 +22,15 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/cdk": "^20.2.13",
     "@angular/common": "^20.3.0",
     "@angular/compiler": "^20.3.0",
     "@angular/core": "^20.3.0",
     "@angular/forms": "^20.3.0",
+    "@angular/material": "^20.2.13",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
+    "@supabase/supabase-js": "^2.81.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
@@ -43,5 +46,6 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.9.2"
-  }
+  },
+  "packageManager": "pnpm@10.19.0+sha512.c9fc7236e92adf5c8af42fd5bf1612df99c2ceb62f27047032f4720b33f8eacdde311865e91c411f2774f618d82f320808ecb51718bfa82c060c4ba7c76a32b8"
 }
