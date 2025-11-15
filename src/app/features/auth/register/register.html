@@ -1,31 +1,31 @@
 
-    <mat-card>
-        <mat-card-header>
-            <mat-card-title>Register your team
-            </mat-card-title>
-            </mat-card-header>
+    <article>
+        <header>
+            <h1>Register your team
+            </h1>
+         </header>
       
             <form [formGroup]="registrerForm">
-                <mat-form-field>
+            
                       @let teamName = registrerForm.controls.teamName;
                     <label>Team name</label>
                     <input formControlName="teamName" matInput type="text" placeholder="Team name" />
                     @if (teamName.invalid && teamName.touched ) {
                            <span>Team name is required</span>
                     }
-                </mat-form-field>
-                <mat-form-field>
+                
+            
                     <label>Admin Name</label>
                     <input matInput formControlName="adminName" type="text" placeholder="Admin Name" />
-                </mat-form-field>
-                <mat-form-field>
+                
+            
                     <label>Admin Email</label> 
                     <input matInput formControlName="adminEmail" type="email" placeholder="Admin Email" />
-                </mat-form-field>
-                <mat-form-field>    
+                
+                   
                     <label> Password</label>
                     <input matInput formControlName="password" type="password" placeholder="Password" />
-                </mat-form-field>
+                
                 
                 
             </form>
@@ -33,5 +33,5 @@
              <button matButton="filled" color="primary">Register your Team</button>
             </div>
        
-    </mat-card>
+    </article>
 

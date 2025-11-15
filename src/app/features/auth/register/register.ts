@@ -1,11 +1,8 @@
 import { Component } from '@angular/core';
-import { MatCard, MatCardTitle, MatCardHeader } from '@angular/material/card';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import { MatAnchor } from "@angular/material/button";
 import { ReactiveFormsModule,FormControl, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'app-register',
-  imports: [MatCard, MatCardTitle, MatCardHeader, MatFormFieldModule, MatAnchor, ReactiveFormsModule],
+  imports: [ ReactiveFormsModule],
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })

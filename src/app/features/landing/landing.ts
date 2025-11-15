@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { MatButton } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-landing',
-  imports: [MatButton, RouterLink],
+  imports: [ RouterLink, ButtonModule ],
   templateUrl: './landing.html',
   styleUrl: './landing.scss',
 })

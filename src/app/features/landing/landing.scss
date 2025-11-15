@@ -22,6 +22,7 @@ hgroup{
          margin: 0 0 0 2rem;
     }
 }
+
 article {
     display: flex;
     flex-direction: row;
@@ -36,15 +37,15 @@ article {
 .buttons{
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+   
     justify-content: center;
     gap: 1rem;
     margin-top: 3rem;
-    button{
-        margin: 0 2rem;
-         font-size: 1.5rem;
-         width: 20rem;
-
+    margin-right: 5rem;
+    a{
+        text-decoration: none;
+        padding: 0.5rem 2rem;
+        width: 15rem;
     }
 }
 .logo{
