@@ -11,4 +11,21 @@ export class Supabase {
     development.supabase.authentication.SUPABASE_KEY
   );
   
+
+  async register(email: string, password: string) {
+    const { error, data } = await this.supabase.auth.signUp({ email, password });
+    if (error) {
+      throw error;
+    }
+    return data;
+  }
+
+  async login(email: string, password: string) {
+    const { error, data } = await this.supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      throw error;
+    }
+    return data;
+  }
+ 
 }

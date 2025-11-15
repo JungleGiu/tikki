@@ -8,7 +8,6 @@ main {
 form {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
     justify-content: center
    
 }
@@ -19,4 +18,12 @@ form {
 }
  mat-card{
     width: 35rem;
+ }
+ span{
+    color: red;
+    font-size:x-small;
+    display: block;
+    position: relative;
+ 
+    text-align: left;
  }
