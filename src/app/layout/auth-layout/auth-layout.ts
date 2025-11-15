@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { Navbar } from '../../shared/components/navbar/navbar';
 @Component({
   selector: 'app-auth-layout',
-  imports: [],
+  imports: [Navbar, RouterOutlet],
   templateUrl: './auth-layout.html',
   styleUrl: './auth-layout.scss',
 })

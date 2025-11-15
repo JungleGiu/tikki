@@ -1,1 +1,23 @@
-<p>navbar works!</p>
+<header>
+    <div class="logo"><img src="assets/tikki-logo.png" alt="Tikki App logo" /></div>
+    <nav>
+        <a routerLink="dashboard" pButton [rounded]="true">
+      <span pButtonLabel>Overview</span>
+    </a>
+
+    <a routerLink="dashboard/tickets" pButton [rounded]="true">
+      <span pButtonLabel > Tickets</span>
+    </a>
+
+    <a routerLink="dashboard/teams" pButton [rounded]="true">
+      <span pButtonLabel > Teams</span>
+    </a>
+    <a routerLink="dashboard/tools" pButton [rounded]="true">
+      <span pButtonLabel > Tools</span>
+    </a>
+</nav>
+    <p-card header="John Doe" subheader="Admin" >
+        <img src="assets/avatar.png" alt="User avatar" />
+        <span>John Doe</span>
+    </p-card>
+</header>

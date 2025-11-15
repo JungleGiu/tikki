@@ -3,7 +3,7 @@
   --surface-ground: #f3f4f6;
   --text-color: #374151;
   --text-color-secondary: #6b7280;
-  
+  --surface-card: #e3f6d5;
   // Gradient custom
   --tikki-gradient: linear-gradient(135deg, #10b981, #f59e0b);
 }
@@ -20,8 +20,7 @@ body {
 }
 
 ::ng-deep .p-button.gradient-btn {
-  background: var(--tikki-gradient);
-  border: none;
+ border: 1px solid var(--tikki-gradient);
   
   &:enabled:hover {
     background: linear-gradient(135deg, #0ea574, #d97706);
