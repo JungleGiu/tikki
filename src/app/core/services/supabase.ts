@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { development } from '../../../environments/env';
 import { User } from '../models/user';
@@ -7,11 +7,13 @@ import { User } from '../models/user';
 })
 export class Supabase {
   private supabase : SupabaseClient
+  session : boolean = false
   constructor() {
     this.supabase = createClient(
     development.supabase.authentication.SUPABASE_URL,
     development.supabase.authentication.SUPABASE_KEY
   );
+
 }
 
   async registerAdmin(email: string, password: string) {
@@ -27,7 +29,10 @@ export class Supabase {
     if (error) {
       throw error;
     }
+
+    this.session = true
     return data;
+
   }
  
 
@@ -36,22 +41,23 @@ export class Supabase {
     if (error) {
       throw error;
     }
+    this.session = false
   }
 
   async getTickets() {
-    const { data, error } = await this.supabase.from('tickets').select('*');
+    const { data, error } = await this.supabase.from('ticket').select('*');
     if (error) {
       throw error;
     }
     return data;
   }
 
-  async getUsers() : Promise<User[]> {
+  async getUsers()  {
     const { data, error } = await this.supabase.from('users').select('*');
     if (error) {
       throw error;
     }
-    return data;
+    return data as User[];
   }
 
   async createUser(user: User) {
