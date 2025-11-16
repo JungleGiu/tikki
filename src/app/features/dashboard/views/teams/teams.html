@@ -1,31 +1,78 @@
-<p-card >
-<header>
-    <h3>Team Members</h3>
-<p-button label="+ New Team Member" ></p-button>
-</header>
-<p-table [value]="users()">
-    <ng-template #header>
-        <tr>
-            <th>Name</th>
-            <th>Location</th>
-            <th>Department</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
-        </tr>
-    </ng-template>
-    <ng-template #body let-user>
-        <tr>
-            <td>{{user.name}}</td>
-            <td>{{user.location}}</td>
-            <td>{{user.department_id}}</td>
-            <td>{{user.email}}</td>
-            <td>{{user.role_id}}</td>
-            <td>
-                <p-button label="Edit" ></p-button>
-                <p-button label="Delete" ></p-button>
-            </td>
-        </tr>
-    </ng-template>
-</p-table>
+<p-card>
+    <header>
+        <h3>Team Members</h3>
+        <p-button (click)="showDialog(); dialogType.set('create')" label="+ New Team Member" />
+    </header>
+    <table >
+       <thead>
+            <tr>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Department</th>
+                <th>Email</th>
+                <th>Role</th>
+            </tr>
+       </thead>
+       <tbody>
+           @for (user of users(); track  user.id) {
+            <tr>
+                <td>{{ user.name }}</td>
+                <td>{{ user.location }}</td>
+                <td>{{ user.department_id }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role_id }}</td>
+                <div class="buttons">
+                <p-button (click)="selectUser(user)" label="Edit"></p-button>
+                <p-button (click)="onDeleteUser(user.id)" label="Delete"></p-button>
+                </div>
+            </tr>
+        }
+       </tbody>
+       
+        
+    </table>
 </p-card>
+@if (visible() && dialogType() == 'create') { 
+
+<div class="overlay-modal">
+  
+    <div class="modal">
+        <p-button label="X" (click)="visible.set(false)"></p-button>
+        <form  [formGroup]="newUser">
+            <label>Name</label>
+            <input formControlName="name" matInput type="text" placeholder="Name" />
+            <label>Location</label>
+            <input formControlName="location" matInput type="text" placeholder="Location" />
+            <label>Department</label>
+            <input formControlName="department" matInput type="number" placeholder="Department" />
+            <label>Email</label>
+            <input formControlName="email" matInput type="email" placeholder="Email" />
+            <label>Role</label>
+            <input formControlName="role" matInput type="number" placeholder="Role" />
+            <p-button (click)="onCreateUser()" label="Create"></p-button>
+        </form>
+    </div>
+</div>
+}
+
+@if(visible() && dialogType() == 'edit') {
+    <div class="overlay-modal">
+  
+    <div class="modal">
+        <p-button label="X" (click)="visible.set(false)"></p-button>
+        <form [formGroup]="updateUser">
+            <label>Name</label>
+            <input formControlName="name" matInput type="text" placeholder="Name" />
+            <label>Location</label>
+            <input formControlName="location" matInput type="text" placeholder="Location" value = "{{ userSelected()?.location }}" />
+            <label>Department</label>
+            <input formControlName="department" matInput type="number" placeholder="Department" value="{{userSelected()?.department_id}}" />
+            <label>Email</label>
+            <input formControlName="email" matInput type="email" placeholder="Email" value="{{userSelected()?.email}}" />
+            <label>Role</label>
+            <input formControlName="role" matInput type="number" placeholder="Role" value="{{userSelected()?.role_id}}" />
+            <p-button (click)="onEditUser()" label="Update"></p-button>
+        </form>
+    </div>
+</div>
+}
