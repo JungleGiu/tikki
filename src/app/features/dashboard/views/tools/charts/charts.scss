@@ -1,8 +1,9 @@
 .charts-container{
-    display: block;
-    width: 50%;
-    transform: scale(1);
-    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    width: 70%;
+    transform: scale(0.75);
+justify-content: start  ;
     position: relative;
     z-index: 1;
 }

@@ -12,15 +12,18 @@ Chart.register(...registerables);
 export class Charts implements AfterViewInit, OnChanges {
 @Input() data !: Ticket[];
 @ViewChild('priorityChart') priorityChart !: ElementRef<HTMLCanvasElement>;
-chart !: Chart;
-
+@ViewChild('departmentChart') departmentChart !: ElementRef<HTMLCanvasElement>;
+pChart !: Chart;
+dChart !: Chart;
 ngAfterViewInit(): void {
-  this.createChart();
+  this.createPriorityChart();
+  this.createDepartmentChart();
 }
- createChart(): void {
+ createPriorityChart(): void {
   const chartData = this.getPriorityData();
-   this.chart = new Chart(this.priorityChart.nativeElement, {
+   this.pChart = new Chart(this.priorityChart.nativeElement, {
      type:'doughnut',
+    
      data: {
        labels: ['Low', 'Medium', 'High'], 
        datasets: [
@@ -44,11 +47,42 @@ ngAfterViewInit(): void {
    })
  }
 
+ createDepartmentChart(): void {
+   const chartData = this.getDepartmentData();
+   this.dChart = new Chart(this.departmentChart.nativeElement, {
+     type:'radar',
+     data: {
+       labels: ['IT', 'Sales', 'Management'], 
+       datasets: [
+         {
+           label: 'Tickets by Department',
+           data: chartData,
+           backgroundColor: [
+             'rgba(54, 162, 235, 1)',
+             'rgba(255, 206, 86, 1)',
+             'rgba(255, 99, 132, 1)',
+            ],
+            borderColor: [
+             'rgba(255, 99, 132, 0.2)',
+             'rgba(54, 162, 235, 0.2)',
+             'rgba(255, 206, 86, 0.2)',
+           ],
+           borderWidth: 1,
+         },
+       ],
+     }
+   })
+ }
  ngOnChanges(): void {
-    if (this.chart) {
-      this.chart.data.labels = ['Low', 'Medium', 'High'];
-      this.chart.data.datasets[0].data = this.data.map(row => row.priority);
-      this.chart.update();
+    if (this.pChart) {
+      this.pChart.data.labels = ['Low', 'Medium', 'High'];
+      this.pChart.data.datasets[0].data = this.data.map(row => row.priority);
+      this.pChart.update();
+    }
+    if (this.dChart) {
+      this.dChart.data.labels = ['IT', 'Sales', 'Management'];
+      this.dChart.data.datasets[0].data = this.data.map(row => row.department_id);
+      this.dChart.update();
     }
   }
 
@@ -59,4 +93,11 @@ ngAfterViewInit(): void {
   
   return [lowCount, mediumCount, highCount];
 }
+ private getDepartmentData(): number[] {
+  const itCount = this.data.filter(t => t.department_id === 1).length;
+  const salesCount = this.data.filter(t => t.department_id === 2).length;
+  const managementCount = this.data.filter(t => t.department_id >= 3).length;
+  
+  return [itCount, salesCount, managementCount];
+ }
 }
