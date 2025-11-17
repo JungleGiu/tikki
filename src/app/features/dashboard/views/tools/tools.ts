@@ -15,7 +15,7 @@ export class Tools {
   selectedTool = signal<string>('map');
   supabase = inject(Supabase);
   tickets = signal<Ticket[]>([]);
-
+  events = signal<any[]>([]);
   locations = signal<any[]>([]);
   ngOnInit() {
     this.supabase
@@ -27,11 +27,18 @@ export class Tools {
           lng: ticket.location[1],
           title: ticket.title,
         }));
-
+        const events = data.map((ticket) => ({
+          title: ticket.title,
+          start: ticket.deadline,
+          end: ticket.deadline,
+        }))
+        this.events.set(events);
         this.locations.set(locs);
       })
       .catch((error) => {
         console.log(error);
       });
   }
+
+
 }

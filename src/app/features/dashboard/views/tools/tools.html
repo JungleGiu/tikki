@@ -14,7 +14,7 @@
         <app-map [locations]="locations()"></app-map>
     }
     @if (selectedTool() == 'calendar') {
-        <app-calendar></app-calendar>
+        <app-calendar [events]="events()"></app-calendar>
     }
    
 </div>
