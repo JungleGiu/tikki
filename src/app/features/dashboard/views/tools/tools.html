@@ -1,1 +1,20 @@
-<p>tools works!</p>
+<nav>
+    <a routerLink="tools" (click)="selectedTool.set('map')" pButton [rounded]="true">
+    <span pButtonLabel>Map</span>
+</a>
+<a routerLink="tools" (click)='selectedTool.set("calendar")' pButton [rounded]="true">
+    <span pButtonLabel>Calendar</span>
+</a>
+<a routerLink="tools" pButton [rounded]="true">
+    <span pButtonLabel>Charts</span>
+</a>
+</nav>
+<div>
+    @if (selectedTool() == 'map') {
+        <app-map></app-map>
+    }
+    @if (selectedTool() == 'calendar') {
+        <app-calendar></app-calendar>
+    }
+   
+</div>
