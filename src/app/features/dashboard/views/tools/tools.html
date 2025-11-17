@@ -1,11 +1,11 @@
 <nav>
-    <a routerLink="tools" (click)="selectedTool.set('map')" pButton [rounded]="true">
+    <a routerLink="tools" (click)='selectedTool.set("map")' pButton [rounded]="true">
     <span pButtonLabel>Map</span>
 </a>
 <a routerLink="tools" (click)='selectedTool.set("calendar")' pButton [rounded]="true">
     <span pButtonLabel>Calendar</span>
 </a>
-<a routerLink="tools" pButton [rounded]="true">
+<a routerLink="tools" (click)='selectedTool.set("charts")' pButton [rounded]="true">
     <span pButtonLabel>Charts</span>
 </a>
 </nav>
@@ -17,4 +17,7 @@
         <app-calendar [events]="events()"></app-calendar>
     }
    
+    @if (selectedTool() == 'charts') {
+            <app-charts [data]="tickets()"></app-charts>
+    }
 </div>

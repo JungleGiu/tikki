@@ -4,10 +4,10 @@ import { Map } from './map/map';
 import { Supabase } from '../../../../core/services/supabase';
 import { Calendar } from './calendar/calendar';
 import { Ticket } from '../../../../core/models/ticket';
-
+import { Charts } from './charts/charts';
 @Component({
   selector: 'app-tools',
-  imports: [ButtonModule, Map, Calendar],
+  imports: [ButtonModule, Map, Calendar, Charts],
   templateUrl: './tools.html',
   styleUrl: './tools.scss',
 })
