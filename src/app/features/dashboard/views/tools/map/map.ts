@@ -1,61 +1,38 @@
-import { Component, AfterViewInit , inject, OnInit} from '@angular/core';
+import { Component, AfterViewInit, inject, OnInit, Input } from '@angular/core';
 import * as L from 'leaflet';
 import { Supabase } from '../../../../../core/services/supabase';
 import { LatLngExpression } from 'leaflet';
 import { title } from '@primeuix/themes/aura/card';
-@Component ({
+@Component({
   selector: 'app-map',
   imports: [],
   templateUrl: './map.html',
   styleUrl: './map.scss',
 })
-export class Map implements AfterViewInit, OnInit {
-  
-private map: L.Map |undefined;
-private supabase = inject(Supabase);
-locations: any[] = [];
-ngOnInit() {
-this.supabase.getTickets().then((data) => {
-  data.forEach((ticket) => {
-    this.locations.push({
-      lat : ticket.location[0],
-       lng : ticket.location[1],
-      title : ticket.title} );
-   
-  })
-}).catch((error) => {
-  console.log(error);
-})
-}
+export class Map implements AfterViewInit {
+  private map: L.Map | undefined;
 
-
- private initMap(): void {
-
-  L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.9.4/dist/images/';
-
-
+  @Input() locations: any[] = [];
+  private initMap(): void {
+    L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.9.4/dist/images/';
     this.map = L.map('map').setView([45.0, 10.0], 5);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '© OpenStreetMap, © CARTO',
+    }).addTo(this.map);
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-  attribution: '© OpenStreetMap, © CARTO'
-}).addTo(this.map)
-  
-
-
-   this.locations.forEach((location) => {
+    this.locations.forEach((location) => {
       L.marker([location.lat, location.lng])
         .addTo(this.map!)
         .bindPopup(location.title || 'Ticket');
     });
- }
-    ngAfterViewInit(): void {
+  }
+  ngAfterViewInit(): void {
     setTimeout(() => {
       if (this.locations.length > 0) {
-      this.initMap();
-    } else {
-     setTimeout(() => this.initMap(), 500);
+        this.initMap();
+      } else {
+        setTimeout(() => this.initMap(), 500);
       }
     }, 100);
   }
-  
 }

@@ -11,7 +11,7 @@
 </nav>
 <div>
     @if (selectedTool() == 'map') {
-        <app-map></app-map>
+        <app-map [locations]="locations()"></app-map>
     }
     @if (selectedTool() == 'calendar') {
         <app-calendar></app-calendar>
