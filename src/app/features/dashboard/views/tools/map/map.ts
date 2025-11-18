@@ -1,8 +1,6 @@
-import { Component, AfterViewInit, inject, OnInit, Input } from '@angular/core';
+import { Component, AfterViewInit,  Input } from '@angular/core';
 import * as L from 'leaflet';
-import { Supabase } from '../../../../../core/services/supabase';
-import { LatLngExpression } from 'leaflet';
-import { title } from '@primeuix/themes/aura/card';
+
 @Component({
   selector: 'app-map',
   imports: [],

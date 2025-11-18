@@ -1,1 +1,31 @@
-<p>login works!</p>
+<main>
+    
+        <div class="card">
+            <header>
+                <h1>Enter your Hub
+                </h1>
+             </header>
+    
+                <form [formGroup]="loginForm">
+
+               
+                        <div class="field">
+                            <label>Admin Email</label>
+                            <input formControlName="adminEmail" type="email" placeholder="Admin Email" />
+                        </div>
+                    <div class="field">
+                        
+                        <label> Password</label>
+                        <input formControlName="password" type="password" placeholder="Password" />
+                    </div>
+    
+    
+                </form>
+                <div class="button">
+                 <button>Enter your Hub</button>
+                </div>
+    
+        </div>
+    
+</main>
+

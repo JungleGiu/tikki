@@ -41,9 +41,6 @@ importers:
       '@fullcalendar/interaction':
         specifier: ^6.1.19
         version: 6.1.19(@fullcalendar/core@6.1.19)
-      '@primeuix/themes':
-        specifier: ^1.2.5
-        version: 1.2.5
       '@supabase/supabase-js':
         specifier: ^2.81.1
         version: 2.81.1
@@ -56,9 +53,6 @@ importers:
       primeicons:
         specifier: ^7.0.0
         version: 7.0.0
-      primeng:
-        specifier: ^20.3.0
-        version: 20.3.0(b5331db115460df3667fcff02dbcccfd)
       rxjs:
         specifier: ~7.8.0
         version: 7.8.2
@@ -1055,20 +1049,6 @@ packages:
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
-
-  '@primeuix/styled@0.7.4':
-    resolution: {integrity: sha512-QSO/NpOQg8e9BONWRBx9y8VGMCMYz0J/uKfNJEya/RGEu7ARx0oYW0ugI1N3/KB1AAvyGxzKBzGImbwg0KUiOQ==}
-    engines: {node: '>=12.11.0'}
-
-  '@primeuix/styles@1.2.5':
-    resolution: {integrity: sha512-nypFRct/oaaBZqP4jinT0puW8ZIfs4u+l/vqUFmJEPU332fl5ePj6DoOpQgTLzo3OfmvSmz5a5/5b4OJJmmi7Q==}
-
-  '@primeuix/themes@1.2.5':
-    resolution: {integrity: sha512-n3YkwJrHQaEESc/D/A/iD815sxp8cKnmzscA6a8Tm8YvMtYU32eCahwLLe6h5rywghVwxASWuG36XBgISYOIjQ==}
-
-  '@primeuix/utils@0.6.3':
-    resolution: {integrity: sha512-/SLNQSKQ73WbBIsflKVqbpVjCfFYvQO3Sf1LMheXyxh8JqxO4M63dzP56wwm9OPGuCQ6MYOd2AHgZXz+g7PZcg==}
-    engines: {node: '>=12.11.0'}
 
   '@rollup/rollup-android-arm-eabi@4.52.3':
     resolution: {integrity: sha512-h6cqHGZ6VdnwliFG1NXvMPTy/9PS3h8oLh7ImwR+kl+oYnQizgjxsONmmPSb2C66RksfkfIxEVtDSEcJiO0tqw==}
@@ -2415,18 +2395,6 @@ packages:
   primeicons@7.0.0:
     resolution: {integrity: sha512-jK3Et9UzwzTsd6tzl2RmwrVY/b8raJ3QZLzoDACj+oTJ0oX7L9Hy+XnVwgo4QVKlKpnP/Ur13SXV/pVh4LzaDw==}
 
-  primeng@20.3.0:
-    resolution: {integrity: sha512-ljRRundjAfhR6PC75T3uDpg+v3IpBdbAyAlM0kMCHP5H0gtWUang68dd0ibO67/6CAKEcXVxwUnbqy2D6et4jA==}
-    peerDependencies:
-      '@angular/animations': ^20.0.4
-      '@angular/cdk': ^20.0.3
-      '@angular/common': ^20.0.4
-      '@angular/core': ^20.0.4
-      '@angular/forms': ^20.0.4
-      '@angular/platform-browser': ^20.0.4
-      '@angular/router': ^20.0.4
-      rxjs: ^6.0.0 || ^7.8.1
-
   proc-log@5.0.0:
     resolution: {integrity: sha512-Azwzvl90HaF0aCz1JrDdXQykFakSSNPaPoiZ9fm5qJIMHioDZEi7OAdRwSm6rSoPtY3Qutnm3L7ogmg3dc+wbQ==}
     engines: {node: ^18.17.0 || >=20.5.0}
@@ -3079,6 +3047,7 @@ snapshots:
     dependencies:
       '@angular/core': 20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2)
       tslib: 2.8.1
+    optional: true
 
   '@angular/build@20.3.10(@angular/compiler-cli@20.3.11(@angular/compiler@20.3.11)(typescript@5.9.3))(@angular/compiler@20.3.11)(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(@angular/platform-browser@20.3.11(@angular/animations@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2)))(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2)))(@types/node@24.10.1)(chokidar@4.0.3)(karma@6.4.4)(postcss@8.5.6)(tslib@2.8.1)(typescript@5.9.3)':
     dependencies:
@@ -3889,20 +3858,6 @@ snapshots:
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
-
-  '@primeuix/styled@0.7.4':
-    dependencies:
-      '@primeuix/utils': 0.6.3
-
-  '@primeuix/styles@1.2.5':
-    dependencies:
-      '@primeuix/styled': 0.7.4
-
-  '@primeuix/themes@1.2.5':
-    dependencies:
-      '@primeuix/styled': 0.7.4
-
-  '@primeuix/utils@0.6.3': {}
 
   '@rollup/rollup-android-arm-eabi@4.52.3':
     optional: true
@@ -5371,21 +5326,6 @@ snapshots:
   preact@10.12.1: {}
 
   primeicons@7.0.0: {}
-
-  primeng@20.3.0(b5331db115460df3667fcff02dbcccfd):
-    dependencies:
-      '@angular/animations': 20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))
-      '@angular/cdk': 20.2.13(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2)
-      '@angular/common': 20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2)
-      '@angular/core': 20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2)
-      '@angular/forms': 20.3.11(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(@angular/platform-browser@20.3.11(@angular/animations@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2)))(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2)))(rxjs@7.8.2)
-      '@angular/platform-browser': 20.3.11(@angular/animations@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2)))(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))
-      '@angular/router': 20.3.11(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(@angular/platform-browser@20.3.11(@angular/animations@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2)))(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2)))(rxjs@7.8.2)
-      '@primeuix/styled': 0.7.4
-      '@primeuix/styles': 1.2.5
-      '@primeuix/utils': 0.6.3
-      rxjs: 7.8.2
-      tslib: 2.8.1
 
   proc-log@5.0.0: {}
 

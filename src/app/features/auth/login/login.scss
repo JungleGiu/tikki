@@ -1,0 +1,61 @@
+@use '../../../../styles.scss' as *;
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+header{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center; 
+    padding: 0 2rem;
+   h1{
+    font-size: 1.4rem;}
+}
+.card{
+     @include tikki-vertical-gradient-border();
+  padding: 2rem 0;
+  width: 50%;
+  height: 50%;
+  margin: 2rem auto;
+}
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+   gap: 2rem;
+   margin:2rem;
+
+   input {
+    @include input;
+
+   }
+   .field{
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+   }
+}
+.button{
+    display: flex;
+    justify-content: center;
+    margin: 3rem 0.2rem 0 0;
+}
+button{
+  @include button;
+    @include tikki-vertical-gradient-border(3rem, 3px , var(--primary-color));
+    margin: 0 1rem;
+    font-size: 1.2rem;
+}
+
+ span{
+    color: red;
+    font-size:x-small;
+    display: block;
+    position: relative;
+    text-align: left;
+ }

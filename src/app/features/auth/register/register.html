@@ -1,37 +1,43 @@
-
-    <article>
-        <header>
-            <h1>Register your team
-            </h1>
-         </header>
-      
-            <form [formGroup]="registrerForm">
-            
-                      @let teamName = registrerForm.controls.teamName;
-                    <label>Team name</label>
-                    <input formControlName="teamName" matInput type="text" placeholder="Team name" />
-                    @if (teamName.invalid && teamName.touched ) {
-                           <span>Team name is required</span>
-                    }
-                
-            
-                    <label>Admin Name</label>
-                    <input matInput formControlName="adminName" type="text" placeholder="Admin Name" />
-                
-            
-                    <label>Admin Email</label> 
-                    <input matInput formControlName="adminEmail" type="email" placeholder="Admin Email" />
-                
-                   
-                    <label> Password</label>
-                    <input matInput formControlName="password" type="password" placeholder="Password" />
-                
-                
-                
-            </form>
-            <div class="buttons">
-             <button matButton="filled" color="primary">Register your Team</button>
-            </div>
-       
-    </article>
-
+<main>
+    
+        <div class="card">
+            <header>
+                <h1>Register your team
+                </h1>
+             </header>
+    
+                <form [formGroup]="registrerForm">
+ <div class="field">
+     
+                           @let teamName = registrerForm.controls.teamName;
+                         <label>Team name</label>
+                         <input formControlName="teamName" type="text" placeholder="Team name" />
+                         @if (teamName.invalid && teamName.touched ) {
+                                <span>Team name is required</span>
+                         }
+     
+     
+ </div>
+                        <div class="field">
+                            <label>Admin Name</label>
+                            <input formControlName="adminName" type="text" placeholder="Admin Name" />
+                        </div>
+                        <div class="field">
+                            <label>Admin Email</label>
+                            <input formControlName="adminEmail" type="email" placeholder="Admin Email" />
+                        </div>
+                    <div class="field">
+                        
+                        <label> Password</label>
+                        <input formControlName="password" type="password" placeholder="Password" />
+                    </div>
+    
+    
+                </form>
+                <div class="button">
+                 <button>Register your Team</button>
+                </div>
+    
+        </div>
+    
+</main>

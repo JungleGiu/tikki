@@ -1,8 +1,10 @@
+@use '../../../styles' as *;
+
 header{
     display: flex;
     flex-direction: row;
     align-items: start;
-    justify-content: center;
+    justify-content: space-around;
     height: 75vh;
 }
 
@@ -11,6 +13,7 @@ hgroup{
     flex-direction: column;
     justify-content: center;
     margin: 0 8rem;
+    width: 70%;
     h1{
         font-size: 8rem ;
         font-weight: 500;
@@ -37,15 +40,20 @@ article {
 .buttons{
     display: flex;
     flex-direction: column;
-   
-    justify-content: center;
     gap: 1rem;
-    margin-top: 3rem;
-    margin-right: 5rem;
-    a{
-        text-decoration: none;
+    justify-content: flex-end;
+    margin: 2rem 1rem 0 0;
+    width: 30%;
+    button {
+        @include tikki-vertical-gradient-border(1.5rem, 2px , var(--primary-color));
+        font-size: 1.2rem;
+        font-weight: 600;
         padding: 0.5rem 2rem;
-        width: 15rem;
+        color: var(--background-color);
+        width: 100%;
+        min-width: max-content;
+        max-height: 3rem;
+        max-width: 20rem;
     }
 }
 .logo{
@@ -57,7 +65,7 @@ article {
     }
 }
 .description{
-    margin: 0 8rem;
+    margin: 0 8rem 5rem;
     font-size: 1.2rem;
    p{
     color:gray;
