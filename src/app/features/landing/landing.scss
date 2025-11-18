@@ -46,6 +46,7 @@ article {
     width: 30%;
     button {
         @include tikki-vertical-gradient-border(1.5rem, 2px , var(--primary-color));
+        @include button();
         font-size: 1.2rem;
         font-weight: 600;
         padding: 0.5rem 2rem;

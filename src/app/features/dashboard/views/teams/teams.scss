@@ -1,9 +1,7 @@
-div {
-  background-color: var(--surface-card);
-  margin: 2rem;
-  padding: 1rem;
-  border-radius: 1rem;
-  color: var(--text-color);
+@use '../../../../../styles' as *;
+.card {
+  @include card();
+  @include tikki-vertical-gradient-border();
 }
 
 header {
@@ -11,10 +9,17 @@ header {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 2rem;
 }
-
+table {
+  width: 100%;
+}
+thead {
+ text-align: center;
+}
 td {
-  padding: 1rem 2rem;
+  text-align: center;
+  padding: 1rem 1rem;
 }
 
 .overlay-modal {
@@ -33,23 +38,56 @@ td {
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: var(--surface-card);
-  padding: 2rem;
-  border-radius: 1rem;
-  z-index: 100;
+  @include card();
+  @include tikki-vertical-gradient-border();
   width: 40rem;
-  height: 20rem;
+  height: 30rem;
+ 
+  .close{
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+    background-color: red;
+    padding: 0.5rem 1rem; 
+    border-radius: 25%;
+ 
+  }
+  input{
+    @include input();
+    margin: 0;
+  }
+
+ .modal-button{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: 2rem auto;
+  }
 }
 
 form {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  justify-content: center;
+  gap: 2rem;
+  margin: 3rem auto;
 }
-
+.field{
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
 .buttons {
   display: flex;
   flex-direction: row;
   gap: 1rem;
   align-items: center;
   justify-content: center;
+}
+
+button {
+  @include tikki-vertical-gradient-border(3rem, 2px, --primary-color);
+  @include button();
 }

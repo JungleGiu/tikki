@@ -1,4 +1,4 @@
-<div>
+<div class="card">
   <header>
     <h3>Team Members</h3>
     <button (click)="showDialog(); dialogType.set('create')">+ New Team Member</button>
@@ -7,20 +7,20 @@
     <thead>
       <tr>
         <th>Name</th>
+        <th>Role</th>
         <th>Location</th>
         <th>Department</th>
         <th>Email</th>
-        <th>Role</th>
       </tr>
     </thead>
     <tbody>
       @for (user of users(); track user.id) {
       <tr>
         <td>{{ user.name }}</td>
+        <td>{{ user.role_id }}</td>
         <td>{{ user.location }}</td>
         <td>{{ user.department_id }}</td>
         <td>{{ user.email }}</td>
-        <td>{{ user.role_id }}</td>
         <div class="buttons">
           <button (click)="selectUser(user)">Edit</button>
           <button (click)="onDeleteUser(user.id)">Delete</button>
@@ -34,63 +34,82 @@
 
 <div class="overlay-modal">
   <div class="modal">
-    <button l (click)="visible.set(false)">X</button>
+    <button class="close" (click)="visible.set(false)">X</button>
     <form [formGroup]="newUser">
-      <label>Name</label>
-      <input formControlName="name" matInput type="text" placeholder="Name" />
-      <label>Location</label>
-      <input formControlName="location" matInput type="text" placeholder="Location" />
-      <label>Department</label>
-      <input formControlName="department" matInput type="number" placeholder="Department" />
-      <label>Email</label>
-      <input formControlName="email" matInput type="email" placeholder="Email" />
-      <label>Role</label>
-      <input formControlName="role" matInput type="number" placeholder="Role" />
-      <button (click)="onCreateUser()">Create</button>
+      <div class="field">
+        <label>Name</label>
+        <input formControlName="name" type="text" placeholder="Name" />
+      </div>
+      <div class="field">
+        <label>Location</label>
+        <input formControlName="location" type="text" placeholder="Location" />
+      </div>
+      <div class="field">
+        <label>Department</label>
+        <input formControlName="department" type="number" placeholder="Department" />
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input formControlName="email" type="email" placeholder="Email" />
+      </div>
+      <div class="field">
+        <label>Role</label>
+        <input formControlName="role" type="number" placeholder="Role" />
+      </div>
     </form>
+    <div class="modal-button"><button (click)="onCreateUser()">Create</button></div>
   </div>
 </div>
 } @if(visible() && dialogType() == 'edit') {
 <div class="overlay-modal">
   <div class="modal">
-    <button (click)="visible.set(false)">X</button>
+    <button class="close" (click)="visible.set(false)">X</button>
     <form [formGroup]="updateUser">
-      <label>Name</label>
-      <input formControlName="name" matInput type="text" placeholder="Name" />
-      <label>Location</label>
-      <input
-        formControlName="location"
-        matInput
-        type="text"
-        placeholder="Location"
-        value="{{ userSelected()?.location }}"
-      />
-      <label>Department</label>
-      <input
-        formControlName="department"
-        matInput
-        type="number"
-        placeholder="Department"
-        value="{{ userSelected()?.department_id }}"
-      />
-      <label>Email</label>
-      <input
-        formControlName="email"
-        matInput
-        type="email"
-        placeholder="Email"
-        value="{{ userSelected()?.email }}"
-      />
-      <label>Role</label>
-      <input
-        formControlName="role"
-        matInput
-        type="number"
-        placeholder="Role"
-        value="{{ userSelected()?.role_id }}"
-      />
-      <button (click)="onEditUser()">Update</button>
+      <div class="field">
+        <label>Name</label>
+        <input formControlName="name" type="text" placeholder="Name" />
+      </div>
+      <div class="field">
+        <label>Location</label>
+        <input
+          formControlName="location"
+          type="text"
+          placeholder="Location"
+          value="{{ userSelected()?.location }}"
+        />
+      </div>
+      <div class="field">
+        <label>Department</label>
+        <input
+          formControlName="department"
+          type="number"
+          placeholder="Department"
+          value="{{ userSelected()?.department_id }}"
+        />
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input
+          formControlName="email"
+          type="email"
+          placeholder="Email"
+          value="{{ userSelected()?.email }}"
+        />
+      </div>
+      <div class="field">
+        <label>Role</label>
+        <input
+          formControlName="role"
+          type="number"
+          placeholder="Role"
+          value="{{ userSelected()?.role_id }}"
+        />
+      </div>
     </form>
+    <div class="modal-button">
+      
+      <button (click)="onEditUser()">Update</button>
+    </div>
   </div>
 </div>
 }

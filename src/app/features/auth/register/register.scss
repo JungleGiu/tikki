@@ -29,14 +29,18 @@ form {
    gap: 2rem;
    margin:2rem;
 
-   input {
-    @include input;
-
-   }
    .field{
-    display: flex;
-    flex-direction: column;
-    width: 35%;
+       display: flex;
+       flex-direction: column;
+       width: 35%;
+       input {
+        @include input;
+    
+       }
+          label{
+           font-size: 0.9rem;
+          
+       }
    }
 }
 .button{

@@ -1,14 +1,18 @@
+@use '../../../../../../styles' as *;
 .map-container {
   display: block;
-  width: 100%;
-  height: 600px; // Altezza fissa per il container
+  width: 80%;
+  height: 500px; 
   margin: 0 auto;
-  position: relative; // Importante!
-  z-index: 1;
+  position: relative; 
+  z-index: 10;
+
 }
 
 #map {
-  height: 100%; // 100% del container
+  height: 100%; 
   width: 100%;
   position: relative;
+  border: 2px solid var(--primary-color);
+  border-radius: 2rem;
 }

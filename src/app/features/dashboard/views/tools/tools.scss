@@ -1,0 +1,18 @@
+@use '../../../../../styles' as *;
+nav{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 50%;
+    margin: 2rem auto;
+}
+a{
+    @include tikki-vertical-gradient-border(2rem, 2px, var(--primary-color));
+    padding: 0.5rem 2rem;
+    text-decoration: none;
+    color: var(--background-color);
+     &:hover{
+        @include tikki-vertical-gradient-border(2rem, 2px, var(--background-color));
+        color: var(--primary-color);
+     }
+}
