@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { config } from '../../../shared/config';
+import { Supabase } from '../../../core/services/supabase';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'app-register',
@@ -14,7 +15,6 @@ export class Register {
     adminName: new FormControl('', [Validators.required, Validators.minLength(3)]),
     adminEmail: new FormControl('', [
       Validators.required,
-      Validators.email,
       Validators.pattern(config.regex.email),
     ]),
     password: new FormControl('', [
@@ -25,5 +25,21 @@ export class Register {
     ]),
   });
 
+  auth = inject(Supabase)
+  submitError: string | null = null;
+
+  onSubmit() {
+    if (this.registerForm.valid && this.registerForm.value)  {
+      this.auth.registerAdmin(
+    
+      ).then(() => {
+        
+      })
+      
+    }
+    else {
+      this.submitError = 'Please fill out the form correctly';
+    }
+  }
   
 }

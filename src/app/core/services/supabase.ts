@@ -21,11 +21,21 @@ export class Supabase {
   );
 
 }
-  async registerAdmin(email: string, password: string) {
+  async registerAdmin(newAdmin: CreateUserData, email: string, password: string) {
     const { error, data } = await this.supabase.auth.signUp({ email, password });
     if (error)   throw error;
-    
-    return data;
+    const user = data.user;
+    if (user) {
+      await this.logiAdmin(email, password);
+      newAdmin = await this.createUser({
+        name: newAdmin.name,
+        location: [],
+        department_id: 0,
+        role_id: 1,
+        email: email
+      })
+    }
+    return user;
   }
 
   async logiAdmin(email: string, password: string) {

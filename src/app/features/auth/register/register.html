@@ -44,25 +44,24 @@
          @if (adminEmail.errors?.['pattern']) {
         <span>Please enter a valid email</span>
         }
-        } @if (adminEmail.errors?.['email']) {
-        <span>Please enter a valid email</span>
-        }
-        
+     
+    }
       </div>
       <div class="field">
         @let password = registerForm.controls.password;
         <label> Password</label>
         <input formControlName="password" type="password" placeholder="Password" />
 
-        @if (password.invalid && password.touched ) { @if (password.errors?.['minlength']) {
+        @if (password.invalid && password.touched) 
+        { @if (password.errors?.['minlength']) {
         <span>Password must be at least 8 characters</span>
-        } @if (password.errors?.['required']) {
+        } @else if (password.errors?.['required']) {
         <span>Password is required</span> } @if (password.errors?.['maxlength']) {
         <span>Password must be at most 24 characters</span>
-        } @if (password.errors?.['pattern']) {
+        } @else if (password.errors?.['pattern']) {
         <span
           >Password must contain at least one uppercase letter, one lowercase letter, one number,
-          one special character, and be at least 8 characters long</span
+          one special character</span
         >
         } }
       </div>
