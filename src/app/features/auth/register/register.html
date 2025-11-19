@@ -1,43 +1,74 @@
 <main>
-    
-        <div class="card">
-            <header>
-                <h1>Register your team
-                </h1>
-             </header>
-    
-                <form [formGroup]="registrerForm">
- <div class="field">
-     
-                           @let teamName = registrerForm.controls.teamName;
-                         <label>Team name</label>
-                         <input formControlName="teamName" type="text" placeholder="Team name" />
-                         @if (teamName.invalid && teamName.touched ) {
-                                <span>Team name is required</span>
-                         }
-     
-     
- </div>
-                        <div class="field">
-                            <label>Admin Name</label>
-                            <input formControlName="adminName" type="text" placeholder="Admin Name" />
-                        </div>
-                        <div class="field">
-                            <label>Admin Email</label>
-                            <input formControlName="adminEmail" type="email" placeholder="Admin Email" />
-                        </div>
-                    <div class="field">
-                        
-                        <label> Password</label>
-                        <input formControlName="password" type="password" placeholder="Password" />
-                    </div>
-    
-    
-                </form>
-                <div class="button">
-                 <button>Register your Team</button>
-                </div>
-    
-        </div>
-    
+  <div class="card">
+    <header>
+      <h1>Register your team</h1>
+    </header>
+
+    <form [formGroup]="registerForm">
+      <div class="field">
+        @let teamName = registerForm.controls.teamName;
+        <label>Company name</label>
+        <input formControlName="teamName" type="text" placeholder="Company name" />
+        @if (teamName.invalid && teamName.touched ) {
+        @if (teamName.errors?.['required']) {
+            <span>Company name is required</span>
+        }
+        @if (teamName.errors?.['minlength']) {
+            <span>Team name must be at least 3 characters</span>
+        }
+        }
+      </div>
+      <div class="field">
+        @let adminName = registerForm.controls.adminName;
+        <label>Admin Name</label>
+        <input formControlName="adminName" type="text" placeholder="Admin Name" />
+        @if (adminName.invalid && adminName.touched ) {
+        
+            @if (adminName.errors?.['required']) {
+            <span>Admin name is required</span>
+            }
+            @if (adminName.errors?.['minlength']) {
+            <span>Admin name must be at least 3 characters</span>
+            }
+
+        }
+      </div>
+      <div class="field">
+        @let adminEmail = registerForm.controls.adminEmail; 
+        <label>Admin Email</label>
+        <input formControlName="adminEmail" type="email" placeholder="Admin Email" />
+        @if (adminEmail.invalid && adminEmail.touched ) {
+        @if (adminEmail.errors?.['required']) {
+        <span>Admin email is required</span>
+        }
+         @if (adminEmail.errors?.['pattern']) {
+        <span>Please enter a valid email</span>
+        }
+        } @if (adminEmail.errors?.['email']) {
+        <span>Please enter a valid email</span>
+        }
+        
+      </div>
+      <div class="field">
+        @let password = registerForm.controls.password;
+        <label> Password</label>
+        <input formControlName="password" type="password" placeholder="Password" />
+
+        @if (password.invalid && password.touched ) { @if (password.errors?.['minlength']) {
+        <span>Password must be at least 8 characters</span>
+        } @if (password.errors?.['required']) {
+        <span>Password is required</span> } @if (password.errors?.['maxlength']) {
+        <span>Password must be at most 24 characters</span>
+        } @if (password.errors?.['pattern']) {
+        <span
+          >Password must contain at least one uppercase letter, one lowercase letter, one number,
+          one special character, and be at least 8 characters long</span
+        >
+        } }
+      </div>
+    </form>
+    <div class="button">
+      <button>Register your Team</button>
+    </div>
+  </div>
 </main>

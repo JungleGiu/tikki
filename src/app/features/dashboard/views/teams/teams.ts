@@ -79,7 +79,7 @@ export class Teams implements OnInit {
     };
     this.database.createUser(user);
     this.visible.set(false);
-    // this.users.update((oldUsers) => [...oldUsers, user as User]);
+    this.users.update((oldUsers) => [...oldUsers, user as User]);
   }
 
   onDeleteUser(id: number) {

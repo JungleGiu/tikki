@@ -1,4 +1,5 @@
 import { Component, AfterViewInit,  Input } from '@angular/core';
+import { config } from '../../../../../shared/config';
 import * as L from 'leaflet';
 
 @Component({
@@ -12,17 +13,19 @@ export class Map implements AfterViewInit {
 
   @Input() locations: any[] = [];
   private initMap(): void {
-    L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.9.4/dist/images/';
+    L.Icon.Default.imagePath = config.leaflet.mapImage;
     this.map = L.map('map').setView([45.0, 10.0], 5);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '© OpenStreetMap, © CARTO',
+    L.tileLayer(config.leaflet.mapTitle, {
+      attribution: config.leaflet.mapAttribution,
     }).addTo(this.map);
 
+    if(this.locations.length > 0) {
     this.locations.forEach((location) => {
       L.marker([location.lat, location.lng])
         .addTo(this.map!)
         .bindPopup(location.title || 'Ticket');
     });
+    }
   }
   ngAfterViewInit(): void {
     setTimeout(() => {

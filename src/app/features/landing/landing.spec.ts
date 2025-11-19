@@ -9,6 +9,7 @@ describe('Landing', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Landing]
+      
     })
     .compileComponents();
 
