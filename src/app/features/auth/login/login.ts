@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Supabase } from '../../../core/services/supabase';
+import { supabaseAuth } from '../../../core/services/supabase-auth/supabaseAuth';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'app-login',
@@ -9,25 +9,22 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './login.scss',
 })
 export class Login {
-
   loginForm = new FormGroup({
     email: new FormControl(''),
     password: new FormControl(''),
   });
 
-auth = inject(Supabase)
-submitError: string | null = null
-router = inject(Router)
-onSubmit() {
-  this.auth.logiAdmin(this.loginForm.value.email ?? '', this.loginForm.value.password??'').then(
-    () => {
-      this.router.navigate(['/dashboard']);
-    }
-  ).catch(
-    (error) => {
-      this.submitError = error.message;
-     
-    }
-  )
-}
+  auth = inject(supabaseAuth);
+  submitError: string | null = null;
+  router = inject(Router);
+  onSubmit() {
+    this.auth
+      .logiAdmin(this.loginForm.value.email ?? '', this.loginForm.value.password ?? '')
+      .then(() => {
+        this.router.navigate(['/dashboard']);
+      })
+      .catch((error) => {
+        this.submitError = error.message;
+      });
+  }
 }

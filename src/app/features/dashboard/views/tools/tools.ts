@@ -1,6 +1,6 @@
 import { Component, signal, inject } from '@angular/core';
 import { Map } from './map/map';
-import { Supabase } from '../../../../core/services/supabase';
+import { supabaseAuth } from '../../../../core/services/supabase-auth/supabaseAuth';
 import { Calendar } from './calendar/calendar';
 import { Ticket } from '../../../../core/models/ticket';
 import { Charts } from './charts/charts';
@@ -12,12 +12,12 @@ import { Charts } from './charts/charts';
 })
 export class Tools {
   selectedTool = signal<string>('map');
-  supabase = inject(Supabase);
+  supabaseAuth = inject(supabaseAuth);
   tickets = signal<Ticket[]>([]);
   events = signal<any[]>([]);
   locations = signal<any[]>([]);
   ngOnInit() {
-    this.supabase
+    this.supabaseAuth
       .getTickets()
       .then((data) => {
         this.tickets.set(data);

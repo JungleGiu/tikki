@@ -2,29 +2,30 @@ import { computed, Injectable, signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import type { Session } from '@supabase/supabase-js';
-import { development } from '../../../environments/env';
-import { User, Company } from '../models/user';
-import { Ticket } from '../models/ticket';
+import { development } from '../../../../environments/env';
+import { User, Company } from '../../models/user';
+import { Ticket } from '../../models/ticket';
 @Injectable({
   providedIn: 'root',
 })
-export class Supabase {
-  private supabase: SupabaseClient;
+export class supabaseAuth {
+  private supabaseAuth: SupabaseClient;
   sessionSignal = signal<Session | null>(null);
   authUser = computed(() => this.sessionSignal()?.user ?? null);
   appUser = signal<User | null>(null);
+
   private usersSubject = new BehaviorSubject<User[]>([]);
   users = this.usersSubject.asObservable();
 
   constructor() {
-    this.supabase = createClient(
+    this.supabaseAuth = createClient(
       development.supabase.authentication.SUPABASE_URL,
       development.supabase.authentication.SUPABASE_KEY
     );
-    this.supabase.auth.getSession().then(({ data }) => {
+    this.supabaseAuth.auth.getSession().then(({ data }) => {
       this.sessionSignal.set(data.session);
     });
-    this.supabase.auth.onAuthStateChange((_event, session) => {
+    this.supabaseAuth.auth.onAuthStateChange((_event, session) => {
       this.sessionSignal.set(session);
       if (session?.user) {
         this.loadAppUser(session.user.id);
@@ -35,13 +36,13 @@ export class Supabase {
   }
 
   async loadAppUser(id: string) {
-    const { data } = await this.supabase.from('users').select('*').eq('id', id).single();
+    const { data } = await this.supabaseAuth.from('users').select('*').eq('id', id).single();
 
     this.appUser.set(data ?? null);
   }
 
   async registerCompany(company: Company, email: string, password: string) {
-    const { error: signUperror, data: signUpData } = await this.supabase.auth.signUp({
+    const { error: signUperror, data: signUpData } = await this.supabaseAuth.auth.signUp({
       email,
       password,
     });
@@ -49,16 +50,17 @@ export class Supabase {
 
     const { user } = signUpData;
     //  Sign in automatically only works if email confirmation is OFF!!
-    const { data: signInData, error: signInError } = await this.supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { data: signInData, error: signInError } =
+      await this.supabaseAuth.auth.signInWithPassword({
+        email,
+        password,
+      });
     if (signInError) throw signInError;
 
     company.id = signInData.user.id;
     company.created_at = signInData.user.created_at;
 
-    const { data: tableUserData, error: tableInsertError } = await this.supabase
+    const { data: tableUserData, error: tableInsertError } = await this.supabaseAuth
       .from('users')
       .insert(company)
       .select()
@@ -70,10 +72,10 @@ export class Supabase {
   }
 
   async logiAdmin(email: string, password: string) {
-    const { error, data } = await this.supabase.auth.signInWithPassword({ email, password });
+    const { error, data } = await this.supabaseAuth.auth.signInWithPassword({ email, password });
     if (error) throw error;
 
-    const { data: userData, error: insertError } = await this.supabase
+    const { data: userData, error: insertError } = await this.supabaseAuth
       .from('users')
       .select('*')
       .eq('id', data.user.id)
@@ -84,35 +86,35 @@ export class Supabase {
   }
 
   async logout() {
-    const { error } = await this.supabase.auth.signOut();
+    const { error } = await this.supabaseAuth.auth.signOut();
     if (error) throw error;
     this.sessionSignal.set(null);
     this.appUser.set(null);
   }
 
   async getTickets() {
-    const { data, error } = await this.supabase.from('ticket').select('*');
+    const { data, error } = await this.supabaseAuth.from('ticket').select('*');
     if (error) throw error;
 
     return data as Ticket[];
   }
 
   async getUsers() {
-    const { data, error } = await this.supabase.from('users').select('*');
+    const { data, error } = await this.supabaseAuth.from('users').select('*');
     if (error) throw error;
 
     this.usersSubject.next(data as User[]);
   }
 
   async createUser(user: User): Promise<User> {
-    const { data, error } = await this.supabase.from('users').insert(user).select().single();
+    const { data, error } = await this.supabaseAuth.from('users').insert(user).select().single();
     if (error) throw error;
     await this.getUsers();
     return data as User;
   }
 
   async updateUser(user: User, id: string): Promise<User> {
-    const { data, error } = await this.supabase
+    const { data, error } = await this.supabaseAuth
       .from('users')
       .update(user)
       .eq('id', id)
@@ -124,7 +126,7 @@ export class Supabase {
   }
 
   async deleteUser(id: string): Promise<User> {
-    const { data, error } = await this.supabase
+    const { data, error } = await this.supabaseAuth
       .from('users')
       .delete()
       .eq('id', id)

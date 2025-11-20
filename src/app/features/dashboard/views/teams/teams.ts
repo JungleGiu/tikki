@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Supabase } from '../../../../core/services/supabase';
-import {  User } from '../../../../core/models/user';
+import { supabaseAuth } from '../../../../core/services/supabase-auth/supabaseAuth';
+import { User } from '../../../../core/models/user';
 @Component({
   selector: 'app-teams',
   imports: [ReactiveFormsModule],
@@ -9,7 +9,7 @@ import {  User } from '../../../../core/models/user';
   styleUrl: './teams.scss',
 })
 export class Teams implements OnInit {
-  database = inject(Supabase);
+  database = inject(supabaseAuth);
   users = signal<User[]>([]);
   visible = signal<boolean>(false);
   userSelected = signal<User | null>(null);
@@ -94,7 +94,7 @@ export class Teams implements OnInit {
     if (!this.userSelected()) {
       return;
     }
- 
+
     let role = parseInt(this.updateUser.value.role ?? '0');
     let department = parseInt(this.updateUser.value.department ?? '0');
 
@@ -106,10 +106,9 @@ export class Teams implements OnInit {
       email: this.updateUser.value.email ?? '',
     };
 
- const id = this.userSelected()?.id ?? '0';
+    const id = this.userSelected()?.id ?? '0';
 
-    this.database.updateUser(user,id);
+    this.database.updateUser(user, id);
     this.visible.set(false);
   }
-  }
-
+}

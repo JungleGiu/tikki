@@ -1,6 +1,6 @@
-import { Component,inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Supabase } from '../../../core/services/supabase';
+import { supabaseAuth } from '../../../core/services/supabase-auth/supabaseAuth';
 @Component({
   selector: 'app-navbar',
   imports: [RouterLink],
@@ -8,12 +8,9 @@ import { Supabase } from '../../../core/services/supabase';
   styleUrl: './navbar.scss',
 })
 export class Navbar {
-  
-  auth = inject(Supabase)
+  auth = inject(supabaseAuth);
 
- user = this.auth.appUser
-
-
+  user = this.auth.appUser;
 
   logout() {
     this.auth.logout();
