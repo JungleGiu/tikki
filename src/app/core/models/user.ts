@@ -9,6 +9,7 @@ export interface Company {
 export interface User extends Company {
     location? : string[];
     department_id : number;
+    created_by? : string;
 }
 
 

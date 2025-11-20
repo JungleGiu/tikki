@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { supabaseAuth } from '../../../core/services/supabase-auth/supabaseAuth';
+import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'app-login',

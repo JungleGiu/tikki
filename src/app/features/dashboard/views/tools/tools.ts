@@ -1,9 +1,9 @@
 import { Component, signal, inject } from '@angular/core';
 import { Map } from './map/map';
-import { supabaseAuth } from '../../../../core/services/supabase-auth/supabaseAuth';
 import { Calendar } from './calendar/calendar';
 import { Ticket } from '../../../../core/models/ticket';
 import { Charts } from './charts/charts';
+import { SupabaseDb } from '../../../../core/services/supabase/supabase-db';
 @Component({
   selector: 'app-tools',
   imports: [Map, Calendar, Charts],
@@ -12,12 +12,12 @@ import { Charts } from './charts/charts';
 })
 export class Tools {
   selectedTool = signal<string>('map');
-  supabaseAuth = inject(supabaseAuth);
+  database = inject(SupabaseDb);
   tickets = signal<Ticket[]>([]);
   events = signal<any[]>([]);
   locations = signal<any[]>([]);
   ngOnInit() {
-    this.supabaseAuth
+    this.database
       .getTickets()
       .then((data) => {
         this.tickets.set(data);

@@ -1,7 +1,9 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
-import { supabaseAuth } from '../../../../core/services/supabase-auth/supabaseAuth';
+
 import { User } from '../../../../core/models/user';
+import { SupabaseDb } from '../../../../core/services/supabase/supabase-db';
+import { supabaseAuth } from '../../../../core/services/supabase/supabaseAuth';
 @Component({
   selector: 'app-teams',
   imports: [ReactiveFormsModule],
@@ -9,7 +11,8 @@ import { User } from '../../../../core/models/user';
   styleUrl: './teams.scss',
 })
 export class Teams implements OnInit {
-  database = inject(supabaseAuth);
+  database = inject(SupabaseDb);
+  companyId = inject(supabaseAuth).authUser()?.id;
   users = signal<User[]>([]);
   visible = signal<boolean>(false);
   userSelected = signal<User | null>(null);
@@ -52,13 +55,15 @@ export class Teams implements OnInit {
   }
 
   async ngOnInit() {
-    try {
-      this.database.users.subscribe((users) => {
+    this.database
+      .getUsers()
+      .then((users) => {
+        users = users.filter((user) => user.created_by === this.companyId);
         this.users.set(users);
+      })
+      .catch((error) => {
+        console.error(error);
       });
-    } catch (err) {
-      console.error('Errore nel caricamento:', err);
-    }
   }
 
   onCreateUser() {
@@ -74,6 +79,7 @@ export class Teams implements OnInit {
       department_id: department,
       role_id: role,
       email: this.newUser.value.email ?? '',
+      created_by: this.companyId?? '0',
     };
     this.database.createUser(user);
     this.visible.set(false);
@@ -104,6 +110,7 @@ export class Teams implements OnInit {
       department_id: department,
       role_id: role,
       email: this.updateUser.value.email ?? '',
+      created_by: this.companyId ?? '0',
     };
 
     const id = this.userSelected()?.id ?? '0';

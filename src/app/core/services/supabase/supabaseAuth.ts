@@ -1,10 +1,8 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import type { Session } from '@supabase/supabase-js';
 import { development } from '../../../../environments/env';
 import { User, Company } from '../../models/user';
-import { Ticket } from '../../models/ticket';
 @Injectable({
   providedIn: 'root',
 })
@@ -14,8 +12,7 @@ export class supabaseAuth {
   authUser = computed(() => this.sessionSignal()?.user ?? null);
   appUser = signal<User | null>(null);
 
-  private usersSubject = new BehaviorSubject<User[]>([]);
-  users = this.usersSubject.asObservable();
+
 
   constructor() {
     this.supabaseAuth = createClient(
@@ -36,8 +33,10 @@ export class supabaseAuth {
   }
 
   async loadAppUser(id: string) {
-    const { data } = await this.supabaseAuth.from('users').select('*').eq('id', id).single();
-
+    const { data } = await this.supabaseAuth.from('users')
+    .select('*')
+    .eq('id', id)
+    .single();
     this.appUser.set(data ?? null);
   }
 
@@ -48,7 +47,7 @@ export class supabaseAuth {
     });
     if (signUperror) throw signUperror;
 
-    const { user } = signUpData;
+
     //  Sign in automatically only works if email confirmation is OFF!!
     const { data: signInData, error: signInError } =
       await this.supabaseAuth.auth.signInWithPassword({
@@ -92,48 +91,5 @@ export class supabaseAuth {
     this.appUser.set(null);
   }
 
-  async getTickets() {
-    const { data, error } = await this.supabaseAuth.from('ticket').select('*');
-    if (error) throw error;
-
-    return data as Ticket[];
-  }
-
-  async getUsers() {
-    const { data, error } = await this.supabaseAuth.from('users').select('*');
-    if (error) throw error;
-
-    this.usersSubject.next(data as User[]);
-  }
-
-  async createUser(user: User): Promise<User> {
-    const { data, error } = await this.supabaseAuth.from('users').insert(user).select().single();
-    if (error) throw error;
-    await this.getUsers();
-    return data as User;
-  }
-
-  async updateUser(user: User, id: string): Promise<User> {
-    const { data, error } = await this.supabaseAuth
-      .from('users')
-      .update(user)
-      .eq('id', id)
-      .select()
-      .single();
-    if (error) throw error;
-    await this.getUsers();
-    return data as User;
-  }
-
-  async deleteUser(id: string): Promise<User> {
-    const { data, error } = await this.supabaseAuth
-      .from('users')
-      .delete()
-      .eq('id', id)
-      .select()
-      .single();
-    if (error) throw error;
-    await this.getUsers();
-    return data as User;
-  }
+ 
 }

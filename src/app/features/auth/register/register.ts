@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { config } from '../../../shared/config';
-import { supabaseAuth } from '../../../core/services/supabase-auth/supabaseAuth';
+import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
 import { Company } from '../../../core/models/user';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
