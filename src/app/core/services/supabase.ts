@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import type { Session } from '@supabase/supabase-js';
@@ -10,8 +10,9 @@ import { Ticket } from '../models/ticket';
 })
 export class Supabase {
   private supabase: SupabaseClient;
-  session: Session | null = null;
-  user: User | null = null;
+  sessionSignal = signal<Session | null>(null);
+  authUser = computed(() => this.sessionSignal()?.user ?? null);
+  appUser = signal<User | null>(null);
   private usersSubject = new BehaviorSubject<User[]>([]);
   users = this.usersSubject.asObservable();
 
@@ -20,7 +21,25 @@ export class Supabase {
       development.supabase.authentication.SUPABASE_URL,
       development.supabase.authentication.SUPABASE_KEY
     );
+    this.supabase.auth.getSession().then(({ data }) => {
+      this.sessionSignal.set(data.session);
+    });
+    this.supabase.auth.onAuthStateChange((_event, session) => {
+      this.sessionSignal.set(session);
+      if (session?.user) {
+        this.loadAppUser(session.user.id);
+      } else {
+        this.appUser.set(null);
+      }
+    });
   }
+
+  async loadAppUser(id: string) {
+    const { data } = await this.supabase.from('users').select('*').eq('id', id).single();
+
+    this.appUser.set(data ?? null);
+  }
+
   async registerCompany(company: Company, email: string, password: string) {
     const { error: signUperror, data: signUpData } = await this.supabase.auth.signUp({
       email,
@@ -36,43 +55,39 @@ export class Supabase {
     });
     if (signInError) throw signInError;
 
-    this.session = signInData.session;
-
     company.id = signInData.user.id;
     company.created_at = signInData.user.created_at;
-    
+
     const { data: tableUserData, error: tableInsertError } = await this.supabase
-    .from('users')
-    .insert(company)
-    .select()
-    .single();
-    
+      .from('users')
+      .insert(company)
+      .select()
+      .single();
+
     if (tableInsertError) throw tableInsertError;
 
-    this.user = tableUserData;
     return tableUserData;
   }
-
 
   async logiAdmin(email: string, password: string) {
     const { error, data } = await this.supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
-    this.session = data.session;
+
     const { data: userData, error: insertError } = await this.supabase
       .from('users')
       .select('*')
       .eq('id', data.user.id)
       .single();
     if (insertError) throw insertError;
-    this.user = userData;
-    return data;
+
+    return userData;
   }
 
   async logout() {
     const { error } = await this.supabase.auth.signOut();
     if (error) throw error;
-
-    this.session = null;
+    this.sessionSignal.set(null);
+    this.appUser.set(null);
   }
 
   async getTickets() {

@@ -11,7 +11,8 @@ export class Navbar {
   
   auth = inject(Supabase)
 
-  user = signal(this.auth.user)
+ user = this.auth.appUser
+
 
 
   logout() {
