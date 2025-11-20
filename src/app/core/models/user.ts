@@ -1,18 +1,15 @@
 
-export interface User {
-    id: number;
-    name : string;
-    location : string[];
-    created_at : string;
-    department_id : number;
+export interface Company {
+    id?: string;
+    created_at?: string;
+    name : string;   
     role_id : number;
     email : string;
+}
+export interface User extends Company {
+    location? : string[];
+    department_id : number;
 }
 
-export interface CreateUserData {
-    name : string;
-    location : string[];
-    department_id : number;
-    role_id : number;
-    email : string;
-}
+
+

@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Supabase } from '../../../../core/services/supabase';
-import { CreateUserData, User } from '../../../../core/models/user';
+import {  User } from '../../../../core/models/user';
 @Component({
   selector: 'app-teams',
   imports: [ReactiveFormsModule],
@@ -56,8 +56,6 @@ export class Teams implements OnInit {
       this.database.users.subscribe((users) => {
         this.users.set(users);
       });
-      this.database.getUsers();
-      console.log('Utenti caricati:', this.users);
     } catch (err) {
       console.error('Errore nel caricamento:', err);
     }
@@ -70,7 +68,7 @@ export class Teams implements OnInit {
     let role = parseInt(this.newUser.value.role ?? '0');
     let department = parseInt(this.newUser.value.department ?? '0');
 
-    const user: CreateUserData = {
+    const user: User = {
       name: this.newUser.value.name ?? '',
       location: this.newUser.value.location?.split(',') ?? [],
       department_id: department,
@@ -82,7 +80,10 @@ export class Teams implements OnInit {
     this.users.update((oldUsers) => [...oldUsers, user as User]);
   }
 
-  onDeleteUser(id: number) {
+  onDeleteUser(id: string) {
+    if (id === '') {
+      throw new Error('User not found');
+    }
     this.database.deleteUser(id);
   }
 
@@ -90,10 +91,14 @@ export class Teams implements OnInit {
     if (this.updateUser.invalid) {
       return;
     }
+    if (!this.userSelected()) {
+      return;
+    }
+ 
     let role = parseInt(this.updateUser.value.role ?? '0');
     let department = parseInt(this.updateUser.value.department ?? '0');
 
-    const user: CreateUserData = {
+    const user: User = {
       name: this.updateUser.value.name ?? '',
       location: this.updateUser.value.location?.split(',') ?? [],
       department_id: department,
@@ -101,7 +106,10 @@ export class Teams implements OnInit {
       email: this.updateUser.value.email ?? '',
     };
 
-    this.database.updateUser(user, this.userSelected()?.id ?? 0);
+ const id = this.userSelected()?.id ?? '0';
+
+    this.database.updateUser(user,id);
     this.visible.set(false);
   }
-}
+  }
+

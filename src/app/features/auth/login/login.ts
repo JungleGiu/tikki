@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { Supabase } from '../../../core/services/supabase';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'app-login',
@@ -9,9 +11,23 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 export class Login {
 
   loginForm = new FormGroup({
-    teamName: new FormControl(''),
-    adminName: new FormControl(''),
-    adminEmail: new FormControl(''),
+    email: new FormControl(''),
     password: new FormControl(''),
   });
+
+auth = inject(Supabase)
+submitError: string | null = null
+router = inject(Router)
+onSubmit() {
+  this.auth.logiAdmin(this.loginForm.value.email ?? '', this.loginForm.value.password??'').then(
+    () => {
+      this.router.navigate(['/dashboard']);
+    }
+  ).catch(
+    (error) => {
+      this.submitError = error.message;
+     
+    }
+  )
+}
 }

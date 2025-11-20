@@ -18,21 +18,7 @@
         }
         }
       </div>
-      <div class="field">
-        @let adminName = registerForm.controls.adminName;
-        <label>Admin Name</label>
-        <input formControlName="adminName" type="text" placeholder="Admin Name" />
-        @if (adminName.invalid && adminName.touched ) {
-        
-            @if (adminName.errors?.['required']) {
-            <span>Admin name is required</span>
-            }
-            @if (adminName.errors?.['minlength']) {
-            <span>Admin name must be at least 3 characters</span>
-            }
-
-        }
-      </div>
+   
       <div class="field">
         @let adminEmail = registerForm.controls.adminEmail; 
         <label>Admin Email</label>
@@ -54,12 +40,12 @@
 
         @if (password.invalid && password.touched) 
         { @if (password.errors?.['minlength']) {
-        <span>Password must be at least 8 characters</span>
+        <span class="pwd">Password must be at least 8 characters</span>
         } @else if (password.errors?.['required']) {
-        <span>Password is required</span> } @if (password.errors?.['maxlength']) {
-        <span>Password must be at most 24 characters</span>
+        <span class="pwd">Password is required</span> } @else if (password.errors?.['maxlength']) {
+        <span class="pwd">Password must be at most 24 characters</span>
         } @else if (password.errors?.['pattern']) {
-        <span
+        <span class="pwd"
           >Password must contain at least one uppercase letter, one lowercase letter, one number,
           one special character</span
         >
@@ -67,7 +53,7 @@
       </div>
     </form>
     <div class="button">
-      <button>Register your Team</button>
+      <button (click)="onSubmit()">Register your Team</button>
     </div>
   </div>
 </main>

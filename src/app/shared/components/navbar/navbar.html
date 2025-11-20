@@ -11,8 +11,10 @@
   <div class="user">
     <img src="assets/advisors.png" alt="User avatar" />
     <hgroup>
-      <h1>John Doe</h1>
-      <span>Admin</span>
+      <h1>{{ user()?.name }}</h1>
+      <span> {{ user()?.role_id }}</span>
+      
     </hgroup>
+    <button (click)="logout()">Logout</button>
   </div>
 </header>

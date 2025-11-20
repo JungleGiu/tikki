@@ -1,31 +1,20 @@
 <main>
-    
-        <div class="card">
-            <header>
-                <h1>Enter your Hub
-                </h1>
-             </header>
-    
-                <form [formGroup]="loginForm">
-
-               
-                        <div class="field">
-                            <label>Email</label>
-                            <input formControlName="email" type="email" placeholder="Admin Email" />
-                        </div>
-                    <div class="field">
-                        
-                        <label> Password</label>
-                        <input formControlName="password" type="password" placeholder="Password" />
-                    </div>
-    
-    
-                </form>
-                <div class="button">
-                 <button>Enter your Hub</button>
-                </div>
-    
-        </div>
-    
+  <div class="card">
+    <header>
+      <h1>Enter your Hub</h1>
+    </header>
+    <form [formGroup]="loginForm">
+      <div class="field">
+        <label> Company Email</label>
+        <input formControlName="email" type="email" placeholder="Admin Email" />
+      </div>
+      <div class="field">
+        <label> Password</label>
+        <input formControlName="password" type="password" placeholder="Password" />
+      </div>
+    </form>
+    <div class="button">
+      <button (click)="onSubmit()">Enter your Hub</button>
+    </div>
+  </div>
 </main>
-

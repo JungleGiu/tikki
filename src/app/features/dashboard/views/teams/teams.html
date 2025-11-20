@@ -23,7 +23,7 @@
         <td>{{ user.email }}</td>
         <div class="buttons">
           <button (click)="selectUser(user)">Edit</button>
-          <button (click)="onDeleteUser(user.id)">Delete</button>
+          <button (click)="onDeleteUser(user.id? user.id : '')">Delete</button>
         </div>
       </tr>
       }
