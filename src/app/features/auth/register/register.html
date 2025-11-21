@@ -16,6 +16,10 @@
         @if (teamName.errors?.['minlength']) {
             <span>Team name must be at least 3 characters</span>
         }
+        @if (teamName.errors?.['maxlength']) {
+          
+          <span>Team name must be at most 24 characters</span>
+        }
         }
       </div>
    

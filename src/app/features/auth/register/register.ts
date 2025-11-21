@@ -4,6 +4,7 @@ import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
 import { Company } from '../../../core/models/user';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AppError } from '../../../core/services/errors/app-error';
 @Component({
   selector: 'app-register',
   imports: [ReactiveFormsModule],
@@ -12,7 +13,7 @@ import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angula
 })
 export class Register {
   registerForm = new FormGroup({
-    teamName: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    teamName: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(24)]),
 
     adminEmail: new FormControl('', [Validators.required, Validators.pattern(config.regex.email)]),
     password: new FormControl('', [
@@ -24,7 +25,7 @@ export class Register {
   });
 
   auth = inject(supabaseAuth);
-  submitError: string | null = null;
+
   router = inject(Router);
   onSubmit() {
     if (this.registerForm.valid && this.registerForm.dirty) {
@@ -33,7 +34,7 @@ export class Register {
       const password = this.registerForm.controls.password.value;
 
       if (!teamName || !adminEmail || !password) {
-        this.submitError = 'All fields are required.';
+        throw new AppError('FILL_ALL_FIELDS');
         return;
       }
       const newAdmin: Company = {
@@ -44,17 +45,14 @@ export class Register {
       this.auth
         .registerCompany(newAdmin, adminEmail, password)
         .then(() => {
-          this.submitError = null;
+          this.router.navigate(['/dashboard']);
         })
         .catch((error) => {
-          this.submitError = error.message;
           this.registerForm.reset();
-        })
-        .finally(() => {
-          this.router.navigate(['/dashboard']);
+          throw new AppError(error.code);
         });
     } else {
-      this.submitError = 'Please fill all the required fields with valid values.';
+      throw new AppError('FILL_ALL_FIELDS');
     }
   }
 }

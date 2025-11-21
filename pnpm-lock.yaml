@@ -50,6 +50,9 @@ importers:
       leaflet:
         specifier: ^1.9.4
         version: 1.9.4
+      ngx-toastr-notifier:
+        specifier: ^20.0.9
+        version: 20.0.9(@angular/cdk@20.2.13(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(@angular/material@20.2.14(39bcef1df0ff43a82d5110eb6b49d5d0))
       primeicons:
         specifier: ^7.0.0
         version: 7.0.0
@@ -282,6 +285,16 @@ packages:
       '@angular/common': 20.3.11
       '@angular/core': 20.3.11
       '@angular/platform-browser': 20.3.11
+      rxjs: ^6.5.3 || ^7.4.0
+
+  '@angular/material@20.2.14':
+    resolution: {integrity: sha512-IbAgV6XLsvmHiJzxycVhcNC1PA4M30qi+ERCOir6cT333Bxm8vDV32gsOjfL52uzG5YRARroPC+8s1XqR2oxeA==}
+    peerDependencies:
+      '@angular/cdk': 20.2.14
+      '@angular/common': ^20.0.0 || ^21.0.0
+      '@angular/core': ^20.0.0 || ^21.0.0
+      '@angular/forms': ^20.0.0 || ^21.0.0
+      '@angular/platform-browser': ^20.0.0 || ^21.0.0
       rxjs: ^6.5.3 || ^7.4.0
 
   '@angular/platform-browser@20.3.11':
@@ -2228,6 +2241,14 @@ packages:
     resolution: {integrity: sha512-8Ofs/AUQh8MaEcrlq5xOX0CQ9ypTF5dl78mjlMNfOK08fzpgTHQRQPBxcPlEtIw0yRpws+Zo/3r+5WRby7u3Gg==}
     engines: {node: '>= 0.6'}
 
+  ngx-toastr-notifier@20.0.9:
+    resolution: {integrity: sha512-2pHfHdeF4Vd9v+Z+Ul1tGHD1y5odgvn1bM8DKx/74e4TXoYNc1HTeopf60rAGQiZ4IyH3lIKRV4HKhi5yuI6nw==}
+    peerDependencies:
+      '@angular/cdk': ^20.0.0
+      '@angular/common': ^20.0.0
+      '@angular/core': ^20.0.0
+      '@angular/material': ^20.0.0
+
   node-addon-api@6.1.0:
     resolution: {integrity: sha512-+eawOlIgy680F0kBzPUNFhMZGtJ1YmqM6l4+Crf4IkImjYrO/mqPwRMh352g23uIaQKFItcQ64I7KMaJxHgAVA==}
 
@@ -3170,6 +3191,16 @@ snapshots:
     dependencies:
       '@angular/common': 20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2)
+      '@angular/platform-browser': 20.3.11(@angular/animations@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2)))(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))
+      rxjs: 7.8.2
+      tslib: 2.8.1
+
+  '@angular/material@20.2.14(39bcef1df0ff43a82d5110eb6b49d5d0)':
+    dependencies:
+      '@angular/cdk': 20.2.13(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@angular/common': 20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@angular/core': 20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2)
+      '@angular/forms': 20.3.11(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(@angular/platform-browser@20.3.11(@angular/animations@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2)))(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2)))(rxjs@7.8.2)
       '@angular/platform-browser': 20.3.11(@angular/animations@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2)))(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))
       rxjs: 7.8.2
       tslib: 2.8.1
@@ -5125,6 +5156,14 @@ snapshots:
   negotiator@0.6.3: {}
 
   negotiator@1.0.0: {}
+
+  ngx-toastr-notifier@20.0.9(@angular/cdk@20.2.13(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(@angular/material@20.2.14(39bcef1df0ff43a82d5110eb6b49d5d0)):
+    dependencies:
+      '@angular/cdk': 20.2.13(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@angular/common': 20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@angular/core': 20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2)
+      '@angular/material': 20.2.14(39bcef1df0ff43a82d5110eb6b49d5d0)
+      tslib: 2.8.1
 
   node-addon-api@6.1.0:
     optional: true

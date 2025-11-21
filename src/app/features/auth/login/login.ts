@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { AppError } from '../../../core/services/errors/app-error';
 @Component({
   selector: 'app-login',
   imports: [ReactiveFormsModule],
@@ -15,7 +16,7 @@ export class Login {
   });
 
   auth = inject(supabaseAuth);
-  submitError: string | null = null;
+
   router = inject(Router);
   onSubmit() {
     this.auth
@@ -24,7 +25,8 @@ export class Login {
         this.router.navigate(['/dashboard']);
       })
       .catch((error) => {
-        this.submitError = error.message;
+        
+        throw new AppError(error.code);
       });
   }
 }

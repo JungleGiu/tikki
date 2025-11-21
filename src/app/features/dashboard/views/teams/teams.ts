@@ -49,7 +49,6 @@ export class Teams implements OnInit {
         role: selected.role_id.toString(),
       });
     }
-
     this.dialogType.set('edit');
     this.showDialog();
   }

@@ -1,22 +1,14 @@
 import { Injectable, signal } from '@angular/core';
-import { SupabaseClient, createClient } from '@supabase/supabase-js';
-import { development } from '../../../../environments/env';
+import { supabase } from './supabase-client';
 import { User } from '../../models/user';
 import { Ticket } from '../../models/ticket';
 @Injectable({
   providedIn: 'root',
 })
 export class SupabaseDb {
-  private supabaseDB: SupabaseClient;
 
-  constructor() {
-    this.supabaseDB = createClient(
-      development.supabase.storage.SUPABASE_URL,
-      development.supabase.storage.SUPABASE_KEY
-    );
-  }
   async getTickets() {
-    const { data, error } = await this.supabaseDB.from('ticket')
+    const { data, error } = await supabase.from('ticket')
     .select('*');
     if (error) throw error;
 
@@ -24,7 +16,7 @@ export class SupabaseDb {
   }
 
   async getUsers() {
-    const { data, error } = await this.supabaseDB.from('users')
+    const { data, error } = await supabase.from('users')
     .select('*');
     if (error) throw error;
 
@@ -32,7 +24,7 @@ export class SupabaseDb {
   }
 
   async createUser(user: User): Promise<User> {
-    const { data, error } = await this.supabaseDB
+    const { data, error } = await supabase
     .from('users')
     .insert(user)
     .select()
@@ -43,7 +35,7 @@ export class SupabaseDb {
   }
 
   async updateUser(user: User, id: string): Promise<User> {
-    const { data, error } = await this.supabaseDB
+    const { data, error } = await supabase
       .from('users')
       .update(user)
       .eq('id', id)
@@ -55,7 +47,7 @@ export class SupabaseDb {
   }
 
   async deleteUser(id: string): Promise<User> {
-    const { data, error } = await this.supabaseDB
+    const { data, error } = await supabase
       .from('users')
       .delete()
       .eq('id', id)

@@ -36,6 +36,7 @@
     "@supabase/supabase-js": "^2.81.1",
     "chart.js": "^4.5.1",
     "leaflet": "^1.9.4",
+    "ngx-toastr-notifier": "^20.0.9",
     "primeicons": "^7.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
