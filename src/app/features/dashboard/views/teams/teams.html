@@ -2,6 +2,7 @@
   <header>
     <h3>Team Members</h3>
     <button (click)="showDialog(); dialogType.set('create')">+ New Team Member</button>
+  
   </header>
   <table>
     <thead>
@@ -42,7 +43,7 @@
       </div>
       <div class="field">
         <label>Location</label>
-        <input formControlName="location" type="text" placeholder="Location" />
+         <app-location-input></app-location-input>
       </div>
       <div class="field">
         <label>Department</label>
@@ -71,12 +72,7 @@
       </div>
       <div class="field">
         <label>Location</label>
-        <input
-          formControlName="location"
-          type="text"
-          placeholder="Location"
-          value="{{ userSelected()?.location }}"
-        />
+         <app-location-input></app-location-input>
       </div>
       <div class="field">
         <label>Department</label>

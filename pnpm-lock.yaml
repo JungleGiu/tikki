@@ -50,6 +50,9 @@ importers:
       leaflet:
         specifier: ^1.9.4
         version: 1.9.4
+      leaflet-control-geocoder:
+        specifier: ^3.3.1
+        version: 3.3.1(leaflet@1.9.4)
       ngx-toastr-notifier:
         specifier: ^20.0.9
         version: 20.0.9(@angular/cdk@20.2.13(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(@angular/material@20.2.14(39bcef1df0ff43a82d5110eb6b49d5d0))
@@ -2052,6 +2055,11 @@ packages:
     engines: {node: '>= 10'}
     hasBin: true
 
+  leaflet-control-geocoder@3.3.1:
+    resolution: {integrity: sha512-DOLZLAbTq5mKzbvXt6O4HOWeJ03QofwYBbEjcp4Upg1JyWcrVSkfOKWIwbB4bOSPb40cdFoe59DOxGa1Sj10yQ==}
+    peerDependencies:
+      leaflet: ^1.6.0 || ^2.0.0
+
   leaflet@1.9.4:
     resolution: {integrity: sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA==}
 
@@ -2333,6 +2341,9 @@ packages:
   onetime@7.0.0:
     resolution: {integrity: sha512-VXJjc87FScF88uafS3JllDgvAm+c/Slfz06lorj2uAY34rlUu0Nt+v8wreiImcrgAjjIHp1rXpTDlLOGw29WwQ==}
     engines: {node: '>=18'}
+
+  open-location-code@1.0.3:
+    resolution: {integrity: sha512-DBm14BSn40Ee241n80zIFXIT6+y8Tb0I+jTdosLJ8Sidvr2qONvymwqymVbHV2nS+1gkDZ5eTNpnOIVV0Kn2fw==}
 
   ora@8.2.0:
     resolution: {integrity: sha512-weP+BZ8MVNnlCm8c0Qdc1WSWq4Qn7I+9CJGm7Qali6g44e/PUzbjNqJX5NJ9ljlNMosfJvg1fKEGILklK9cwnw==}
@@ -4950,6 +4961,12 @@ snapshots:
       - supports-color
       - utf-8-validate
 
+  leaflet-control-geocoder@3.3.1(leaflet@1.9.4):
+    dependencies:
+      leaflet: 1.9.4
+    optionalDependencies:
+      open-location-code: 1.0.3
+
   leaflet@1.9.4: {}
 
   listr2@9.0.1:
@@ -5271,6 +5288,9 @@ snapshots:
   onetime@7.0.0:
     dependencies:
       mimic-function: 5.0.1
+
+  open-location-code@1.0.3:
+    optional: true
 
   ora@8.2.0:
     dependencies:

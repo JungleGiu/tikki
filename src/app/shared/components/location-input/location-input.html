@@ -1,0 +1,13 @@
+<div class="location-input">
+    <input type="text" [(ngModel)]="searchQuery" />
+@if (results().length > 0) {
+    <ul>
+        @for (result of results(); track result.place_id) {
+        <article (click)="selectedResult.set(result)"><h2>{{ result.name}}</h2>
+            <p>{{ result.display_name }}</p>
+        </article>
+        }
+    </ul>
+}
+</div>
+

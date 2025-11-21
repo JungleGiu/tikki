@@ -2,6 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { supabase } from './supabase-client';
 import { User } from '../../models/user';
 import { Ticket } from '../../models/ticket';
+import { AppError } from '../errors/app-error';
 @Injectable({
   providedIn: 'root',
 })
@@ -10,7 +11,7 @@ export class SupabaseDb {
   async getTickets() {
     const { data, error } = await supabase.from('ticket')
     .select('*');
-    if (error) throw error;
+    if (error) throw new AppError(error.code);
 
     return data as Ticket[];
   }
@@ -18,7 +19,7 @@ export class SupabaseDb {
   async getUsers() {
     const { data, error } = await supabase.from('users')
     .select('*');
-    if (error) throw error;
+    if (error) throw new AppError(error.code);
 
     return data as User[];
   }
@@ -29,7 +30,7 @@ export class SupabaseDb {
     .insert(user)
     .select()
     .single();
-    if (error) throw error;
+    if (error) throw new AppError(error.code);
     await this.getUsers();
     return data as User;
   }
@@ -41,7 +42,7 @@ export class SupabaseDb {
       .eq('id', id)
       .select()
       .single();
-    if (error) throw error;
+    if (error) throw new AppError(error.code);
     await this.getUsers();
     return data as User;
   }
@@ -53,7 +54,7 @@ export class SupabaseDb {
       .eq('id', id)
       .select()
       .single();
-    if (error) throw error;
+    if (error) throw new AppError(error.code);
     await this.getUsers();
     return data as User;
   }

@@ -8,15 +8,16 @@ import { AppError } from '../errors/app-error';
 })
 export class supabaseAuth {
   supabaseAuth = supabase;
-  sessionSignal = signal<Session | null>(null);
+  sessionSignal = signal<Session | null>(undefined as any);
   authUser = computed(() => this.sessionSignal()?.user ?? null);
   appUser = signal<User | null>(null);
-
+  isInitialized = signal(false);
   constructor() {
     this.supabaseAuth.auth
       .getSession()
       .then(({ data }) => {
         this.sessionSignal.set(data.session);
+        this.isInitialized.set(true);
       })
       .catch((error) => {
         console.error(error);
@@ -24,12 +25,10 @@ export class supabaseAuth {
       });
     this.supabaseAuth.auth.onAuthStateChange((_event, session) => {
       this.sessionSignal.set(session);
+      this.isInitialized.set(true);
       if (session?.user) {
         this.loadAppUser(session.user.id);
-      } else {
-        this.appUser.set(null);
-        
-      }
+      } 
     });
   }
 

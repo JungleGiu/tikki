@@ -1,0 +1,50 @@
+@use '../../../../styles' as *;
+
+.location-input{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 10rem
+}
+input{
+@include input();
+}
+ul{
+    position: absolute;
+    top: 2.4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    z-index: 10;
+}
+article{
+    cursor: pointer;
+    z-index: 10;
+    background-color: white;
+    padding: 0.5rem;
+    width: 100%;
+    border: solid var(--primary-color) 1px;
+    border-radius: 1rem;
+     &:hover{
+        border: solid var(--secondary-color) 1px;
+     }
+    h2{
+        font-size: 1rem;
+        font-weight: 500;
+        
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    p{
+        font-size: 0.8rem;
+        color: gray;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+}

@@ -1,12 +1,14 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
-
 import { User } from '../../../../core/models/user';
 import { SupabaseDb } from '../../../../core/services/supabase/supabase-db';
 import { supabaseAuth } from '../../../../core/services/supabase/supabaseAuth';
+import { AppError } from '../../../../core/services/errors/app-error';
+import { config } from '../../../../shared/config';
+import { LocationInput } from "../../../../shared/components/location-input/location-input";
 @Component({
   selector: 'app-teams',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, LocationInput],
   templateUrl: './teams.html',
   styleUrl: './teams.scss',
 })
@@ -22,15 +24,15 @@ export class Teams implements OnInit {
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     location: new FormControl('', [Validators.required, Validators.minLength(3)]),
     department: new FormControl('', Validators.required),
-    email: new FormControl('', Validators.required),
+    email: new FormControl('', [Validators.required, Validators.pattern(config.regex.email)],),
     role: new FormControl('', Validators.required),
   });
 
   updateUser = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     location: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    department: new FormControl('', Validators.required),
-    email: new FormControl('', Validators.required),
+    department: new FormControl('',[ Validators.required, Validators.minLength(3)]),
+    email: new FormControl('', [Validators.required, Validators.pattern(config.regex.email)]),
     role: new FormControl('', Validators.required),
   });
 
@@ -61,13 +63,13 @@ export class Teams implements OnInit {
         this.users.set(users);
       })
       .catch((error) => {
-        console.error(error);
+        throw new AppError(error.code);
       });
   }
 
   onCreateUser() {
     if (this.newUser.invalid) {
-      return;
+      throw new AppError('FILL_ALL_FIELDS');
     }
     let role = parseInt(this.newUser.value.role ?? '0');
     let department = parseInt(this.newUser.value.department ?? '0');
@@ -87,17 +89,17 @@ export class Teams implements OnInit {
 
   onDeleteUser(id: string) {
     if (id === '') {
-      throw new Error('User not found');
+      throw new AppError('USER_NOT_FOUND');
     }
     this.database.deleteUser(id);
   }
 
   onEditUser() {
     if (this.updateUser.invalid) {
-      return;
+      throw new AppError('FILL_ALL_FIELDS');
     }
     if (!this.userSelected()) {
-      return;
+      throw new AppError('USER_NOT_FOUND');
     }
 
     let role = parseInt(this.updateUser.value.role ?? '0');
