@@ -43,7 +43,12 @@
         </select>
       </div>
     </form>
+    @if (mode() === 'update') {
+      <div class="modal-button"><button (click)="onSubmit()">Update</button></div>
+    }
+    @else{
     <div class="modal-button"><button (click)="onSubmit()">Create</button></div>
+  }
   </div>
 </div>
 }

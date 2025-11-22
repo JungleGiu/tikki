@@ -1,5 +1,5 @@
 <div class="location-input">
-    <input type="text" [(ngModel)]="searchQuery" />
+    <input type="text"  [(ngModel)]="searchQuery"  />
 @if (results().length > 0) {
     <ul>
         @for (result of results(); track result.place_id) {

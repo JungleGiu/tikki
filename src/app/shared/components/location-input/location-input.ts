@@ -20,7 +20,7 @@ export class LocationInput implements OnInit {
   constructor() {
     effect(() => {
       const query = this.searchQuery();
-      if (query &&query.length > 2) {
+      if (query && query.length > 2 && query !== this.location?.name) {
         this.locationSearch(this.searchQuery());
       }
     });
@@ -44,8 +44,9 @@ export class LocationInput implements OnInit {
         'accept-language': 'en',
       },
     });
-    if (this.location?.name) {
+     if (this.location?.name) {
       this.searchQuery.set(this.location.name);
+      this.selectedResult.set(this.location);
     }
   }
 

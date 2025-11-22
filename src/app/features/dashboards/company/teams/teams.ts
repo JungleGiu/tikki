@@ -48,18 +48,18 @@ export class Teams implements OnInit {
   }
 
 
- onDialogSubmit(formData: any) {
+ async onDialogSubmit(formData: any) {
     if (this.dialogType() === 'create') {
-      this.createUser(formData);
+      await this.createUser(formData);
     } else {
-      this.updateUser(formData);
+      await this.updateUser(formData);
     }
     this.userSelected.set(null);
     this.locationSelected.set(null);
     this.visible.set(false);
   }
 
-  createUser(formData: any) {
+  async createUser(formData: any) {
     const loc = this.locationSelected();
     const user: User = {
       name: formData.name,
@@ -70,12 +70,12 @@ export class Teams implements OnInit {
       created_by: this.companyId ?? '0',
     };
     
-    this.database.createUser(user);
+    await this.database.createUser(user);
     this.users.set(this.database.users().filter(user => user.created_by === this.companyId)); 
     this.closeDialog();
   }
 
-  updateUser(formData: any) {
+  async updateUser(formData: any) {
     if (!this.userSelected()) return;
     const loc = this.locationSelected();
     const user: User = {
@@ -87,7 +87,7 @@ export class Teams implements OnInit {
       created_by: this.companyId ?? '0',
     };
 
-    this.database.updateUser(user, this.userSelected()!.id!);
+   await this.database.updateUser(user, this.userSelected()!.id!);
      this.users.set(this.database.users().filter(user => user.created_by === this.companyId)); 
     this.closeDialog();
   }
