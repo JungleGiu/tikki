@@ -3,6 +3,7 @@ import { User } from '../../../../core/models/user';
 import { SupabaseDb } from '../../../../core/services/supabase/supabase-db';
 import { supabaseAuth } from '../../../../core/services/supabase/supabaseAuth';
 import { AppError } from '../../../../core/services/errors/app-error';
+import { ToastAppService } from '../../../../core/services/toast/toast-service';
 import { TeamTable } from "../../../../shared/components/team-table/team-table";
 import { TeamDialog } from "../../../../shared/components/team-dialog/team-dialog";
 @Component({
@@ -71,6 +72,7 @@ export class Teams implements OnInit {
     };
     
     await this.database.createUser(user);
+
     this.users.set(this.database.users().filter(user => user.created_by === this.companyId)); 
     this.closeDialog();
   }

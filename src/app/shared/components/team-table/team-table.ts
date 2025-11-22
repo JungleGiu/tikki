@@ -2,11 +2,10 @@ import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { User } from '../../../core/models/user';
 import { RolePipePipe
  } from '../../pipes/role-pipe-pipe';
- import { DepartmentPipePipe
- } from '../../pipes/department-pipe-pipe';
+import { Badge } from '../badge/badge';
 @Component({
   selector: 'app-team-table',
-  imports: [RolePipePipe, DepartmentPipePipe],
+  imports: [RolePipePipe, Badge],
   templateUrl: './team-table.html',
   styleUrl: './team-table.scss',
 })

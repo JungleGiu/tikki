@@ -3,12 +3,17 @@ import { supabase } from './supabase-client';
 import { User } from '../../models/user';
 import { Ticket } from '../../models/ticket';
 import { AppError } from '../errors/app-error';
+import { ToastAppService } from '../toast/toast-service';
 @Injectable({
   providedIn: 'root',
 })
 export class SupabaseDb {
 users = signal<User[]>([]);
 tickets = signal<Ticket[]>([]);
+
+constructor(private toastService : ToastAppService) {
+
+}
   async getTickets() {
     const { data, error } = await supabase.from('ticket')
     .select('*');
@@ -33,6 +38,7 @@ tickets = signal<Ticket[]>([]);
     .single();
     if (error) throw new AppError(error.code);
     await this.getUsers();
+    this.toastService.showSuccess('User created successfully');
     return data as User;
   }
 
@@ -45,6 +51,7 @@ tickets = signal<Ticket[]>([]);
       .single();
     if (error) throw new AppError(error.code);
     await this.getUsers();
+    this.toastService.showSuccess('User updated successfully');
     return data as User;
   }
 
@@ -57,6 +64,7 @@ tickets = signal<Ticket[]>([]);
       .single();
     if (error) throw new AppError(error.code);
     await this.getUsers();
+    this.toastService.showSuccess('User deleted successfully');
     return data as User;
   }
 }

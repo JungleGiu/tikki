@@ -2,12 +2,23 @@
 
 <div class="overlay-modal">
   <div class="modal">
-    <button class="close" (click)="isVisible.set(false)">X</button>
-    <h2>{{ mode() === 'create' ? 'New Team Member' : 'Edit Team Member' }}</h2>
+    <header>
+      <button class="close" (click)="isVisible.set(false)">X</button>
+      <h2>{{ mode() === 'create' ? 'New Team Member' : 'Edit Team Member' }}</h2>
+    </header>
     <form [formGroup]="userForm">
       <div class="field">
         <label>Name</label>
+        @let name = userForm.controls.name;
         <input formControlName="name" type="text" placeholder="Name" />
+        @if (name.invalid && name.touched) {
+        @if (name.errors?.['required']) {
+            <span>Name is required</span>
+        }
+        @if (name.errors?.['minlength']) {
+            <span>Name must be at least 3 characters</span>
+        }
+        }
       </div>
       <div class="field">
         <label>Location</label>
@@ -20,6 +31,7 @@
       
       </div>
       <div class="field">
+        @let department = userForm.controls.department;
         <label>Department</label>
         <select formControlName="department" type="number" placeholder="Department" value="0">
           <option disabled value="0"></option>
@@ -28,19 +40,40 @@
           <option value="3">Sales</option>
           <option value="4">Marketing</option>
         </select>
+      @if (department.invalid && department.touched) {
+        @if (department.errors?.['required']) {
+          <span>Department is required to register a new user</span>
+        }
+      }
       </div>
+
       <div class="field">
         <label>Email</label>
+@let email = userForm.controls.email;
         <input formControlName="email" type="email" placeholder="Email" />
+       @if(email.invalid && email.touched) {
+        @if (email.errors?.['required']) {
+          <span>Email is required to register a new user</span>
+        }
+        @if (email.errors?.['pattern']) {
+          <span>Type a valid email to authenticate a new user correctly</span>
+        }
+       }
       </div>
       <div class="field">
+        @let role = userForm.controls.role;
         <label>Role</label>
         <select formControlName="role" type="number" placeholder="Role" value="0">
-          <option disabled value="0"></option>
+          <option disabled value="0">Select role</option>
           <option value="1">Head of Department</option>
           <option value="2">User</option>
           <option value="3">Issuer</option>
         </select>
+      @if (role.invalid && role.touched) {
+        @if (role.errors?.['required']) {
+          <span>Role is required to register a new user</span>
+        }
+      }
       </div>
     </form>
     @if (mode() === 'update') {

@@ -1,8 +1,8 @@
-import { Component, Input,Output,EventEmitter, effect,signal } from '@angular/core';
+import { Component, Input,Output,EventEmitter, effect,signal,inject } from '@angular/core';
 import { User } from '../../../core/models/user';
 import { LocationInput } from '../location-input/location-input';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { AppError } from '../../../core/services/errors/app-error';
+import { ToastAppService } from '../../../core/services/toast/toast-service';
 import { config } from '../../../shared/config';
 @Component({
   selector: 'app-team-dialog',
@@ -18,6 +18,8 @@ export class TeamDialog {
 @Output() close = new EventEmitter()
 @Output() submit = new EventEmitter<User>()
 @Output() locationChange = new EventEmitter<any>()
+
+toast = inject(ToastAppService)
 
 userForm = new FormGroup({
   name: new FormControl('', [Validators.required, Validators.minLength(3)]),
@@ -43,7 +45,7 @@ constructor() {
 
 onSubmit(){
   if(this.userForm.invalid){
-  throw new AppError('FILL_ALL_FIELDS')
+  this.toast.showWarning('Please fill all the required fields')
   }else{
     this.submit.emit(this.userForm.value as User)
   }

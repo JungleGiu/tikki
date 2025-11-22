@@ -14,12 +14,12 @@
         <td>{{ user.name }}</td>
         <td>{{ user.role_id | rolePipe}}</td>
         <td>{{ user.location?.name }}</td>
-        <td>{{ user.department_id | departmentPipe}}</td>
+        <td class="department" > <app-badge [variant]="user.department_id"></app-badge></td>
         <td>{{ user.email }}</td>
-        <div class="buttons">
+        <td class="buttons">
           <button (click)="onSelectEdit(user)" >Edit</button>
           <button (click)="onDeleteUser(user.id ?? '')">Delete</button>
-        </div>
+        </td>
       </tr>
       }
     </tbody>

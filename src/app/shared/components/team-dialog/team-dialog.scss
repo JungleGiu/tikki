@@ -17,9 +17,21 @@
   background-color: var(--surface-card);
   @include card();
   @include tikki-vertical-gradient-border();
-  width: 40rem;
+  width: 50rem;
   height: 30rem;
- 
+ display : flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+
+
+ header{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+ }
   .close{
     position: absolute;
     top: 1rem;
@@ -45,7 +57,7 @@ select {
  .modal-button{
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
     margin: 2rem auto;
   }
@@ -63,15 +75,15 @@ form {
   flex-direction: column;
   gap: 0.5rem;
 }
-.buttons {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-  align-items: center;
-  justify-content: center;
-}
 
 button {
   @include tikki-vertical-gradient-border(3rem, 2px, --primary-color);
   @include button();
 }
+span{
+    color: red;
+    font-size:x-small;
+    position: relative;
+    
+    text-align: left;
+ }

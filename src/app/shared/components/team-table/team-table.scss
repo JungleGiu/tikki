@@ -5,6 +5,9 @@ table {
 thead {
  text-align: center;
 }
+tr{
+ 
+}
 td {
   text-align: center;
   padding: 1rem 1rem;
@@ -12,11 +15,18 @@ td {
 .buttons {
   display: flex;
   flex-direction: row;
+width:100%;
+height: 100%;
+
   gap: 1rem;
-  align-items: center;
-  justify-content: center;
+ margin: auto;
+ align-content: center;
   button {
   @include tikki-vertical-gradient-border(3rem, 2px, --primary-color);
   @include button();
 }
+}
+.department {
+  padding : 0;
+
 }
