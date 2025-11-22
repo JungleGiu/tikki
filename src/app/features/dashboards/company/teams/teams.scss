@@ -57,6 +57,13 @@ td {
     @include input();
     margin: 0;
   }
+select {
+  @include input();
+  margin: 0;
+  option{
+  top: 2.1rem;
+}
+}
 
  .modal-button{
     display: flex;

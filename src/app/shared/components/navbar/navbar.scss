@@ -37,6 +37,16 @@ img{
       font-size: 0.8rem;
     }
   }
+  button{
+    @include tikki-vertical-gradient-border(2.5rem, 3px, var(--primary-color));
+    color: var(--background-color);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    &:hover{
+      @include tikki-vertical-gradient-border();
+      color: var(--primary-color);
+    }
+  }
 }
  
 nav{

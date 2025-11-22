@@ -18,6 +18,7 @@ export class Teams implements OnInit {
   users = signal<User[]>([]);
   visible = signal<boolean>(false);
   userSelected = signal<User | null>(null);
+  locationSelected = signal<any | null>(null);
   dialogType = signal<string>('');
 
   newUser = new FormGroup({
@@ -94,6 +95,11 @@ export class Teams implements OnInit {
     this.database.deleteUser(id);
   }
 
+  onSaveLocation({ location }: any) {
+    this.newUser.patchValue({ location: location.name });
+    this.updateUser.patchValue({ location: location.name });
+    this.locationSelected.set(location);
+  }
   onEditUser() {
     if (this.updateUser.invalid) {
       throw new AppError('FILL_ALL_FIELDS');
@@ -107,7 +113,7 @@ export class Teams implements OnInit {
 
     const user: User = {
       name: this.updateUser.value.name ?? '',
-      location: this.updateUser.value.location?.split(',') ?? [],
+      location: [this.locationSelected().lon, this.locationSelected().lat] ,
       department_id: department,
       role_id: role,
       email: this.updateUser.value.email ?? '',

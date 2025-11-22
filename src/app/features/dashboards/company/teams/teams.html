@@ -2,7 +2,6 @@
   <header>
     <h3>Team Members</h3>
     <button (click)="showDialog(); dialogType.set('create')">+ New Team Member</button>
-  
   </header>
   <table>
     <thead>
@@ -24,7 +23,7 @@
         <td>{{ user.email }}</td>
         <div class="buttons">
           <button (click)="selectUser(user)">Edit</button>
-          <button (click)="onDeleteUser(user.id? user.id : '')">Delete</button>
+          <button (click)="onDeleteUser(user.id ? user.id : '')">Delete</button>
         </div>
       </tr>
       }
@@ -43,11 +42,17 @@
       </div>
       <div class="field">
         <label>Location</label>
-         <app-location-input></app-location-input>
+        <app-location-input></app-location-input>
       </div>
       <div class="field">
         <label>Department</label>
-        <input formControlName="department" type="number" placeholder="Department" />
+        <select formControlName="department" type="number" placeholder="Department" value="0">
+          <option disabled value="0"></option>
+          <option value="1">IT</option>
+          <option value="2">HR</option>
+          <option value="3">Sales</option>
+          <option value="4">Marketing</option>
+        </select>
       </div>
       <div class="field">
         <label>Email</label>
@@ -55,7 +60,12 @@
       </div>
       <div class="field">
         <label>Role</label>
-        <input formControlName="role" type="number" placeholder="Role" />
+        <select formControlName="role" type="number" placeholder="Role" value="0">
+          <option disabled value="0"></option>
+          <option value="1">Head of Department</option>
+          <option value="2">User</option>
+          <option value="3">Issuer</option>
+        </select>
       </div>
     </form>
     <div class="modal-button"><button (click)="onCreateUser()">Create</button></div>
@@ -72,16 +82,16 @@
       </div>
       <div class="field">
         <label>Location</label>
-         <app-location-input></app-location-input>
+        <app-location-input (coords)="onSaveLocation($event)"></app-location-input>
       </div>
       <div class="field">
         <label>Department</label>
-        <input
-          formControlName="department"
-          type="number"
-          placeholder="Department"
-          value="{{ userSelected()?.department_id }}"
-        />
+        <select formControlName="department" value="{{ userSelected()?.department_id }}">
+          <option value="1">IT</option>
+          <option value="2">HR</option>
+          <option value="3">Sales</option>
+          <option value="4">Marketing</option>
+        </select>
       </div>
       <div class="field">
         <label>Email</label>
@@ -94,16 +104,14 @@
       </div>
       <div class="field">
         <label>Role</label>
-        <input
-          formControlName="role"
-          type="number"
-          placeholder="Role"
-          value="{{ userSelected()?.role_id }}"
-        />
+        <select formControlName="role" value="{{ userSelected()?.role_id }}">
+          <option value="1">Head of Department</option>
+          <option value="2">User</option>
+          <option value="3">Issuer</option>
+        </select>
       </div>
     </form>
     <div class="modal-button">
-      
       <button (click)="onEditUser()">Update</button>
     </div>
   </div>

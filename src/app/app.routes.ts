@@ -17,7 +17,10 @@ export const routes: Routes = [
     component: AuthLayout,
     canActivate: [authGuard],
     children: [
-      { path: 'dashboard', loadChildren: () => import('./features/dashboard/dashboard.routes') },
+      {
+        path: 'dashboard',
+        loadChildren: () => import('./features/dashboards/company/company-dashboard.routes'),
+      },
     ],
   },
 ];
