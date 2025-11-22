@@ -7,10 +7,14 @@ export interface Company {
     email : string;
 }
 export interface User extends Company {
-    location? : string[];
+    location? : Location | null;
     department_id : number;
     created_by? : string;
 }
 
-
+export interface Location {
+    name: string;
+    lat: string;
+    lon: string;
+  }
 

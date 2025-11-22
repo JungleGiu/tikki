@@ -7,12 +7,13 @@ import { AppError } from '../errors/app-error';
   providedIn: 'root',
 })
 export class SupabaseDb {
-
+users = signal<User[]>([]);
+tickets = signal<Ticket[]>([]);
   async getTickets() {
     const { data, error } = await supabase.from('ticket')
     .select('*');
     if (error) throw new AppError(error.code);
-
+    this.tickets.set(data as Ticket[]);
     return data as Ticket[];
   }
 
@@ -20,7 +21,7 @@ export class SupabaseDb {
     const { data, error } = await supabase.from('users')
     .select('*');
     if (error) throw new AppError(error.code);
-
+    this.users.set(data as User[]);
     return data as User[];
   }
 

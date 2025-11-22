@@ -1,119 +1,15 @@
 <div class="card">
   <header>
     <h3>Team Members</h3>
-    <button (click)="showDialog(); dialogType.set('create')">+ New Team Member</button>
+    <button (click)="openCreateDialog(); dialogType.set('create')">+ New Team Member</button>
   </header>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Role</th>
-        <th>Location</th>
-        <th>Department</th>
-        <th>Email</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (user of users(); track user.id) {
-      <tr>
-        <td>{{ user.name }}</td>
-        <td>{{ user.role_id }}</td>
-        <td>{{ user.location }}</td>
-        <td>{{ user.department_id }}</td>
-        <td>{{ user.email }}</td>
-        <div class="buttons">
-          <button (click)="selectUser(user)">Edit</button>
-          <button (click)="onDeleteUser(user.id ? user.id : '')">Delete</button>
-        </div>
-      </tr>
-      }
-    </tbody>
-  </table>
+  <app-team-table
+    (selectEdit)="openUpdateDialog($event)"
+    (deleteUser)="onDeleteUser($event)"
+    [users]="users"
+  ></app-team-table>
 </div>
-@if (visible() && dialogType() == 'create') {
+@if (visible()){
+<app-team-dialog [mode]="dialogType" [user]="userSelected" [isVisible]="visible" (submit)="onDialogSubmit($event)" (close)="closeDialog()" (locationChange)="onSaveLocation($event)"></app-team-dialog>
 
-<div class="overlay-modal">
-  <div class="modal">
-    <button class="close" (click)="visible.set(false)">X</button>
-    <form [formGroup]="newUser">
-      <div class="field">
-        <label>Name</label>
-        <input formControlName="name" type="text" placeholder="Name" />
-      </div>
-      <div class="field">
-        <label>Location</label>
-        <app-location-input></app-location-input>
-      </div>
-      <div class="field">
-        <label>Department</label>
-        <select formControlName="department" type="number" placeholder="Department" value="0">
-          <option disabled value="0"></option>
-          <option value="1">IT</option>
-          <option value="2">HR</option>
-          <option value="3">Sales</option>
-          <option value="4">Marketing</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Email</label>
-        <input formControlName="email" type="email" placeholder="Email" />
-      </div>
-      <div class="field">
-        <label>Role</label>
-        <select formControlName="role" type="number" placeholder="Role" value="0">
-          <option disabled value="0"></option>
-          <option value="1">Head of Department</option>
-          <option value="2">User</option>
-          <option value="3">Issuer</option>
-        </select>
-      </div>
-    </form>
-    <div class="modal-button"><button (click)="onCreateUser()">Create</button></div>
-  </div>
-</div>
-} @if(visible() && dialogType() == 'edit') {
-<div class="overlay-modal">
-  <div class="modal">
-    <button class="close" (click)="visible.set(false)">X</button>
-    <form [formGroup]="updateUser">
-      <div class="field">
-        <label>Name</label>
-        <input formControlName="name" type="text" placeholder="Name" />
-      </div>
-      <div class="field">
-        <label>Location</label>
-        <app-location-input (coords)="onSaveLocation($event)"></app-location-input>
-      </div>
-      <div class="field">
-        <label>Department</label>
-        <select formControlName="department" value="{{ userSelected()?.department_id }}">
-          <option value="1">IT</option>
-          <option value="2">HR</option>
-          <option value="3">Sales</option>
-          <option value="4">Marketing</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Email</label>
-        <input
-          formControlName="email"
-          type="email"
-          placeholder="Email"
-          value="{{ userSelected()?.email }}"
-        />
-      </div>
-      <div class="field">
-        <label>Role</label>
-        <select formControlName="role" value="{{ userSelected()?.role_id }}">
-          <option value="1">Head of Department</option>
-          <option value="2">User</option>
-          <option value="3">Issuer</option>
-        </select>
-      </div>
-    </form>
-    <div class="modal-button">
-      <button (click)="onEditUser()">Update</button>
-    </div>
-  </div>
-</div>
 }

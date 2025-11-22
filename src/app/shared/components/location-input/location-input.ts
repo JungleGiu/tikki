@@ -1,6 +1,7 @@
 import { Component, OnInit, signal, effect, EventEmitter, Output, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { config } from '../../config';
+import { Location } from '../../../core/models/user';
 import L from 'leaflet';
 import 'leaflet-control-geocoder';
 @Component({
@@ -14,18 +15,26 @@ export class LocationInput implements OnInit {
   searchQuery = signal('');
   results = signal<any[]>([]);
   selectedResult = signal<any>({});
-  @Input() location: string | null = null;
-  @Output() coords: EventEmitter<any> = new EventEmitter();
+  @Input({ required: false}) location : any
+  @Output() newLocation= new EventEmitter<Location>();
   constructor() {
     effect(() => {
-      if (this.searchQuery().length > 2) {
+      const query = this.searchQuery();
+      if (query &&query.length > 2) {
         this.locationSearch(this.searchQuery());
       }
     });
     effect(() => {
       if (this.selectedResult()) {
-        this.coords.emit(this.selectedResult());
+        const result = this.selectedResult();
+        const location: Location = {
+          name: result.name,
+          lat: result.lat,
+          lon: result.lon,
+        }
+        this.newLocation.emit(location);
         this.results.set([]);
+        this.searchQuery.set(location.name)
       }
     });
   }
@@ -35,6 +44,9 @@ export class LocationInput implements OnInit {
         'accept-language': 'en',
       },
     });
+    if (this.location?.name) {
+      this.searchQuery.set(this.location.name);
+    }
   }
 
   async locationSearch(search: string) {
@@ -47,6 +59,6 @@ export class LocationInput implements OnInit {
       searchLimit;
     const response = await fetch(searchUrl);
     const data = await response.json();
-    this.results.set(data);
+    this.results.set(data as Location[]);
   }
 }

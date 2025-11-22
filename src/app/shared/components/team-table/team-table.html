@@ -1,1 +1,26 @@
-<p>team-table works!</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Location</th>
+        <th>Department</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (user of users(); track user.id) {
+      <tr>
+        <td>{{ user.name }}</td>
+        <td>{{ user.role_id | rolePipe}}</td>
+        <td>{{ user.location?.name }}</td>
+        <td>{{ user.department_id | departmentPipe}}</td>
+        <td>{{ user.email }}</td>
+        <div class="buttons">
+          <button (click)="onSelectEdit(user)" >Edit</button>
+          <button (click)="onDeleteUser(user.id ?? '')">Delete</button>
+        </div>
+      </tr>
+      }
+    </tbody>
+  </table>

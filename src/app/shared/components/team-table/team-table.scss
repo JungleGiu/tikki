@@ -1,0 +1,22 @@
+@use '../../../../styles' as *;
+table {
+  width: 100%;
+}
+thead {
+ text-align: center;
+}
+td {
+  text-align: center;
+  padding: 1rem 1rem;
+}
+.buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  button {
+  @include tikki-vertical-gradient-border(3rem, 2px, --primary-color);
+  @include button();
+}
+}
