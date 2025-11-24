@@ -77,6 +77,18 @@ this.company = supabaseAuth
     return data as User;
   }
 
+  async updateUserFromSelf(user: Partial<User>, id: string): Promise<User> {
+    const { data, error } = await supabase
+      .from('users')
+      .update(user)
+      .eq('id', id)
+      .select()
+      .single();
+    if (error) throw new AppError(error.code);
+    await this.getUsers();
+    this.toastService.showSuccess('User updated successfully');
+    return data as User;
+  }
   async deleteUser(id: string): Promise<User> {
     const { data, error } = await supabase
       .from('users')

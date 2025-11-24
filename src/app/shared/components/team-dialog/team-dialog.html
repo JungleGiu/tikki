@@ -38,6 +38,9 @@
       }
       
       </div>
+      @if (mode() !== 'onboarding') {
+        
+      
       <div class="field">
         @let department = userForm.controls.department;
         <label>Department</label>
@@ -53,7 +56,7 @@
           <span>Department is required to register a new user</span>
         }
       }
-      </div>
+      </div>}
 
       <div class="field">
         <label>Email</label>
@@ -68,6 +71,7 @@
         }
        }
       </div>
+@if (mode() !== 'onboarding') {
       <div class="field">
         @let role = userForm.controls.role;
         <label>Role</label>
@@ -83,15 +87,16 @@
         }
       }
       </div>
+    }
       @if (mode() === 'onboarding') {
         <form [formGroup]="passwordForm">
         <div class="field">
           <label>Password</label>
-          <input type="password" placeholder="Password" />
+          <input formControlName="password" type="password" placeholder="Password" />
         </div>
         <div class="field">
           <label>Confirm Password</label>
-          <input type="password" placeholder="Confirm Password" />
+          <input formControlName="confirmPassword" type="password" placeholder="Confirm Password" />
         </div>
         </form>
       }

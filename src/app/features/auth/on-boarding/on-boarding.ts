@@ -58,8 +58,14 @@ export class OnBoarding implements OnInit {
   }
 
   async saveAll(user: User, password: string) {
+
+  const newUser = {
+    name : user.name,
+    location : user.location,
+    email: user.email,
+  }
     try {
-      await this.database.updateUser(user, this.user()!.id!);
+      await this.database.updateUserFromSelf(newUser as Partial<User>, this.user()!.id!);
       await this.auth.supabaseAuth.auth.updateUser({ password });
 
       this.toast.showSuccess('User updated successfully');

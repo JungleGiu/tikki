@@ -70,6 +70,12 @@ onSubmit(){
 
 
   if (this.passwordForm.invalid) {
+     console.log('🔴 Password form invalid');
+    console.log('Password errors:', this.passwordForm.get('password')?.errors);
+    console.log('Confirm password errors:', this.passwordForm.get('confirmPassword')?.errors);
+    console.log('Password value:', this.passwordForm.get('password')?.value);
+    console.log('Confirm password value:', this.passwordForm.get('confirmPassword')?.value);
+    
     this.toast.showWarning('Please reset your password for your next login');
     return;
   }
