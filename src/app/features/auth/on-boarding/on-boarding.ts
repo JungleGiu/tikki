@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject ,effect} from '@angular/core';
+import { Component, OnInit, signal, inject, effect, AfterViewInit } from '@angular/core';
 import { TeamDialog } from '../../../shared/components/team-dialog/team-dialog';
 import { User } from '../../../core/models/user';
 import { ToastAppService } from '../../../core/services/toast/toast-service';
@@ -13,72 +13,69 @@ import { Router } from '@angular/router';
   styleUrl: './on-boarding.scss',
 })
 export class OnBoarding implements OnInit {
-  toast = inject(ToastAppService)
-  database = inject(SupabaseDb)
-  auth = inject(supabaseAuth)
-  router = inject(Router)
-isVisible = signal<boolean>(true);
-mode = signal<string>('onboarding');
-user = signal<User | null>(null);
-locationSelected = signal<any | null>(null);
-passwordToSet = signal<string | null>(null)
-updatedUser = signal<User | null>(null)
-
-ngOnInit(){
-  effect(() => {
+  toast = inject(ToastAppService);
+  database = inject(SupabaseDb);
+  auth = inject(supabaseAuth);
+  router = inject(Router);
+  isVisible = signal<boolean>(true);
+  mode = signal<string>('onboarding');
+  user = signal<User | null>(null);
+  locationSelected = signal<any | null>(null);
+  passwordToSet = signal<string | null>(null);
+  updatedUser = signal<User | null>(null);
+  private hasLoadedUser = false;
+  async ngOnInit() {
     const session = this.auth.sessionSignal();
-
-    if (session?.user) {
-      queueMicrotask(() => {
-      if (session.user.id) {
-        this.database.getAuthUser(session.user.id).then((user) => {
-          this.user.set(user);
-        });
+    if (session?.user?.id && !this.hasLoadedUser) {
+      this.hasLoadedUser = true;
+      try {
+        const user = await this.database.getAuthUser(session.user.id);
+        this.user.set(user);
+      } catch (error) {
+        console.error(error);
+        this.toast.showError('Error loading user');
       }
-    });
     }
-  });
-  effect(() => {
-  const u = this.updatedUser();
-  const p = this.passwordToSet();
-  const l = this.locationSelected();
-
-  if (u && p && l) {
-    const finalUser = {
-      ...u,
-      location: l
-    };
-
-
-   queueMicrotask(() => {
-  this.saveAll(finalUser, p);
-});
   }
-});
-}
 
-saveAll(user: User, password: string) {
-  this.database.updateUser(user, this.user()!.id!)
-    .then(() => this.auth.supabaseAuth.auth.updateUser({ password }))
-    .then(() => {
+  private checkAndSave() {
+    const u = this.updatedUser();
+    const p = this.passwordToSet();
+    const l = this.locationSelected();
+
+    if (u && p && l) {
+      const finalUser = {
+        ...u,
+        location: l,
+      };
+
+      this.saveAll(finalUser, p);
+    }
+  }
+
+  onChangePasword(password: string) {
+    this.passwordToSet.set(password);
+  }
+
+  async saveAll(user: User, password: string) {
+    try {
+      await this.database.updateUser(user, this.user()!.id!);
+      await this.auth.supabaseAuth.auth.updateUser({ password });
+
       this.toast.showSuccess('User updated successfully');
       this.router.navigate(['/dashboard']);
-    })
-    .catch((error) => {
+    } catch (error: any) {
+      console.error('Save error:', error);
       throw new AppError(error.code);
-    })
-}
-
-onDialogSubmit(user: User) {
-this.updatedUser.set(user)
-}
-
- onSaveLocation(location: any) {
-    this.locationSelected.set(location);
+    }
   }
 
-onChangePasword( password: string) {
-  this.passwordToSet.set(password)
-} 
-}
+  onDialogSubmit(user: User) {
+    this.updatedUser.set(user);
+    this.checkAndSave();
+  }
 
+  onSaveLocation(location: any) {
+    this.locationSelected.set(location);
+  }
+}
