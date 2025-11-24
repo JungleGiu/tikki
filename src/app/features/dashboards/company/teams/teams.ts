@@ -26,7 +26,7 @@ export class Teams implements OnInit {
     this.database
       .getUsers()
       .then(() => {
-        this.users.set(this.database.users().filter(user => user.created_by === this.companyId));
+        this.users.set(this.database.users().filter(user => user.id !== this.auth.authUser()?.id));
       })
       .catch((error) => {
         throw new AppError(error.code);
@@ -61,6 +61,7 @@ export class Teams implements OnInit {
     this.visible.set(false);
     this.userSelected.set(null);
     this.locationSelected.set(null);
+    this.users.set(this.database.users().filter(user => user.id !== this.auth.authUser()?.id));
   }
 
   async createUser(formData: any) {

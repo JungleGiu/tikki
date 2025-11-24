@@ -1,17 +1,15 @@
-@if (isVisible())  {
+@if (isVisible()) {
 
 <div class="overlay-modal">
   <div class="modal">
     <header>
       <button class="close" (click)="isVisible.set(false)">X</button>
       @if (mode() === 'create') {
-        <h3>New Team Member</h3>
-      }
-      @else if (mode() === 'update') {
-        <h3>Update Team Member</h3>
-      }
-      @else if(mode() === 'onboarding') {
-        <h3>Update your Information and password</h3>
+      <h3>New Team Member</h3>
+      } @else if (mode() === 'update') {
+      <h3>Update Team Member</h3>
+      } @else if(mode() === 'onboarding') {
+      <h3>Update your Information and password</h3>
       }
     </header>
     <form [formGroup]="userForm">
@@ -19,28 +17,24 @@
         <label>Name</label>
         @let name = userForm.controls.name;
         <input formControlName="name" type="text" placeholder="Name" />
-        @if (name.invalid && name.touched) {
-        @if (name.errors?.['required']) {
-            <span>Name is required</span>
-        }
-        @if (name.errors?.['minlength']) {
-            <span>Name must be at least 3 characters</span>
-        }
-        }
+        @if (name.invalid && name.touched) { @if (name.errors?.['required']) {
+        <span>Name is required</span>
+        } @if (name.errors?.['minlength']) {
+        <span>Name must be at least 3 characters</span>
+        } }
       </div>
       <div class="field">
         <label>Location</label>
-      @if (mode() === 'create') {
+        @if (mode() === 'create') {
         <app-location-input (newLocation)="onSaveLocation($event)"></app-location-input>
-      }
-      @else {
-        <app-location-input [location]="user()?.location" (newLocation)="onSaveLocation($event)"></app-location-input>
-      }
-      
+        } @else {
+        <app-location-input
+          [location]="user()?.location"
+          (newLocation)="onSaveLocation($event)"
+        ></app-location-input>
+        }
       </div>
       @if (mode() !== 'onboarding') {
-        
-      
       <div class="field">
         @let department = userForm.controls.department;
         <label>Department</label>
@@ -51,27 +45,22 @@
           <option value="3">Sales</option>
           <option value="4">Marketing</option>
         </select>
-      @if (department.invalid && department.touched) {
-        @if (department.errors?.['required']) {
-          <span>Department is required to register a new user</span>
-        }
+        @if (department.invalid && department.touched) { @if (department.errors?.['required']) {
+        <span>Department is required to register a new user</span>
+        } }
+      </div>
       }
-      </div>}
-
       <div class="field">
         <label>Email</label>
-@let email = userForm.controls.email;
+        @let email = userForm.controls.email;
         <input formControlName="email" type="email" placeholder="Email" />
-       @if(email.invalid && email.touched) {
-        @if (email.errors?.['required']) {
-          <span>Email is required to register a new user</span>
-        }
-        @if (email.errors?.['pattern']) {
-          <span>Type a valid email to authenticate a new user correctly</span>
-        }
-       }
+        @if(email.invalid && email.touched) { @if (email.errors?.['required']) {
+        <span>Email is required to register a new user</span>
+        } @if (email.errors?.['pattern']) {
+        <span>Type a valid email to authenticate a new user correctly</span>
+        } }
       </div>
-@if (mode() !== 'onboarding') {
+      @if (mode() !== 'onboarding') {
       <div class="field">
         @let role = userForm.controls.role;
         <label>Role</label>
@@ -81,15 +70,12 @@
           <option value="2">User</option>
           <option value="3">Issuer</option>
         </select>
-      @if (role.invalid && role.touched) {
-        @if (role.errors?.['required']) {
-          <span>Role is required to register a new user</span>
-        }
-      }
+        @if (role.invalid && role.touched) { @if (role.errors?.['required']) {
+        <span>Role is required to register a new user</span>
+        } }
       </div>
-    }
-      @if (mode() === 'onboarding') {
-        <form [formGroup]="passwordForm">
+      } @if (mode() === 'onboarding') {
+      <form [formGroup]="passwordForm">
         <div class="field">
           <label>Password</label>
           <input formControlName="password" type="password" placeholder="Password" />
@@ -98,18 +84,15 @@
           <label>Confirm Password</label>
           <input formControlName="confirmPassword" type="password" placeholder="Confirm Password" />
         </div>
-        </form>
+      </form>
       }
-     
     </form>
     @if (mode() === 'update') {
-      <div class="modal-button"><button (click)="onSubmit()">Update</button></div>
-    }
-    @else if (mode() === 'create') {
+    <div class="modal-button"><button (click)="onSubmit()">Update</button></div>
+    } @else if (mode() === 'create') {
     <div class="modal-button"><button (click)="onSubmit()">Create</button></div>
-  }
-    @else if (mode() === 'onboarding') {
-      <div class="modal-button"><button (click)="onSubmit()">Save</button></div>
+    } @else if (mode() === 'onboarding') {
+    <div class="modal-button"><button (click)="onSubmit()">Save</button></div>
     }
   </div>
 </div>
