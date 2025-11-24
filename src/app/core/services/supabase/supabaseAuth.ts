@@ -95,36 +95,49 @@ export class supabaseAuth {
 
 
  async createUserViaFunction(userData: User) {
-  const { data, error } = await this.supabaseAuth.functions.invoke('create-user-company', {
-    body: { email: userData.email }
-  });
-
-  if (error) {
-    throw new Error(`Failed to create user: ${error.message}`);
-  }
-
-  const { error: insertError } = await this.supabaseAuth
-    .from('users')
-    .insert({
-      id: data.userId,
-      name: userData.name,
-      email: userData.email,
-      role_id: userData.role_id,
-      department_id: userData.department_id,
-      location: userData.location,
-      created_by: userData.created_by
+  try {
+    console.log("🚀 Creating user via Edge Function...", userData.email);
+    
+    const { data, error } = await this.supabaseAuth.functions.invoke('create-user-company', {
+      body: { email: userData.email }
     });
 
-  if (insertError) {
-    throw new Error(`Insert failed: ${insertError.message}`);
-  }
+    if (error) {
+      console.error("❌ Edge Function error:", error);
+      throw new Error(`Failed to create user: ${error.message}`);
+    }
 
-  // 🔍 SOLO per debug - mostra il link in console
-  if (data.inviteLink) {
-    console.log(`📧 Invite link sent to ${userData.email}: ${data.inviteLink}`);
-  }
+    console.log("✅ Edge Function response:", data);
 
-  return { success: true, userId: data.userId };
+    const { error: insertError } = await this.supabaseAuth
+      .from('users')
+      .insert({
+        id: data.userId,
+        name: userData.name,
+        email: userData.email,
+        role_id: userData.role_id,
+        department_id: userData.department_id,
+        location: userData.location,
+        created_by: userData.created_by
+      });
+
+    if (insertError) {
+      console.error("❌ Insert error:", insertError);
+      throw new Error(`Insert failed: ${insertError.message}`);
+    }
+
+    console.log("✅ User inserted in database");
+
+    // 🔍 Mostra il link in console
+    if (data.inviteLink) {
+      console.log(`📧 Invite link sent to ${userData.email}: ${data.inviteLink}`);
+    }
+
+    return { success: true, userId: data.userId };
+  } catch (err) {
+    console.error("❌ Full error in createUserViaFunction:", err);
+    throw err;
+  }
 }
   async logout() {
     const { error } = await this.supabaseAuth.auth.signOut();
