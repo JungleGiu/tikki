@@ -92,35 +92,9 @@ export class supabaseAuth {
 
     return userData;
   }
-  // async loginMagicLink(user: User) {
-  //   const company = this.appUser();
-  //   const { data: link, error: linkError } = await supabase.auth.admin.generateLink({
-  //     type: 'magiclink',
-  //     email: user.email,
-  //     options: {
-  //       redirectTo: `${development.baseURL}/onboarding`,
-  //       data: {
-  //         orgName: company?.name,
-  //       },
-  //     },
-  //   });
-  //   if (linkError) throw new AppError(linkError.code ?? '');
 
-  //   const authId = link.user?.id;
-  //   if (!authId) {
-  //     throw new AppError('AUTH_FAILED');
-  //   }
-  //   const { data, error } = await supabase
-  //     .from('users')
-  //     .insert({ id: authId, ...user, created_by: company?.id })
-  //     .select()
-  //     .single();
-  //   if (error) throw new AppError(error.code);
 
-  //   return data as User;
-  // }
-
-  async createUserViaFunction(userData: User) {
+ async createUserViaFunction(userData: User) {
   const { data, error } = await this.supabaseAuth.functions.invoke('create-user-company', {
     body: { email: userData.email }
   });
@@ -145,18 +119,12 @@ export class supabaseAuth {
     throw new Error(`Insert failed: ${insertError.message}`);
   }
 
-  // 🚀 Opzionale: Invia l'email tu stesso con il link
+  // 🔍 SOLO per debug - mostra il link in console
   if (data.inviteLink) {
-    await this.sendInviteEmail(userData.email, data.inviteLink);
+    console.log(`📧 Invite link sent to ${userData.email}: ${data.inviteLink}`);
   }
 
-  return { success: true, userId: data.userId, inviteLink: data.inviteLink };
-}
-
-private async sendInviteEmail(email: string, inviteLink: string) {
-  // Usa il tuo servizio email (Resend, SendGrid, Mailgun, etc.)
-  // Oppure mostra il link all'utente per copiarlo manualmente
-  console.log(`📧 Send this invite link to ${email}: ${inviteLink}`);
+  return { success: true, userId: data.userId };
 }
   async logout() {
     const { error } = await this.supabaseAuth.auth.signOut();

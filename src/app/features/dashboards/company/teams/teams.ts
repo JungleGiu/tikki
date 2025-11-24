@@ -75,8 +75,9 @@ export class Teams implements OnInit {
     };
     
     await this.auth.createUserViaFunction(user);
-
-    this.users.set(this.database.users().filter(user => user.created_by === this.companyId)); 
+    const newUsers = await this.database.getUsers()
+    newUsers.filter(user => user.created_by === this.companyId);
+     this.users.set(newUsers);
     this.closeDialog();
   }
 

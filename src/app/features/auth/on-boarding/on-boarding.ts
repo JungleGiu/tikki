@@ -13,22 +13,29 @@ import { Router } from '@angular/router';
   styleUrl: './on-boarding.scss',
 })
 export class OnBoarding implements OnInit {
+  toast = inject(ToastAppService)
+  database = inject(SupabaseDb)
+  auth = inject(supabaseAuth)
+  router = inject(Router)
 isVisible = signal<boolean>(true);
 mode = signal<string>('onboarding');
 user = signal<User | null>(null);
 locationSelected = signal<any | null>(null);
 passwordToSet = signal<string | null>(null)
 updatedUser = signal<User | null>(null)
-toast = inject(ToastAppService)
-database = inject(SupabaseDb)
-auth = inject(supabaseAuth)
-router = inject(Router)
 
 ngOnInit(){
   effect(() => {
-    const user = this.auth.appUser();
-    if (user) {
-      this.user.set(user); 
+    const session = this.auth.sessionSignal();
+
+    if (session?.user) {
+      queueMicrotask(() => {
+      if (session.user.id) {
+        this.database.getAuthUser(session.user.id).then((user) => {
+          this.user.set(user);
+        });
+      }
+    });
     }
   });
   effect(() => {
@@ -39,12 +46,13 @@ ngOnInit(){
   if (u && p && l) {
     const finalUser = {
       ...u,
-      location_id: l.id,
       location: l
     };
 
 
-    this.saveAll(finalUser, p);
+   queueMicrotask(() => {
+  this.saveAll(finalUser, p);
+});
   }
 });
 }
