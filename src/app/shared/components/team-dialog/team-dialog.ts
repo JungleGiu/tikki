@@ -13,11 +13,12 @@ import { config } from '../../../shared/config';
 export class TeamDialog {
 @Input({required: true}) isVisible = signal<boolean>(false)
 @Input() user = signal<User | null>(null)
-@Input({required: true}) mode = signal<string>('create')
+@Input({required: true}) mode = signal<string>('')
 
-@Output() close = new EventEmitter()
+@Output() close  = new EventEmitter()
 @Output() submit = new EventEmitter<User>()
 @Output() locationChange = new EventEmitter<any>()
+@Output() passwordChange = new EventEmitter<any>()
 
 toast = inject(ToastAppService)
 
@@ -31,7 +32,7 @@ userForm = new FormGroup({
 constructor() {
   effect(() => {
     const userData = this.user();
-    if (userData && this.mode() === 'update') {
+    if (userData && this.mode() === 'update' || userData && this.mode() === 'onboarding') {
       this.userForm.patchValue({
         name: userData.name,
         location: userData.location?.name,
@@ -43,17 +44,52 @@ constructor() {
   })
 }
 
+passwordForm = new FormGroup({
+  password: new FormControl('', [
+    Validators.required,
+    Validators.minLength(8),
+    Validators.maxLength(24),
+    Validators.pattern(config.regex.password),
+  ]),
+  confirmPassword: new FormControl('', [
+    Validators.required,
+    Validators.minLength(8),
+    Validators.maxLength(24),
+    Validators.pattern(config.regex.password),
+  ]),
+})
+
 onSubmit(){
   if(this.userForm.invalid){
   this.toast.showWarning('Please fill all the required fields')
-  }else{
-    this.submit.emit(this.userForm.value as User)
+   return
+  } if (this.mode() !== 'onboarding') {
+    this.submit.emit(this.userForm.value as User);
+    return;
   }
+
+
+  if (this.passwordForm.invalid) {
+    this.toast.showWarning('Please reset your password for your next login');
+    return;
+  }
+
+  const { password, confirmPassword } = this.passwordForm.value;
+
+  if (password !== confirmPassword) {
+    this.toast.showWarning('Passwords do not match');
+    return;
+  }
+
+  this.submit.emit(this.userForm.value as User);
+  this.passwordChange.emit(password);
   }
 
   onSaveLocation(location: any) {
     this.userForm.patchValue({ location: location.name });
     this.locationChange.emit(location)
   }
+
+
 }
 

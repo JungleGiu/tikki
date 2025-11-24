@@ -4,15 +4,17 @@ import { User } from '../../models/user';
 import { Ticket } from '../../models/ticket';
 import { AppError } from '../errors/app-error';
 import { ToastAppService } from '../toast/toast-service';
+import { supabaseAuth } from './supabaseAuth';
+import { development } from '../../../../environments/env';
 @Injectable({
   providedIn: 'root',
 })
 export class SupabaseDb {
 users = signal<User[]>([]);
 tickets = signal<Ticket[]>([]);
-
+company :any = {}
 constructor(private toastService : ToastAppService) {
-
+this.company = supabaseAuth
 }
   async getTickets() {
     const { data, error } = await supabase.from('ticket')
@@ -30,6 +32,15 @@ constructor(private toastService : ToastAppService) {
     return data as User[];
   }
 
+  async getAuthUser(id: string) {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', id)
+      .single();
+    if (error) throw new AppError(error.code);
+    return data as User;
+  }
   async createUser(user: User): Promise<User> {
     const { data, error } = await supabase
     .from('users')
@@ -37,6 +48,17 @@ constructor(private toastService : ToastAppService) {
     .select()
     .single();
     if (error) throw new AppError(error.code);
+   
+ const { data: link, error: linkError } = await supabase.auth.admin.generateLink({
+     type: 'magiclink',
+      email: user.email,
+      options: {
+        redirectTo:`${development.baseURL}/onboarding`,
+        // data: {
+        //   orgName : this.company.appUser.name},
+        },
+      });
+      if (linkError) throw new AppError(linkError.code?? '');
     await this.getUsers();
     this.toastService.showSuccess('User created successfully');
     return data as User;

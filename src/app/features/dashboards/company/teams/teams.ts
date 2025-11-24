@@ -14,13 +14,14 @@ import { TeamDialog } from "../../../../shared/components/team-dialog/team-dialo
 })
 export class Teams implements OnInit {
   database = inject(SupabaseDb);
-  companyId = inject(supabaseAuth).authUser()?.id;
+ auth = inject(supabaseAuth)
+
   users = signal<User[]>([]);
   visible = signal<boolean>(false);
   userSelected = signal<User | null>(null);
   locationSelected = signal<any | null>(null);
   dialogType = signal<string>('');
-
+  companyId = this.auth.authUser()?.id;
   async ngOnInit() {
     this.database
       .getUsers()
@@ -35,11 +36,13 @@ export class Teams implements OnInit {
   openCreateDialog() {
     this.dialogType.set('create')
     this.userSelected.set(null)
+    this.locationSelected.set(null)
     this.visible.set(true);
   }
   openUpdateDialog(user: User) {
     this.dialogType.set('update')
     this.userSelected.set(user)
+
     this.visible.set(true);
   }
   selectUser(user: User) {
@@ -55,9 +58,9 @@ export class Teams implements OnInit {
     } else {
       await this.updateUser(formData);
     }
+    this.visible.set(false);
     this.userSelected.set(null);
     this.locationSelected.set(null);
-    this.visible.set(false);
   }
 
   async createUser(formData: any) {
@@ -71,7 +74,7 @@ export class Teams implements OnInit {
       created_by: this.companyId ?? '0',
     };
     
-    await this.database.createUser(user);
+    await this.auth.createUserViaFunction(user);
 
     this.users.set(this.database.users().filter(user => user.created_by === this.companyId)); 
     this.closeDialog();

@@ -4,7 +4,15 @@
   <div class="modal">
     <header>
       <button class="close" (click)="isVisible.set(false)">X</button>
-      <h2>{{ mode() === 'create' ? 'New Team Member' : 'Edit Team Member' }}</h2>
+      @if (mode() === 'create') {
+        <h3>New Team Member</h3>
+      }
+      @else if (mode() === 'update') {
+        <h3>Update Team Member</h3>
+      }
+      @else if(mode() === 'onboarding') {
+        <h3>Update your Information and password</h3>
+      }
     </header>
     <form [formGroup]="userForm">
       <div class="field">
@@ -75,13 +83,29 @@
         }
       }
       </div>
+      @if (mode() === 'onboarding') {
+        <form [formGroup]="passwordForm">
+        <div class="field">
+          <label>Password</label>
+          <input type="password" placeholder="Password" />
+        </div>
+        <div class="field">
+          <label>Confirm Password</label>
+          <input type="password" placeholder="Confirm Password" />
+        </div>
+        </form>
+      }
+     
     </form>
     @if (mode() === 'update') {
       <div class="modal-button"><button (click)="onSubmit()">Update</button></div>
     }
-    @else{
+    @else if (mode() === 'create') {
     <div class="modal-button"><button (click)="onSubmit()">Create</button></div>
   }
+    @else if (mode() === 'onboarding') {
+      <div class="modal-button"><button (click)="onSubmit()">Save</button></div>
+    }
   </div>
 </div>
 }
