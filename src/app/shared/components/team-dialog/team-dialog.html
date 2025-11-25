@@ -29,7 +29,7 @@
         <app-location-input (newLocation)="onSaveLocation($event)"></app-location-input>
         } @else {
         <app-location-input
-          [location]="user()?.location"
+          [location]="user()?.location "
           (newLocation)="onSaveLocation($event)"
         ></app-location-input>
         }

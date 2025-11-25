@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, effect, signal, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, effect, signal, inject, computed } from '@angular/core';
 import { User } from '../../../core/models/user';
 import { LocationInput } from '../location-input/location-input';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -21,7 +21,6 @@ export class TeamDialog {
   @Output() passwordChange = new EventEmitter<any>();
 
   toast = inject(ToastAppService);
-
   userForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     location: new FormControl('', [Validators.required]),
