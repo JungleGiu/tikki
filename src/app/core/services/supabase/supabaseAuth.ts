@@ -35,8 +35,9 @@ export class supabaseAuth {
   }
 
   async loadAppUser(id: string) {
-    const { data } = await this.supabaseAuth.from('users').select('*').eq('id', id).single();
+    const { data, error } = await this.supabaseAuth.from('users').select('*').eq('id', id).single();
     this.appUser.set(data ?? null);
+    if (error) throw new AppError(error.code);
   }
 
   async registerCompany(company: Company, email: string, password: string) {
@@ -99,6 +100,7 @@ export class supabaseAuth {
           email: userData.email,
           role_id: userData.role_id,
           department_id: userData.department_id,
+          created_by: userData.created_by,
         },
       });
       if (error) {

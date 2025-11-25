@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-
+import { provideZonelessChangeDetection } from '@angular/core';
 import { supabaseAuth } from './supabaseAuth';
 
 describe('supabaseAuth', () => {
@@ -7,6 +7,7 @@ describe('supabaseAuth', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
+    provideZonelessChangeDetection();
     service = TestBed.inject(supabaseAuth);
   });
 

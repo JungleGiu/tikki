@@ -24,6 +24,24 @@ export class OnBoarding implements OnInit {
   passwordToSet = signal<string | null>(null);
   updatedUser = signal<User | null>(null);
   private hasLoadedUser = false;
+  private hasSaved = false;
+
+constructor() {
+  effect(() => {
+    const u = this.updatedUser();
+    const p = this.passwordToSet();
+    const l = this.locationSelected();
+    if (u && p && l && !this.hasSaved) {
+      this.hasSaved = true;
+     const finalUser = {
+       ...u,
+       location: l,
+     };
+     this.saveAll(finalUser, p);
+     }
+});
+}
+
   async ngOnInit() {
     const session = this.auth.sessionSignal();
     if (session?.user?.id && !this.hasLoadedUser) {
@@ -38,20 +56,6 @@ export class OnBoarding implements OnInit {
     }
   }
 
-  private checkAndSave() {
-    const u = this.updatedUser();
-    const p = this.passwordToSet();
-    const l = this.locationSelected();
-
-    if (u && p && l) {
-      const finalUser = {
-        ...u,
-        location: l,
-      };
-
-      this.saveAll(finalUser, p);
-    }
-  }
 
   onChangePasword(password: string) {
     this.passwordToSet.set(password);
@@ -78,7 +82,6 @@ export class OnBoarding implements OnInit {
 
   onDialogSubmit(user: User) {
     this.updatedUser.set(user);
-    this.checkAndSave();
   }
 
   onSaveLocation(location: any) {
