@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Map } from './map';
+import { provideZonelessChangeDetection } from '@angular/core';
 
 describe('Map', () => {
   let component: Map;
@@ -8,9 +9,9 @@ describe('Map', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Map]
-    })
-    .compileComponents();
+      imports: [Map],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(Map);
     component = fixture.componentInstance;

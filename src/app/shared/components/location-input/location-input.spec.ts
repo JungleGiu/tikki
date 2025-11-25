@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LocationInput } from './location-input';
+import { provideZonelessChangeDetection } from '@angular/core';
 
 describe('LocationInput', () => {
   let component: LocationInput;
@@ -8,9 +9,9 @@ describe('LocationInput', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LocationInput]
-    })
-    .compileComponents();
+      imports: [LocationInput],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(LocationInput);
     component = fixture.componentInstance;

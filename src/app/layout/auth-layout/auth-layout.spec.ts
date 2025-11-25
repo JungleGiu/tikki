@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideZonelessChangeDetection } from '@angular/core';
 import { AuthLayout } from './auth-layout';
 
 describe('AuthLayout', () => {
@@ -8,9 +8,9 @@ describe('AuthLayout', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AuthLayout]
-    })
-    .compileComponents();
+      imports: [AuthLayout],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AuthLayout);
     component = fixture.componentInstance;

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Charts } from './charts';
+import { provideZonelessChangeDetection } from '@angular/core';
 
 describe('Charts', () => {
   let component: Charts;
@@ -8,9 +9,9 @@ describe('Charts', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Charts]
-    })
-    .compileComponents();
+      imports: [Charts],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(Charts);
     component = fixture.componentInstance;

@@ -6,8 +6,9 @@ describe('supabaseAuth', () => {
   let service: supabaseAuth;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    provideZonelessChangeDetection();
+    TestBed.configureTestingModule({
+      providers: [provideZonelessChangeDetection()]
+    });
     service = TestBed.inject(supabaseAuth);
   });
 

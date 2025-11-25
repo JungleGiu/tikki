@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ConfirmDeleteDialog } from './confirm-delete-dialog';
+import { provideZonelessChangeDetection } from '@angular/core';
 
 describe('ConfirmDeleteDialog', () => {
   let component: ConfirmDeleteDialog;
@@ -8,9 +9,9 @@ describe('ConfirmDeleteDialog', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ConfirmDeleteDialog]
-    })
-    .compileComponents();
+      imports: [ConfirmDeleteDialog],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ConfirmDeleteDialog);
     component = fixture.componentInstance;

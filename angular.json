@@ -82,6 +82,7 @@
           "options": {
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
+            "polyfills": [], 
             "assets": [
               {
                 "glob": "**/*",
