@@ -116,7 +116,6 @@ export class supabaseAuth {
       if (insertError?.code) {
         throw new AppError(insertError.code);
       }
-      
       return { success: true, userId: data.userId };
     } catch (error: any) {
       throw new AppError(error.code);

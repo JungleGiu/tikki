@@ -1,9 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
+import { RolePipePipe } from '../../pipes/role-pipe-pipe';
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink],
+  imports: [RouterLink, RolePipePipe],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
 })

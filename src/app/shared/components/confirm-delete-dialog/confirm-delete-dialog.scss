@@ -1,0 +1,52 @@
+@use '../../../../styles' as *;
+
+.overlay-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 99;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--surface-card);
+  @include card();
+  @include tikki-vertical-gradient-border();
+  width: 20rem;
+  height: 10rem;
+ display : flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+gap :1rem;
+
+ header{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between; 
+  padding: 0 0rem;
+
+ }
+
+ .modal-buttons{
+  display: flex;
+  flex-direction: row;
+ 
+  gap: 0.5rem;
+ 
+  align-content: center;
+ }
+ button{
+  @include button($background-color: red, $color: white);
+  background-color: red;
+  border: 1px solid red;
+  border-radius: 1rem;
+ }
+}

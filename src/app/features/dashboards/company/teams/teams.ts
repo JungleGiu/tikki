@@ -6,22 +6,25 @@ import { AppError } from '../../../../core/services/errors/app-error';
 import { ToastAppService } from '../../../../core/services/toast/toast-service';
 import { TeamTable } from "../../../../shared/components/team-table/team-table";
 import { TeamDialog } from "../../../../shared/components/team-dialog/team-dialog";
+import { ConfirmDeleteDialog } from '../../../../shared/components/confirm-delete-dialog/confirm-delete-dialog';
 @Component({
   selector: 'app-teams',
-  imports: [ TeamTable, TeamDialog],
+  imports: [ TeamTable, TeamDialog, ConfirmDeleteDialog],
   templateUrl: './teams.html',
   styleUrl: './teams.scss',
 })
 export class Teams implements OnInit {
   database = inject(SupabaseDb);
  auth = inject(supabaseAuth)
-
+  toast = inject(ToastAppService);
   users = signal<User[]>([]);
   visible = signal<boolean>(false);
   userSelected = signal<User | null>(null);
   locationSelected = signal<any | null>(null);
   dialogType = signal<string>('');
   companyId = this.auth.authUser()?.id;
+  deleteConfirmation = signal<boolean>(false);
+
   async ngOnInit() {
     this.database
       .getUsers()
@@ -42,7 +45,6 @@ export class Teams implements OnInit {
   openUpdateDialog(user: User) {
     this.dialogType.set('update')
     this.userSelected.set(user)
-
     this.visible.set(true);
   }
   selectUser(user: User) {
@@ -55,6 +57,7 @@ export class Teams implements OnInit {
  async onDialogSubmit(formData: any) {
     if (this.dialogType() === 'create') {
       await this.createUser(formData);
+
     } else {
       await this.updateUser(formData);
     }
@@ -62,6 +65,7 @@ export class Teams implements OnInit {
     this.userSelected.set(null);
     this.locationSelected.set(null);
     this.users.set(this.database.users().filter(user => user.id !== this.auth.authUser()?.id));
+  
   }
 
   async createUser(formData: any) {
@@ -75,7 +79,10 @@ export class Teams implements OnInit {
       created_by: this.companyId ?? '0',
     };
     
-    await this.auth.createUserViaFunction(user);
+    const {success} = await this.auth.createUserViaFunction(user);
+    if (success) {
+      this.toast.showSuccess("User created successfully")
+    }
     const newUsers = await this.database.getUsers()
     newUsers.filter(user => user.created_by === this.companyId);
      this.users.set(newUsers);
@@ -102,10 +109,16 @@ export class Teams implements OnInit {
   onSaveLocation(location: any) {
     this.locationSelected.set(location);
   }
+
   async onDeleteUser(id: string) {
-    if (id === '') {
+this.deleteConfirmation.set(true);
+this.userSelected.set(this.users()?.find(user => user.id === id)?? null);
+  }
+  async onDeleteConfirm(id: string) {
+      if (id === '') {
       throw new AppError('USER_NOT_FOUND');
     }
+    this.deleteConfirmation.set(false);
    await this.database.deleteUser(id);
     this.users.update((users) => users.filter(user => user.id !== id));
   }

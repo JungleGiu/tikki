@@ -1,0 +1,9 @@
+<div class="overlay-modal">
+<div class="modal">
+    <header>
+        <h3>Are you sure you want to delete this {{ item }}?</h3>
+    </header>
+    <div class="modal-buttons"><button (click)="confirm.emit(id)">Delete</button>
+   <button (click)="cancel.emit()">Cancel</button>
+   </div >
+</div>

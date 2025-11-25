@@ -11,5 +11,7 @@
 </div>
 @if (visible()){
 <app-team-dialog [mode]="dialogType" [user]="userSelected" [isVisible]="visible" (submit)="onDialogSubmit($event)" (close)="closeDialog()" (locationChange)="onSaveLocation($event)"></app-team-dialog>
-
+}
+@if (deleteConfirmation()){
+<app-confirm-delete-dialog [item]="'user'" [id]="userSelected()?.id?? ''" (confirm)="onDeleteConfirm($event)" (cancel)="deleteConfirmation.set(false)"></app-confirm-delete-dialog>
 }

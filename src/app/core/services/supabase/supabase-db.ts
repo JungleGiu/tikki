@@ -32,7 +32,7 @@ this.company = supabaseAuth
     return data as User[];
   }
 
-  async getAuthUser(id: string) {
+  async getUserById(id: string) {
     const { data, error } = await supabase
       .from('users')
       .select('*')
@@ -41,29 +41,7 @@ this.company = supabaseAuth
     if (error) throw new AppError(error.code);
     return data as User;
   }
-  async createUser(user: User): Promise<User> {
-    const { data, error } = await supabase
-    .from('users')
-    .insert(user)
-    .select()
-    .single();
-    if (error) throw new AppError(error.code);
-   
- const { data: link, error: linkError } = await supabase.auth.admin.generateLink({
-     type: 'magiclink',
-      email: user.email,
-      options: {
-        redirectTo:`${development.baseURL}/onboarding`,
-        // data: {
-        //   orgName : this.company.appUser.name},
-        },
-      });
-      if (linkError) throw new AppError(linkError.code?? '');
-    await this.getUsers();
-    this.toastService.showSuccess('User created successfully');
-    return data as User;
-  }
-
+ 
   async updateUser(user: User, id: string): Promise<User> {
     const { data, error } = await supabase
       .from('users')

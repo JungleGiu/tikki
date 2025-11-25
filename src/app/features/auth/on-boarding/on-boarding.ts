@@ -29,7 +29,7 @@ export class OnBoarding implements OnInit {
     if (session?.user?.id && !this.hasLoadedUser) {
       this.hasLoadedUser = true;
       try {
-        const user = await this.database.getAuthUser(session.user.id);
+        const user = await this.database.getUserById(session.user.id);
         this.user.set(user);
       } catch (error) {
         console.error(error);
