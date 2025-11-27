@@ -3,7 +3,7 @@ import { supabase } from './supabase-client';
 import type { Session } from '@supabase/supabase-js';
 import { User, Company } from '../../models/user';
 import { AppError } from '../errors/app-error';
-import { ToastAppService } from '../toast/toast-service';
+
 @Injectable({
   providedIn: 'root',
 })
