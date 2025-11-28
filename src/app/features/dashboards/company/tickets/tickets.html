@@ -1,1 +1,23 @@
-<p>tickets works!</p>
+<div class="card">
+  <header>
+    <h3>Tickets</h3>
+    <div class="actions">
+      <!-- <app-searcher (onSearch)="onSearch($event)" [allData]="allTickets"></app-searcher> -->
+      <!-- <button (click)="openCreateDialog(); dialogType.set('create')">+ New Ticket</button> -->
+    </div>
+  </header>
+  <app-team-table
+    (selectEditTicket)="onSelectEditTicket($event)"
+    (deleteTicket)="onDeleteTicket($event)"
+    [ticketsElements]="displayTickets"
+  ></app-team-table>
+</div>
+
+@if (deleteConfirmation()){
+<app-confirm-delete-dialog
+  [item]="'ticket'"
+  [id]="ticketSelected()?.id ?? ''"
+  (confirm)="onDeleteConfirm($event)"
+  (cancel)="deleteConfirmation.set(false)"
+></app-confirm-delete-dialog>
+}

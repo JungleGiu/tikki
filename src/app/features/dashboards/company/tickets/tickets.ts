@@ -1,11 +1,59 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { Ticket } from '../../../../core/models/ticket';
+import { DataTable } from '../../../../shared/components/data-table/data-table';
+import { TicketDetails } from '../../../../shared/components/ticket-details/ticket-details';
+import { SupabaseDb } from '../../../../core/services/supabase/supabase-db';
+import { supabaseAuth } from '../../../../core/services/supabase/supabaseAuth';
+import { AppError } from '../../../../core/services/errors/app-error';
+import { ToastAppService } from '../../../../core/services/toast/toast-service';
+import { ConfirmDeleteDialog } from '../../../../shared/components/confirm-delete-dialog/confirm-delete-dialog';
 
 @Component({
   selector: 'app-tickets',
-  imports: [],
+  imports: [DataTable, ConfirmDeleteDialog],
   templateUrl: './tickets.html',
   styleUrl: './tickets.scss',
 })
-export class Tickets {
+export class Tickets implements OnInit {
+  database = inject(SupabaseDb);
+  auth = inject(supabaseAuth);
+  toast = inject(ToastAppService);
 
+  allTickets = signal<Ticket[]>([]);
+  displayTickets = signal<Ticket[]>([]);
+  ticketSelected = signal<Ticket | null>(null);
+  deleteConfirmation = signal<boolean>(false);
+  companyId = this.auth.authUser()?.id;
+
+  async ngOnInit() {
+    const tickets = await this.database.getTickets();
+    this.allTickets.set(tickets);
+    this.displayTickets.set(tickets);
+  }
+
+  async onSelectEditTicket(ticket: Ticket) {
+    this.ticketSelected.set(ticket);
+    // TODO: Open ticket details/edit dialog
+  }
+
+  async onDeleteTicket(id: string) {
+    this.deleteConfirmation.set(true);
+    this.ticketSelected.set(this.allTickets()?.find((ticket) => ticket.id === id) ?? null);
+  }
+
+  async onDeleteConfirm(id: string) {
+    if (id === '') {
+      throw new AppError('TICKET_NOT_FOUND');
+    }
+    this.deleteConfirmation.set(false);
+    // TODO: Implement delete ticket in database
+    // await this.database.deleteTicket(id);
+    // const tickets = await this.database.getTickets();
+    // this.allTickets.set(tickets);
+    // this.displayTickets.set(tickets);
+  }
+
+  onSearch(tickets: Ticket[]) {
+    this.displayTickets.set(tickets);
+  }
 }

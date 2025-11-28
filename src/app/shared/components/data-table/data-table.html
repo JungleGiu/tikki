@@ -1,0 +1,54 @@
+  <table>
+    <thead>
+      <tr>
+        @if (usersElements().length > 0) {
+        <th>Name</th>
+        <th>Role</th>
+        <th>Location</th>
+        <th>Department</th>
+        <th>Email</th>
+        }
+        @else if (ticketsElements().length > 0) {
+        <th>Title</th>
+        <th>Priority</th>
+        <th>Status</th>
+        <th>Department</th>
+        <th>Deadline</th>
+        }
+      </tr>
+    </thead>
+    @if (usersElements().length > 0) {
+    <tbody>
+      @for (user of usersElements(); track user.id) {
+      <tr>
+        <td>{{ user.name }}</td>
+        <td>{{ user.role_id | rolePipe}}</td>
+        <td>{{ user.location?.name }}</td>
+        <td class="department" > <app-badge [variant]="user.department_id | departmentPipe"></app-badge></td>
+        <td>{{ user?.email  }}</td>
+        <td class="buttons">
+          <button (click)="onSelectEdit(user)" >Edit</button>
+          <button (click)="onDeleteUser(user.id ?? '')">Delete</button>
+        </td>
+      </tr>
+      }
+      
+    }
+    @else if (ticketsElements().length > 0) {
+    <tbody>
+      @for (ticket of ticketsElements(); track ticket.id) {
+      <tr>
+        <td>{{ ticket.title }}</td>
+        <td><app-badge [variant]=" ticket.priority | priority"></app-badge></td>
+        <td>{{ (ticket.status) |status }}</td>
+        <td class="department"><app-badge [variant]="ticket.department_id | departmentPipe"></app-badge></td>
+        <td>{{ ticket.deadline | date }}</td>
+        <td class="buttons">
+          <button (click)="onSelectEditTicket(ticket)" >Edit</button>
+          <button (click)="onDeleteTicket(ticket.id)">Delete</button>
+        </td>
+      </tr>
+      }
+    </tbody>
+    }
+  </table>

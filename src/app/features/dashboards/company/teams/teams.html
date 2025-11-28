@@ -8,9 +8,9 @@
 </div>
   </header>
   <app-team-table
-    (selectEdit)="openUpdateDialog($event)"
+    (selectEditUser)="openUpdateDialog($event)"
     (deleteUser)="onDeleteUser($event)"
-    [users]="displayUsers"
+    [usersElements]="displayUsers"
   ></app-team-table>
 </div>
 @if (visible()){
