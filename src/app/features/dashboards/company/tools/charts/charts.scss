@@ -1,11 +1,15 @@
+@use '../../../../../../styles' as *;
 .charts-container{
     display: flex;
     flex-direction: row;
-    width: 40%;
-  
-justify-content: start  ;
-    position: relative;
-    z-index: 1;
-    padding: 0;
-    height: fit-content;
+   
+    width: 80%;
+   @include card();
+  border: 2px solid var(--primary-color);
+  border-radius: 2rem;
+  margin : 2rem auto;
+}
+.chart{
+   width: 40%;
+   margin: 0 auto;
 }

@@ -1,0 +1,16 @@
+@if (isVisible()) {
+    <div class="overlay-modal">
+        <div class="modal">
+            <header>
+                <button class="close" (click)="isVisible.set(false)">X</button>
+                <h3>{{ ticket.title  }}</h3>
+            </header>
+            <div class="modal-body">
+                <p>{{ ticket.description }}</p>
+                <p>Priority: {{ ticket.priority }}</p>
+                <p>Deadline: {{ ticket.deadline }}</p>
+                <p>Location: {{ ticket.location }}</p>
+            </div>
+        </div>
+    </div>
+}

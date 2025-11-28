@@ -1,8 +1,18 @@
+@use '../../../../../../styles' as *;
 .calendar-container {
-  display: block;
- width:50rem;
-  transform: scale(1);
-  margin: 2rem auto;
+  @include card();
+  height: max-content;
+  width: 90%;
+  border: 2px solid var(--primary-color);
+  border-radius: 2rem;
+  margin : 2rem auto;
+}
+.calendar {
+  width: 100%;
+ height:100%;
+  transform: scale(0.95);
+  margin: 0;
   position: relative; 
+  scroll-behavior: smooth;
   z-index: 1;
 }

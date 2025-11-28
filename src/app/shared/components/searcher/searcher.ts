@@ -10,22 +10,22 @@ import { User } from '../../../core/models/user';
   styleUrl: './searcher.scss',
 })
 export class Searcher {
-  @Input() allUsers = signal<User[]>([]);
+  @Input() allData = signal<User[]>([]);
   isSearchingVisible = signal(false);
   isFiltersVisible = signal(false);
   query = signal('');
   filteredResults = signal<User[]>([]);
   sortQuery = signal('');
   sortDirection = signal<'asc' | 'desc'>('asc');
-  
+
   @Output() onSearch = new EventEmitter<User[]>();
 
   constructor() {
     effect(() => {
-      this.allUsers.set(this.allUsers());
+      this.allData.set(this.allData());
       if (this.filteredResults().length === 0) {
-      this.filteredResults.set(this.allUsers());
-    }
+        this.filteredResults.set(this.allData());
+      }
     });
   }
 
@@ -34,11 +34,11 @@ export class Searcher {
   }
 
   applyFiltersAndSort() {
-   
     const query = this.query().toLowerCase().trim();
-    let results = query === '' 
-      ? [...this.allUsers()] 
-      : this.allUsers().filter((user) => user.name.toLowerCase().includes(query));
+    let results =
+      query === ''
+        ? [...this.allData()]
+        : this.allData().filter((user) => user.name.toLowerCase().includes(query));
 
     if (this.sortQuery() && this.sortQuery() !== '0') {
       results = this.applySorting(results);
@@ -51,7 +51,7 @@ export class Searcher {
   applySorting(users: User[]): User[] {
     const query = this.sortQuery();
     const direction = this.sortDirection();
-    
+
     return [...users].sort((a, b) => {
       let comparison = 0;
       if (query === 'name') {
@@ -75,7 +75,7 @@ export class Searcher {
 
   toggleSortOrder() {
     this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
-    
+
     const reversed = [...this.filteredResults()].reverse();
     this.filteredResults.set(reversed);
     this.onSearch.emit(reversed);

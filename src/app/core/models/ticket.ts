@@ -5,7 +5,7 @@ export interface Ticket {
     resolved_at: string;
     department_id: number;
     status: string;
-    created_by: number;
+    created_by: string;
     assigned_to: number;
     attached: JSON[]
     title: string;

@@ -41,6 +41,9 @@ importers:
       '@fullcalendar/interaction':
         specifier: ^6.1.19
         version: 6.1.19(@fullcalendar/core@6.1.19)
+      '@fullcalendar/multimonth':
+        specifier: ^6.1.19
+        version: 6.1.19(@fullcalendar/core@6.1.19)
       '@supabase/supabase-js':
         specifier: ^2.81.1
         version: 2.81.1
@@ -576,6 +579,11 @@ packages:
 
   '@fullcalendar/interaction@6.1.19':
     resolution: {integrity: sha512-GOciy79xe8JMVp+1evAU3ytdwN/7tv35t5i1vFkifiuWcQMLC/JnLg/RA2s4sYmQwoYhTw/p4GLcP0gO5B3X5w==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.19
+
+  '@fullcalendar/multimonth@6.1.19':
+    resolution: {integrity: sha512-YYP8o/tjNLFRKhelwiq5ja3Jm3WDf3bfOUHf32JvAWwfotCvZjD7tYv66Nj02mQ8OWWJINa2EQGJxFHgIs14aA==}
     peerDependencies:
       '@fullcalendar/core': ~6.1.19
 
@@ -3467,6 +3475,11 @@ snapshots:
   '@fullcalendar/interaction@6.1.19(@fullcalendar/core@6.1.19)':
     dependencies:
       '@fullcalendar/core': 6.1.19
+
+  '@fullcalendar/multimonth@6.1.19(@fullcalendar/core@6.1.19)':
+    dependencies:
+      '@fullcalendar/core': 6.1.19
+      '@fullcalendar/daygrid': 6.1.19(@fullcalendar/core@6.1.19)
 
   '@inquirer/ansi@1.0.2': {}
 
