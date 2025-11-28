@@ -35,7 +35,29 @@ export class Searcher {
     }
   }
 
-  sortResults() {}
+  sortResults() {
+    const query = this.sortQuery();
+    const sortedResults = this.allUsers().sort((a, b) => {
+      if (query === 'name') {
+        return a.name.localeCompare(b.name);
+      } else if (query === 'email') {
+        return a.email.localeCompare(b.email);
+      } else if (query === 'role') {
+        return a.role_id - b.role_id;
+      } else if (query === 'department') {
+        return a.department_id - b.department_id;
+      }
+      return 0;
+    });
+
+    this.onSearch.emit(sortedResults);
+  }
+
+  onSortChange(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    this.sortQuery.set(selectElement.value);
+    this.sortResults();
+  }
 
   toggleVisible(visibleType: 'search' | 'filters') {
     if (visibleType === 'search') {
