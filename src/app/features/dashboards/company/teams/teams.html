@@ -1,12 +1,16 @@
 <div class="card">
   <header>
     <h3>Team Members</h3>
-    <button (click)="openCreateDialog(); dialogType.set('create')">+ New Team Member</button>
+<div class="actions">
+  
+  <app-searcher (onSearch)="onSearch($event)" [allUsers]="allUsers"></app-searcher>
+  <button (click)="openCreateDialog(); dialogType.set('create')">+ New Team Member</button>
+</div>
   </header>
   <app-team-table
     (selectEdit)="openUpdateDialog($event)"
     (deleteUser)="onDeleteUser($event)"
-    [users]="users"
+    [users]="displayUsers"
   ></app-team-table>
 </div>
 @if (visible()){

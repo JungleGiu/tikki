@@ -1,0 +1,19 @@
+<div class="searcher">
+  <div class="query" [ngClass]="{ reverse: !isSearchingVisible() && isFiltersVisible() }">
+    <select [ngClass]="{ hidden: !isFiltersVisible() }">
+      <option value="name">Name</option>
+      <option value="email">Email</option>
+      <option value="role">Role</option>
+      <option value="department">Department</option>
+    </select>
+    <input
+      type="text"
+      placeholder="Search"
+      [ngModel]="query()"
+      (ngModelChange)="query.set($event); onQueryChange()"
+      [ngClass]="{ hidden: !isSearchingVisible() }"
+    />
+  </div>
+  <img src="assets/search.png" alt="Search icon" (click)="toggleVisible('search')" />
+  <img src="assets/Sliders.png" alt="Filter icon" (click)="toggleVisible('filters')" />
+</div>

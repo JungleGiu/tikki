@@ -7,9 +7,10 @@ import { ToastAppService } from '../../../../core/services/toast/toast-service';
 import { TeamTable } from "../../../../shared/components/team-table/team-table";
 import { TeamDialog } from "../../../../shared/components/team-dialog/team-dialog";
 import { ConfirmDeleteDialog } from '../../../../shared/components/confirm-delete-dialog/confirm-delete-dialog';
+import { Searcher } from "../../../../shared/components/searcher/searcher";
 @Component({
   selector: 'app-teams',
-  imports: [ TeamTable, TeamDialog, ConfirmDeleteDialog],
+  imports: [TeamTable, TeamDialog, ConfirmDeleteDialog, Searcher],
   templateUrl: './teams.html',
   styleUrl: './teams.scss',
 })
@@ -17,7 +18,8 @@ export class Teams implements OnInit {
   database = inject(SupabaseDb);
  auth = inject(supabaseAuth)
   toast = inject(ToastAppService);
-  users = signal<User[]>([]);
+  allUsers = signal<User[]>([]);
+  displayUsers = signal<User[]>([]);
   visible = signal<boolean>(false);
   userSelected = signal<User | null>(null);
   locationSelected = signal<any | null>(null);
@@ -29,7 +31,11 @@ export class Teams implements OnInit {
     this.database
       .getUsers()
       .then(() => {
-        this.users.set(this.database.users().filter(user => user.id !== this.auth.authUser()?.id));
+    const filteredUsers = this.database.users().filter(
+          user => user.id !== this.auth.authUser()?.id
+        );
+        this.allUsers.set(filteredUsers); 
+        this.displayUsers.set(filteredUsers);    
       })
       .catch((error) => {
         throw new AppError(error.code);
@@ -64,8 +70,10 @@ export class Teams implements OnInit {
     this.visible.set(false);
     this.userSelected.set(null);
     this.locationSelected.set(null);
-    this.users.set(this.database.users().filter(user => user.id !== this.auth.authUser()?.id));
-  
+      await this.database.getUsers();
+    let filteredUsers = this.database.users().filter(user => user.id !== this.auth.authUser()?.id)
+    this.displayUsers.set(filteredUsers);
+  this.allUsers.set(filteredUsers);
   }
 
   async createUser(formData: any) {
@@ -84,8 +92,9 @@ export class Teams implements OnInit {
       this.toast.showSuccess("User created successfully")
     }
     const newUsers = await this.database.getUsers()
-    newUsers.filter(user => user.created_by === this.companyId);
-     this.users.set(newUsers);
+    const filteredUsers = newUsers.filter(user => user.created_by === this.companyId);
+    this.allUsers.set(filteredUsers);
+    this.displayUsers.set(filteredUsers);
     this.closeDialog();
   }
 
@@ -102,7 +111,9 @@ export class Teams implements OnInit {
     };
 
    await this.database.updateUser(user, this.userSelected()!.id!);
-     this.users.set(this.database.users().filter(user => user.created_by === this.companyId)); 
+   const filteredUsers = this.database.users().filter(user => user.created_by === this.companyId); 
+    this.allUsers.set(filteredUsers);
+    this.displayUsers.set(filteredUsers);
     this.closeDialog();
   }
 
@@ -112,7 +123,7 @@ export class Teams implements OnInit {
 
   async onDeleteUser(id: string) {
 this.deleteConfirmation.set(true);
-this.userSelected.set(this.users()?.find(user => user.id === id)?? null);
+this.userSelected.set(this.allUsers()?.find(user => user.id === id)?? null);
   }
   async onDeleteConfirm(id: string) {
       if (id === '') {
@@ -120,7 +131,9 @@ this.userSelected.set(this.users()?.find(user => user.id === id)?? null);
     }
     this.deleteConfirmation.set(false);
    await this.database.deleteUser(id);
-    this.users.update((users) => users.filter(user => user.id !== id));
+   const filteredUsers = this.database.users().filter(user => user.created_by === this.companyId); 
+    this.allUsers.set(filteredUsers);
+    this.displayUsers.set(filteredUsers);
   }
 
   closeDialog() {
@@ -128,4 +141,7 @@ this.userSelected.set(this.users()?.find(user => user.id === id)?? null);
     this.userSelected.set(null);
     this.locationSelected.set(null);
   }
+  onSearch(users: User[]) {
+  this.displayUsers.set(users);
+}
 }

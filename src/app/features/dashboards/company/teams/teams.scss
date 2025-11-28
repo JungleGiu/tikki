@@ -11,7 +11,12 @@ header {
   justify-content: space-between;
   margin-bottom: 2rem;
 }
-
+.actions{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+}
 
 button {
   @include tikki-vertical-gradient-border(3rem, 2px, --primary-color);
