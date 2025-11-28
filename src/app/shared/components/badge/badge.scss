@@ -7,29 +7,52 @@
       font-size: 1.1rem ;
       font-weight: 600;
       text-align: center;
+      text-shadow: black 0em 0em 0.1em ;
     }
 
-    .badge-2 {
+    .badge-HR {
       background-color: #4ade80;
       color: white;
     }
 
-    .badge-1 {
+    .badge-IT {
       background-color: #c084fc;
       color: white;
     }
 
-    .badge-3 {
+    .badge-Sales {
       background-color: #fb923c;
       color: white;
     }
 
-    .badge-4 {
+    .badge-Marketing {
       background-color: #60a5fa;
       color: white;
     }
 
     .badge-0 {
       background-color: #94a3b8;
+      color: white;
+    }
+
+    .badge-Low {
+      background-color:  #3b82f6;
+      color: white;
+      font-size: 1rem;
+    }
+
+    .badge-Medium {
+      background-color: #f5e20b;
+      color: white;
+     font-size: 1rem;
+    }
+
+    .badge-High {
+      background-color: #f6993b;
+      color: white;
+    }
+
+    .badge-Critical {
+      background-color: #ef4444;
       color: white;
     }

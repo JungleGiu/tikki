@@ -8,5 +8,5 @@ import { DepartmentPipePipe } from '../../pipes/department-pipe-pipe';
 })
 export class Badge {
 
-@Input ({required: true}) variant :number = 0
+@Input ({required: true}) variant :string = ''
 }

@@ -18,6 +18,7 @@ export class Calendar {
 
  calendarOptions!: CalendarOptions;
 isVisible = signal<boolean>(false);
+ticket = signal<Ticket>({} as Ticket);
   constructor() {
     effect(() => {
       this.calendarOptions = {
@@ -46,14 +47,21 @@ isVisible = signal<boolean>(false);
         themeSystem: 'standard',
          contentHeight: 600,
          aspectRatio: 2.3,
+         selectable: true,
+         selectMirror: true,
+         
       
-      eventClick: function(info) {
-    info.jsEvent.preventDefault(); 
-
-    if (info.event.url) {
-      window.open(info.event.url);
-    }
-  }  };
+      eventClick:(info) => {
+        const ticket = info.event.extendedProps['ticketData'] as Ticket;
+        console.log(ticket);
+        this.openTicket(ticket);
+      }
+    };
     });
+  }
+
+  openTicket(ticket :any) {
+    this.isVisible.set(true);
+    this.ticket.set(ticket);
   }
 }

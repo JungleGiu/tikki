@@ -30,6 +30,9 @@ export class Tools {
           title: ticket.title,
           start: ticket.deadline,
           end: ticket.deadline,
+          extendedProps: {
+            ticketData: ticket
+          }
         }));
         this.events.set(events);
         this.locations.set(locs);
