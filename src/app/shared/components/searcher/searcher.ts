@@ -2,6 +2,7 @@ import { Component, Input, signal, Output, EventEmitter, effect } from '@angular
 import { FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { User } from '../../../core/models/user';
+
 @Component({
   selector: 'app-searcher',
   imports: [FormsModule, NgClass],
@@ -15,48 +16,69 @@ export class Searcher {
   query = signal('');
   filteredResults = signal<User[]>([]);
   sortQuery = signal('');
+  sortDirection = signal<'asc' | 'desc'>('asc');
+  
   @Output() onSearch = new EventEmitter<User[]>();
 
   constructor() {
     effect(() => {
       this.allUsers.set(this.allUsers());
+      if (this.filteredResults().length === 0) {
+      this.filteredResults.set(this.allUsers());
+    }
     });
   }
 
   onQueryChange() {
-    this.filterResults();
+    this.applyFiltersAndSort();
   }
-  filterResults() {
+
+  applyFiltersAndSort() {
+   
     const query = this.query().toLowerCase().trim();
-    if (query === '') {
-      this.onSearch.emit(this.allUsers());
-    } else {
-      this.onSearch.emit(this.allUsers().filter((user) => user.name.toLowerCase().includes(query)));
+    let results = query === '' 
+      ? [...this.allUsers()] 
+      : this.allUsers().filter((user) => user.name.toLowerCase().includes(query));
+
+    if (this.sortQuery() && this.sortQuery() !== '0') {
+      results = this.applySorting(results);
     }
+
+    this.filteredResults.set(results);
+    this.onSearch.emit(results);
   }
 
-  sortResults() {
+  applySorting(users: User[]): User[] {
     const query = this.sortQuery();
-    const sortedResults = this.allUsers().sort((a, b) => {
+    const direction = this.sortDirection();
+    
+    return [...users].sort((a, b) => {
+      let comparison = 0;
       if (query === 'name') {
-        return a.name.localeCompare(b.name);
+        comparison = a.name.localeCompare(b.name);
       } else if (query === 'email') {
-        return a.email.localeCompare(b.email);
+        comparison = a.email.localeCompare(b.email);
       } else if (query === 'role') {
-        return a.role_id - b.role_id;
+        comparison = a.role_id - b.role_id;
       } else if (query === 'department') {
-        return a.department_id - b.department_id;
+        comparison = a.department_id - b.department_id;
       }
-      return 0;
+      return direction === 'desc' ? -comparison : comparison;
     });
-
-    this.onSearch.emit(sortedResults);
   }
 
   onSortChange(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
     this.sortQuery.set(selectElement.value);
-    this.sortResults();
+    this.applyFiltersAndSort();
+  }
+
+  toggleSortOrder() {
+    this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
+    
+    const reversed = [...this.filteredResults()].reverse();
+    this.filteredResults.set(reversed);
+    this.onSearch.emit(reversed);
   }
 
   toggleVisible(visibleType: 'search' | 'filters') {
@@ -64,6 +86,7 @@ export class Searcher {
       this.isSearchingVisible.set(!this.isSearchingVisible());
       if (!this.isSearchingVisible()) {
         this.query.set('');
+        this.applyFiltersAndSort();
       }
     } else if (visibleType === 'filters') {
       this.isFiltersVisible.set(!this.isFiltersVisible());

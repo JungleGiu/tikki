@@ -4,10 +4,7 @@
   flex-direction: row;
   align-items: center;
   gap: 1rem;
-  img {
-    width: 1.5rem;
-    cursor: pointer;
-  }
+  
   margin: 0 0;
 }
 input {
@@ -30,5 +27,16 @@ input {
 }
 select {
   @include input();
+}
+
+.filters-icons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  img {
+    width: 1.3rem;
+    cursor: pointer;
+  }
 }
 
