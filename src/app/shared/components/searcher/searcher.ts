@@ -2,23 +2,27 @@ import { Component, Input, signal, Output, EventEmitter, effect } from '@angular
 import { FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { User } from '../../../core/models/user';
+import { Ticket } from '../../../core/models/ticket';
+import { TitleCasePipe } from '@angular/common';
+type SearchableData = User | Ticket;
 
 @Component({
   selector: 'app-searcher',
-  imports: [FormsModule, NgClass],
+  imports: [FormsModule, NgClass, TitleCasePipe],
   templateUrl: './searcher.html',
   styleUrl: './searcher.scss',
 })
-export class Searcher {
-  @Input() allData = signal<User[]>([]);
+export class Searcher<T extends SearchableData = SearchableData> {
+  @Input() allData = signal<T[]>([]);
+  @Input() searchFields: string[] = ['name']; // Customize search fields per data type
   isSearchingVisible = signal(false);
   isFiltersVisible = signal(false);
   query = signal('');
-  filteredResults = signal<User[]>([]);
+  filteredResults = signal<T[]>([]);
   sortQuery = signal('');
   sortDirection = signal<'asc' | 'desc'>('asc');
 
-  @Output() onSearch = new EventEmitter<User[]>();
+  @Output() onSearch = new EventEmitter<T[]>();
 
   constructor() {
     effect(() => {
@@ -38,39 +42,55 @@ export class Searcher {
     let results =
       query === ''
         ? [...this.allData()]
-        : this.allData().filter((user) => user.name.toLowerCase().includes(query));
+        : this.allData().filter((item) =>
+            this.searchFields.some((field) => {
+              const value = (item as any)[field];
+              return typeof value === 'string' && value.toLowerCase().includes(query);
+            })
+          );
 
-    if (this.sortQuery() && this.sortQuery() !== '0') {
-      results = this.applySorting(results);
+    if (this.sortQuery() && this.sortQuery() !== '') {
+      results = this.applySorting(results as T[]);
     }
 
-    this.filteredResults.set(results);
-    this.onSearch.emit(results);
+    this.filteredResults.set(results as T[]);
+    this.onSearch.emit(results as T[]);
   }
 
-  applySorting(users: User[]): User[] {
+  applySorting(items: T[]): T[] {
     const query = this.sortQuery();
     const direction = this.sortDirection();
 
-    return [...users].sort((a, b) => {
+    return [...items].sort((a, b) => {
       let comparison = 0;
-      if (query === 'name') {
-        comparison = a.name.localeCompare(b.name);
-      } else if (query === 'email') {
-        comparison = a.email.localeCompare(b.email);
-      } else if (query === 'role') {
-        comparison = a.role_id - b.role_id;
-      } else if (query === 'department') {
-        comparison = a.department_id - b.department_id;
+      const aValue = a[query as keyof T];
+      const bValue = b[query as keyof T];
+
+      if (aValue == null && bValue == null) return 0;
+      if (aValue == null) return 1;
+      if (bValue == null) return -1;
+
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        comparison = aValue.localeCompare(bValue);
+      } else if (typeof aValue === 'number' && typeof bValue === 'number') {
+        comparison = aValue - bValue;
+      } else if (typeof aValue === 'string' && typeof bValue === 'number') {
+        comparison = aValue.localeCompare(String(bValue));
+      } else if (typeof aValue === 'number' && typeof bValue === 'string') {
+        comparison = String(aValue).localeCompare(bValue);
       }
+
       return direction === 'desc' ? -comparison : comparison;
     });
   }
 
   onSortChange(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
-    this.sortQuery.set(selectElement.value);
-    this.applyFiltersAndSort();
+    const selectedIndex = parseInt(selectElement.value);
+    if (selectedIndex > 0 && selectedIndex <= this.searchFields.length) {
+      this.sortQuery.set(this.searchFields[selectedIndex - 1]);
+      this.applyFiltersAndSort();
+    }
   }
 
   toggleSortOrder() {

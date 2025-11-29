@@ -1,3 +1,4 @@
+import { Location } from "./user";
 export interface Ticket {
     id: string;
     created_at: string;
@@ -11,5 +12,5 @@ export interface Ticket {
     title: string;
     description: string;
     deadline: string;
-    location: JSON[];
+    location: Location;
 }

@@ -6,7 +6,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class StatusPipe implements PipeTransform {
 
 private status: { [key: string]: string } = {
-    '1': 'Queued',
+    '0': 'Queued',
+    '1': 'Assigned',
     '2': 'In Progress',
     '3': 'Completed',
   }

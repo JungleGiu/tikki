@@ -14,7 +14,11 @@
         <th>Status</th>
         <th>Department</th>
         <th>Deadline</th>
+        <th>Location</th>
+        <th>Created At</th>
+        <th>Assigned To</th>
         }
+      
       </tr>
     </thead>
     @if (usersElements().length > 0) {
@@ -43,9 +47,14 @@
         <td>{{ (ticket.status) |status }}</td>
         <td class="department"><app-badge [variant]="ticket.department_id | departmentPipe"></app-badge></td>
         <td>{{ ticket.deadline | date }}</td>
+        <td>{{ ticket.location.name }}</td>
+        <td>{{ ticket.created_at | date }}</td>
+        <td>{{ ticket.assigned_to | userName }}</td>
         <td class="buttons">
-          <button (click)="onSelectEditTicket(ticket)" >Edit</button>
-          <button (click)="onDeleteTicket(ticket.id)">Delete</button>
+          <button (click)="onSelectEditTicket(ticket)" ><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 18V16H16V18H3ZM19.6 17L14.6 12L19.6 7L21 8.4L17.4 12L21 15.6L19.6 17ZM3 13V11H13V13H3ZM3 8V6H16V8H3Z" fill="#FEF7FF"/>
+</svg></button>
+      
         </td>
       </tr>
       }

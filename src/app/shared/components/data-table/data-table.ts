@@ -7,10 +7,11 @@ import { Ticket } from '../../../core/models/ticket';
 import { PriorityPipe } from '../../pipes/priority-pipe';
 import { StatusPipe } from '../../pipes/status-pipe';
 import { DatePipe } from '@angular/common';
+import { UserNamePipe } from '../../pipes/user-name-pipe';
 @Component({
   selector: 'app-team-table',
   standalone: true,
-  imports: [RolePipePipe, StatusPipe, Badge, DepartmentPipePipe, PriorityPipe, DatePipe],
+  imports: [RolePipePipe, StatusPipe, Badge, DepartmentPipePipe, PriorityPipe, DatePipe, UserNamePipe],
   templateUrl: './data-table.html',
   styleUrl: './data-table.scss',
 })

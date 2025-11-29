@@ -1,5 +1,5 @@
-import { Component, Input, effect, signal } from '@angular/core';
-import {FullCalendarModule} from '@fullcalendar/angular';
+import { Component, Input,  signal, OnChanges, SimpleChanges } from '@angular/core';
+import { FullCalendarModule } from '@fullcalendar/angular';
 import { CommonModule } from '@angular/common';
 import { CalendarOptions } from '@fullcalendar/core'; // useful for typechecking
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -12,55 +12,60 @@ import { TicketDetails } from '../../../../../shared/components/ticket-details/t
   templateUrl: './calendar.html',
   styleUrl: './calendar.scss',
 })
-export class Calendar {
+export class Calendar implements OnChanges {
+  @Input() events: any[] = [];
 
-@Input() events: Ticket[] = []
-
- calendarOptions!: CalendarOptions;
-isVisible = signal<boolean>(false);
-ticket = signal<Ticket>({} as Ticket);
+  calendarOptions!: CalendarOptions;
+  isVisible = signal<boolean>(false);
+  ticket = signal<Ticket>({} as Ticket);
+  
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['events'] && !changes['events'].firstChange) {
+      this.updateCalendarOptions();
+    }
+  }
+  
   constructor() {
-    effect(() => {
-      this.calendarOptions = {
-        initialView: 'multiMonthFourMonth',
-        plugins: [ multimonthPlugin, dayGridPlugin ],
-        events: this.events,
-         dayMaxEvents: true,
-        views: {
-          multiMonthFourMonth:{
-            type: 'multiMonth',
-            duration: { months: 6 }
-          },
-          currentMonth: {
-            type: 'dayGridMonth'
-          }
+    this.updateCalendarOptions();
+  }
+  
+  private updateCalendarOptions(): void {
+    this.calendarOptions = {
+      initialView: 'multiMonthFourMonth',
+      plugins: [multimonthPlugin, dayGridPlugin],
+      events: this.events,
+      dayMaxEvents: true,
+      views: {
+        multiMonthFourMonth: {
+          type: 'multiMonth',
+          duration: { months: 6 },
         },
-        buttonText: {
-          currentMonth: 'Current Month',
-          multiMonthFourMonth: '6 months',
+        currentMonth: {
+          type: 'dayGridMonth',
         },
-        headerToolbar: {
-          left: 'prev,next',
-          center: 'title',
-          right: 'currentMonth,multiMonthFourMonth',
-        },
-        themeSystem: 'standard',
-         contentHeight: 600,
-         aspectRatio: 2.3,
-         selectable: true,
-         selectMirror: true,
-         
-      
-      eventClick:(info) => {
+      },
+      buttonText: {
+        currentMonth: 'Current Month',
+        multiMonthFourMonth: '6 months',
+      },
+      headerToolbar: {
+        left: 'prev,next',
+        center: 'title',
+        right: 'currentMonth,multiMonthFourMonth',
+      },
+      themeSystem: 'standard',
+      contentHeight: 600,
+      aspectRatio: 2.3,
+      selectable: true,
+      selectMirror: true,
+      eventClick: (info) => {
         const ticket = info.event.extendedProps['ticketData'] as Ticket;
-        console.log(ticket);
         this.openTicket(ticket);
-      }
+      },
     };
-    });
   }
 
-  openTicket(ticket :any) {
+  openTicket(ticket: any) {
     this.isVisible.set(true);
     this.ticket.set(ticket);
   }

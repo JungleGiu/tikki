@@ -3,7 +3,11 @@
     <h3>Team Members</h3>
 <div class="actions">
   
-  <app-searcher (onSearch)="onSearch($event)" [allData]="allUsers"></app-searcher>
+  <app-searcher 
+  [allData]="allUsers"
+  [searchFields]="['name', 'email', 'role', 'department']"
+  (onSearch)="onSearch($event)"
+></app-searcher>
   <button (click)="openCreateDialog(); dialogType.set('create')">+ New Team Member</button>
 </div>
   </header>
