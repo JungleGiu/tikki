@@ -11,6 +11,10 @@
     (deleteTicket)="onDeleteTicket($event)"
     [ticketsElements]="displayTickets"
   ></app-team-table>
+  <app-pagination-tool
+    [elements]="allTickets"
+    (currentResults)="displayTickets.set($event)"
+  ></app-pagination-tool>
 </div>
 
 @if (deleteConfirmation()){

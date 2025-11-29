@@ -5,12 +5,13 @@ import { supabaseAuth } from '../../../../core/services/supabase/supabaseAuth';
 import { AppError } from '../../../../core/services/errors/app-error';
 import { ToastAppService } from '../../../../core/services/toast/toast-service';
 import { DataTable } from '../../../../shared/components/data-table/data-table';
+import { PaginationTool } from '../../../../shared/components/pagination-tool/pagination-tool';
 import { TeamDialog } from '../../../../shared/components/team-dialog/team-dialog';
 import { ConfirmDeleteDialog } from '../../../../shared/components/confirm-delete-dialog/confirm-delete-dialog';
 import { Searcher } from '../../../../shared/components/searcher/searcher';
 @Component({
   selector: 'app-teams',
-  imports: [DataTable, TeamDialog, ConfirmDeleteDialog, Searcher],
+  imports: [DataTable, TeamDialog,PaginationTool ,ConfirmDeleteDialog, Searcher],
   templateUrl: './teams.html',
   styleUrl: './teams.scss',
 })

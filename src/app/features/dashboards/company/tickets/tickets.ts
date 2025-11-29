@@ -7,10 +7,11 @@ import { supabaseAuth } from '../../../../core/services/supabase/supabaseAuth';
 import { AppError } from '../../../../core/services/errors/app-error';
 import { ToastAppService } from '../../../../core/services/toast/toast-service';
 import { ConfirmDeleteDialog } from '../../../../shared/components/confirm-delete-dialog/confirm-delete-dialog';
+import { PaginationTool } from "../../../../shared/components/pagination-tool/pagination-tool";
 
 @Component({
   selector: 'app-tickets',
-  imports: [DataTable, ConfirmDeleteDialog],
+  imports: [DataTable, ConfirmDeleteDialog, PaginationTool],
   templateUrl: './tickets.html',
   styleUrl: './tickets.scss',
 })
@@ -28,7 +29,7 @@ export class Tickets implements OnInit {
   async ngOnInit() {
     const tickets = await this.database.getTickets();
     this.allTickets.set(tickets);
-    this.displayTickets.set(tickets);
+    this.displayTickets.set(tickets.slice(0,10));
   }
 
   async onSelectEditTicket(ticket: Ticket) {
@@ -56,4 +57,6 @@ export class Tickets implements OnInit {
   onSearch(tickets: Ticket[]) {
     this.displayTickets.set(tickets);
   }
+
+
 }

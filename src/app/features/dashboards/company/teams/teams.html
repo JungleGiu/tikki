@@ -12,6 +12,10 @@
     (deleteUser)="onDeleteUser($event)"
     [usersElements]="displayUsers"
   ></app-team-table>
+  <app-pagination-tool
+    [elements]="allUsers"
+    (currentResults)="displayUsers.set($event)"
+  ></app-pagination-tool>
 </div>
 @if (visible()){
 <app-team-dialog [mode]="dialogType" [user]="userSelected" [isVisible]="visible" (submit)="onDialogSubmit($event)" (close)="closeDialog()" (locationChange)="onSaveLocation($event)"></app-team-dialog>

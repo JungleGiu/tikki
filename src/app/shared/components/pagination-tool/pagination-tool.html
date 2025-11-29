@@ -1,1 +1,12 @@
-<p>pagination-tool works!</p>
+@if (numberOfPages() > 1){
+<div class="pagination-tool">
+@if (currentPage() > 1) {
+<button (click)="onPreviousPage()">Previous</button>
+}
+@for (page of pages(); track $index) {
+    <button [class.active]="page === currentPage()" (click)="onPageClick(page)">{{ page }}</button>
+}
+@if (currentPage() < numberOfPages()) {
+<button (click)="onNextPage()">Next</button> }
+</div>
+}
