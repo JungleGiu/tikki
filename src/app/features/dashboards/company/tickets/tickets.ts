@@ -29,7 +29,7 @@ export class Tickets implements OnInit {
   async ngOnInit() {
     const tickets = await this.database.getTickets();
     this.allTickets.set(tickets);
-    this.displayTickets.set(tickets.slice(0,10));
+    this.displayTickets.set(tickets);
   }
 
   async onSelectEditTicket(ticket: Ticket) {
