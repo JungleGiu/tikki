@@ -1,0 +1,20 @@
+#dashboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 1rem;
+}
+
+.top-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  gap: 1rem;
+  width: 80%;
+}
+
+.bottom-section {
+  width: 80%;
+  margin: auto;
+}

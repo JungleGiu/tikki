@@ -78,7 +78,7 @@ span {
   font-weight: bold;
 }
 
-input {
+input, select {
   @include input();
 }
 form {

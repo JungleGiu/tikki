@@ -31,23 +31,35 @@
       <form [formGroup]="editForm">
         <div class="field">
           <label for="priority">Priority</label>
-          <input type="text" id="priority" />
+          <select id="priority" formControlName="priority">
+            <option value="" disabled>Select Priority</option>
+            @for (option of priorityOptions; track option.value) {
+            <option [value]="option.value.toString()">{{ option.label }}</option>
+            }
+          </select>
         </div>
         <div class="field">
           <label for="deadline">Deadline</label>
-          <input type="date" id="deadline" />
+          <input type="date" id="deadline" formControlName="deadline" />
         </div>
         <div class="field">
-          <label for="location">Location</label>
-          <input type="text" id="location" />
+          <app-location-input
+            (newLocation)="onLocationSelected($event)"
+            [location]="ticket.location"
+          ></app-location-input>
         </div>
         <div class="field">
           <label for="assigned_to">Assigned To</label>
-          <input type="text" id="assigned_to" />
+          <input type="number" id="assigned_to" formControlName="assigned_to" />
         </div>
         <div class="field">
           <label for="status">Status</label>
-          <input type="text" id="status" />
+          <select id="status" formControlName="status">
+            <option value="" disabled>Select Status</option>
+            @for (option of statusOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
         </div>
       </form>
       }
@@ -57,16 +69,19 @@
       <button (click)="editMode.set(true)">Edit</button>
       } @if (editMode()) {
       <button (click)="editMode.set(false)">Cancel</button>
-      <button>Save</button>
+      <button (click)="onEditSubmit()">Save</button>
       }
       <button (click)="deleteDialog.set(true)">Delete</button>
     </div>
   </div>
 </div>
-}
-@if (deleteDialog()) {
+} @if (deleteDialog()) {
 
-  <app-confirm-delete-dialog (cancel)="deleteDialog.set(false)" (confirm)="onDelete($event)" [id]="ticket.id" [item]="'ticket'"></app-confirm-delete-dialog>
-
+<app-confirm-delete-dialog
+  (cancel)="deleteDialog.set(false)"
+  (confirm)="onDelete($event)"
+  [id]="ticket.id"
+  [item]="'ticket'"
+></app-confirm-delete-dialog>
 
 }

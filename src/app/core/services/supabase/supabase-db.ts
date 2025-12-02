@@ -40,17 +40,25 @@ export class SupabaseDb {
     return this.parseTicket(data);
   }
 
-  async updateTicket(ticket: Ticket, id: string): Promise<Ticket> {
+  async updateTicket(ticket: Partial<Ticket> | Ticket, id: string): Promise<Ticket> {
+
+    const ticketData = { ...ticket };
+
+  
+    if (ticketData.location && typeof ticketData.location === 'object') {
+      ticketData.location = JSON.stringify(ticketData.location) as any;
+    }
+
     const { data, error } = await supabase
       .from('ticket')
-      .update(ticket)
+      .update(ticketData)
       .eq('id', id)
       .select()
       .single();
     if (error) throw new AppError(error.code);
     await this.getTickets();
     this.toastService.showSuccess('Ticket updated successfully');
-    return data as Ticket;
+    return this.parseTicket(data);
   }
 
   async deleteTicket(id: string): Promise<Ticket> {

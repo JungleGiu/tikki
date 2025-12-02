@@ -1,4 +1,14 @@
-import { Component, OnInit, signal, effect, EventEmitter, Output, Input, OnDestroy, OnChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  signal,
+  effect,
+  EventEmitter,
+  Output,
+  Input,
+  OnDestroy,
+  OnChanges,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { config } from '../../config';
 import { Location } from '../../../core/models/user';
@@ -16,22 +26,22 @@ export class LocationInput implements OnInit, OnDestroy, OnChanges {
   searchQuery = signal('');
   results = signal<any[]>([]);
   selectedResult = signal<any>({});
-  @Input({ required: false}) location  : any = null
-  @Output() newLocation= new EventEmitter<Location>();
+  @Input({ required: false }) location: Location | null = null;
+  @Output() newLocation = new EventEmitter<Location>();
 
   private searchTimeout?: number;
   private readonly DEBOUNCE_DELAY = 500;
   constructor() {
     effect(() => {
-    const loc = this.location;
-    if (loc?.name && this.searchQuery() !== loc.name) {
-      this.searchQuery.set(loc.name);
-      this.selectedResult.set(loc);
-    }
-  });
+      const loc = this.location;
+      if (loc?.name && this.searchQuery() !== loc.name) {
+        this.searchQuery.set(loc.name);
+        this.selectedResult.set(loc);
+      }
+    });
     effect(() => {
       const query = this.searchQuery();
-      if(this.searchTimeout) {
+      if (this.searchTimeout) {
         clearTimeout(this.searchTimeout);
       }
       if (query && query.length > 2 && query !== this.location?.name) {
@@ -49,10 +59,10 @@ export class LocationInput implements OnInit, OnDestroy, OnChanges {
           name: result.name,
           lat: result.lat,
           lon: result.lon,
-        }
+        };
         this.newLocation.emit(location);
         this.results.set([]);
-        this.searchQuery.set(location.name)
+        this.searchQuery.set(location.name);
       }
     });
   }
@@ -62,7 +72,7 @@ export class LocationInput implements OnInit, OnDestroy, OnChanges {
         'accept-language': 'en',
       },
     });
-     if (this.location?.name) {
+    if (this.location?.name) {
       this.searchQuery.set(this.location.name);
       this.selectedResult.set(this.location);
     }
@@ -74,43 +84,46 @@ export class LocationInput implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(): void {
-  if (this.location?.name && this.searchQuery() !== this.location.name) {
-    this.searchQuery.set(this.location.name);
-    this.selectedResult.set(this.location);
+    if (this.location?.name && this.searchQuery() !== this.location.name) {
+      this.searchQuery.set(this.location.name);
+      this.selectedResult.set(this.location);
+    }
   }
-}
   async locationSearch(search: string) {
-  try {  const searchLimit = '10';
-   const params = new URLSearchParams( {
-     q: search,
-     format: 'json',
-     limit: searchLimit,
+    try {
+      const searchLimit = '10';
+      const params = new URLSearchParams({
+        q: search,
+        format: 'json',
+        limit: searchLimit,
         addressdetails: '1',
         'accept-language': 'en',
-        featuretype:'city',
-   });
-   const searchUrl= `${config.leaflet.nominatim}?${params.toString()}`
-    const response = await fetch(searchUrl);
-    const data = await response.json();
-     const filteredResults = data.filter((result: any) => {
-        const type = result.type?.toLowerCase();
-        const addressType = result.address?.city || 
-                           result.address?.town || 
-                           result.address?.village ||
-                           result.address?.municipality;
-        
-        return type === 'city' || 
-               type === 'town' || 
-               type === 'village' || 
-               type === 'administrative' ||
-               addressType;
+        featuretype: 'city',
       });
-    this.results.set(filteredResults.slice(0, 5));
-  } catch (error : any)  {
-    this.results.set([]);
-    console.error(error);
-    throw new AppError(error.code || 'UNKNOWN_ERROR');
+      const searchUrl = `${config.leaflet.nominatim}?${params.toString()}`;
+      const response = await fetch(searchUrl);
+      const data = await response.json();
+      const filteredResults = data.filter((result: any) => {
+        const type = result.type?.toLowerCase();
+        const addressType =
+          result.address?.city ||
+          result.address?.town ||
+          result.address?.village ||
+          result.address?.municipality;
+
+        return (
+          type === 'city' ||
+          type === 'town' ||
+          type === 'village' ||
+          type === 'administrative' ||
+          addressType
+        );
+      });
+      this.results.set(filteredResults.slice(0, 5));
+    } catch (error: any) {
+      this.results.set([]);
+      console.error(error);
+      throw new AppError(error.code || 'UNKNOWN_ERROR');
+    }
   }
 }
-  }
-

@@ -31,7 +31,7 @@ export class Calendar implements OnChanges {
   
   private updateCalendarOptions(): void {
     this.calendarOptions = {
-      initialView: 'multiMonthFourMonth',
+      initialView: 'currentMonth',
       plugins: [multimonthPlugin, dayGridPlugin],
       events: this.events,
       dayMaxEvents: true,
@@ -54,8 +54,8 @@ export class Calendar implements OnChanges {
         right: 'currentMonth,multiMonthFourMonth',
       },
       themeSystem: 'standard',
-      contentHeight: 600,
-      aspectRatio: 2.3,
+      contentHeight: 500,
+      aspectRatio: 0.8,
       selectable: true,
       selectMirror: true,
       eventClick: (info) => {

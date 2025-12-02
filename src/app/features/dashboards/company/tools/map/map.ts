@@ -29,13 +29,12 @@ export class Map implements AfterViewInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['locations'] && !changes['locations'].firstChange) {
-      // When locations change, rebuild the map
       this.rebuildMap();
     }
   }
 
   private rebuildMap(): void {
-    // Clear existing markers
+ 
     if (this.map) {
       this.map.eachLayer((layer) => {
         if (layer instanceof L.Marker) {
@@ -43,7 +42,7 @@ export class Map implements AfterViewInit, OnChanges {
         }
       });
     }
-    // Reinitialize with new data
+
     this.initMap();
   }
 

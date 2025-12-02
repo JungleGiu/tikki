@@ -1,5 +1,9 @@
 <section id="dashboard">
+  <div class="top-section">
     <app-charts [data]="tickets()"></app-charts>
-    <app-map (recharge)="rechargeData()" [locations]="locations()" [tickets]="tickets()" ></app-map>
     <app-calendar (recharge)="rechargeData()" [events]="events()"></app-calendar>
+  </div>
+  <div class="bottom-section">
+    <app-map (recharge)="rechargeData()" [locations]="locations()" [tickets]="tickets()"></app-map>
+  </div>
 </section>
