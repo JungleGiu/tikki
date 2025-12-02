@@ -63,4 +63,15 @@ export class Tickets implements OnInit {
   onSearch(tickets: Ticket[]) {
     this.displayTickets.set(tickets);
   }
+
+  async rechargeTickets() {
+    try {
+      const tickets = await this.database.getTickets();
+      this.allTickets.set(tickets);
+      this.displayTickets.set(tickets);
+      this.closeTicketDetails();
+    } catch (error) {
+      console.error('Error reloading tickets:', error);
+    }
+  }
 }

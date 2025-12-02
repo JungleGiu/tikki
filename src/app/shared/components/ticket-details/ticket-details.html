@@ -29,16 +29,26 @@
       <p>Attached: {{ ticket.attached }}</p>
       } @if (editMode()) {
       <form [formGroup]="editForm">
-        <label for="priority">Priority</label>
-        <input type="text" id="priority" />
-        <label for="deadline">Deadline</label>
-        <input type="date" id="deadline" />
-        <label for="location">Location</label>
-        <input type="text" id="location" />
-        <label for="assigned_to">Assigned To</label>
-        <input type="text" id="assigned_to" />
-        <label for="status">Status</label>
-        <input type="text" id="status" />
+        <div class="field">
+          <label for="priority">Priority</label>
+          <input type="text" id="priority" />
+        </div>
+        <div class="field">
+          <label for="deadline">Deadline</label>
+          <input type="date" id="deadline" />
+        </div>
+        <div class="field">
+          <label for="location">Location</label>
+          <input type="text" id="location" />
+        </div>
+        <div class="field">
+          <label for="assigned_to">Assigned To</label>
+          <input type="text" id="assigned_to" />
+        </div>
+        <div class="field">
+          <label for="status">Status</label>
+          <input type="text" id="status" />
+        </div>
       </form>
       }
     </div>
@@ -49,8 +59,14 @@
       <button (click)="editMode.set(false)">Cancel</button>
       <button>Save</button>
       }
-      <button>Delete</button>
+      <button (click)="deleteDialog.set(true)">Delete</button>
     </div>
   </div>
 </div>
+}
+@if (deleteDialog()) {
+
+  <app-confirm-delete-dialog (cancel)="deleteDialog.set(false)" (confirm)="onDelete($event)" [id]="ticket.id" [item]="'ticket'"></app-confirm-delete-dialog>
+
+
 }

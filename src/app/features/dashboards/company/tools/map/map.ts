@@ -1,4 +1,13 @@
-import { Component, AfterViewInit, Input, Output, EventEmitter, signal } from '@angular/core';
+import {
+  Component,
+  AfterViewInit,
+  Input,
+  Output,
+  EventEmitter,
+  signal,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { config } from '../../../../../shared/config';
 import * as L from 'leaflet';
 import { TicketDetails } from '../../../../../shared/components/ticket-details/ticket-details';
@@ -9,21 +18,43 @@ import { Ticket } from '../../../../../core/models/ticket';
   templateUrl: './map.html',
   styleUrl: './map.scss',
 })
-export class Map implements AfterViewInit {
+export class Map implements AfterViewInit, OnChanges {
   private map: L.Map | undefined;
   @Input() tickets: Ticket[] = [];
   @Input() locations: any[] = [];
   @Output() markerClicked = new EventEmitter<Ticket>();
-
+  @Output() recharge = new EventEmitter<void>();
   isVisible = signal<boolean>(false);
   ticket = signal<Ticket>({} as Ticket);
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['locations'] && !changes['locations'].firstChange) {
+      // When locations change, rebuild the map
+      this.rebuildMap();
+    }
+  }
+
+  private rebuildMap(): void {
+    // Clear existing markers
+    if (this.map) {
+      this.map.eachLayer((layer) => {
+        if (layer instanceof L.Marker) {
+          this.map?.removeLayer(layer);
+        }
+      });
+    }
+    // Reinitialize with new data
+    this.initMap();
+  }
+
   private initMap(): void {
-    L.Icon.Default.imagePath = config.leaflet.mapImage;
-    this.map = L.map('map').setView([45.0, 10.0], 5);
-    L.tileLayer(config.leaflet.mapTitle, {
-      attribution: config.leaflet.mapAttribution,
-    }).addTo(this.map);
+    if (!this.map) {
+      L.Icon.Default.imagePath = config.leaflet.mapImage;
+      this.map = L.map('map').setView([45.0, 10.0], 5);
+      L.tileLayer(config.leaflet.mapTitle, {
+        attribution: config.leaflet.mapAttribution,
+      }).addTo(this.map);
+    }
 
     if (this.locations.length > 0) {
       this.locations.forEach((location) => {
@@ -47,6 +78,9 @@ export class Map implements AfterViewInit {
     this.markerClicked.emit(ticketData);
   }
 
+  onrechargeData() {
+    this.recharge.emit();
+  }
   ngAfterViewInit(): void {
     setTimeout(() => {
       if (this.locations.length > 0) {
@@ -56,6 +90,4 @@ export class Map implements AfterViewInit {
       }
     }, 100);
   }
-
-
 }

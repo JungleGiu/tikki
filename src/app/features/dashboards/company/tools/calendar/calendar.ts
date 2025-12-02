@@ -1,4 +1,4 @@
-import { Component, Input,  signal, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input,  signal, OnChanges, SimpleChanges, EventEmitter , Output} from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CommonModule } from '@angular/common';
 import { CalendarOptions } from '@fullcalendar/core'; // useful for typechecking
@@ -18,7 +18,7 @@ export class Calendar implements OnChanges {
   calendarOptions!: CalendarOptions;
   isVisible = signal<boolean>(false);
   ticket = signal<Ticket>({} as Ticket);
-  
+  @Output() recharge = new EventEmitter<void>();
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['events'] && !changes['events'].firstChange) {
       this.updateCalendarOptions();
@@ -68,5 +68,8 @@ export class Calendar implements OnChanges {
   openTicket(ticket: any) {
     this.isVisible.set(true);
     this.ticket.set(ticket);
+  }
+  onrechargeData() {
+    this.recharge.emit();
   }
 }
