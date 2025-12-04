@@ -111,7 +111,7 @@ export class TicketDetails {
           deadlineString = deadlineValue;
         }
       }
-
+console.log('New Location to be set:', this.newLocation);
       const updatedTicket: Partial<Ticket> = {
         priority: this.editForm.value.priority
           ? parseInt(this.editForm.value.priority)

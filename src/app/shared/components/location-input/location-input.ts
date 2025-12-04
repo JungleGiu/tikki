@@ -67,7 +67,7 @@ export class LocationInput implements OnInit, OnDestroy {
           lon: result.lon,
         };
         this.newLocation.emit(location);
-       
+       console.log('Selected location:', location);
         this.initialLocationName = location.name;
         this.results.set([]);
       }

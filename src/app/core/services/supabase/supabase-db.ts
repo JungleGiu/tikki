@@ -42,9 +42,6 @@ export class SupabaseDb {
 
   async updateTicket(ticket: Partial<Ticket> | Ticket, id: string): Promise<Ticket> {
     const ticketData = { ...ticket };
-    if (ticketData.location && typeof ticketData.location === 'object') {
-      ticketData.location = JSON.stringify(ticketData.location) as any;
-    }
 
     const { data, error } = await supabase
       .from('ticket')
