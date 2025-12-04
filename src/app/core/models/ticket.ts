@@ -8,7 +8,7 @@ export interface Ticket {
     status: string;
     created_by: string;
     assigned_to: number;
-    attached: JSON[]
+
     title: string;
     description: string;
     deadline: string;

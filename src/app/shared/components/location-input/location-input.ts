@@ -21,22 +21,24 @@ import 'leaflet-control-geocoder';
   templateUrl: './location-input.html',
   styleUrl: './location-input.scss',
 })
-export class LocationInput implements OnInit, OnDestroy, OnChanges {
+export class LocationInput implements OnInit, OnDestroy {
   geocoder: any;
   searchQuery = signal('');
   results = signal<any[]>([]);
   selectedResult = signal<any>({});
-  @Input({ required: false }) location: Location | null = null;
+  @Input({ required: false }) location: any
   @Output() newLocation = new EventEmitter<Location>();
 
   private searchTimeout?: number;
   private readonly DEBOUNCE_DELAY = 500;
+  private initialLocationName: string = '';
   constructor() {
     effect(() => {
       const loc = this.location;
-      if (loc?.name && this.searchQuery() !== loc.name) {
+      if (loc?.name) {
         this.searchQuery.set(loc.name);
         this.selectedResult.set(loc);
+        this.initialLocationName = loc.name;
       }
     });
     effect(() => {
@@ -44,16 +46,20 @@ export class LocationInput implements OnInit, OnDestroy, OnChanges {
       if (this.searchTimeout) {
         clearTimeout(this.searchTimeout);
       }
-      if (query && query.length > 2 && query !== this.location?.name) {
-        this.searchTimeout = window.setTimeout(() => {
-          this.locationSearch(query);
-        }, this.DEBOUNCE_DELAY);
-      } else {
+   
+      if (!query || query.length < 2) {
         this.results.set([]);
+      } else if (query.length > 2) {
+  
+        if (query !== this.initialLocationName) {
+          this.searchTimeout = window.setTimeout(() => {
+            this.locationSearch(query);
+          }, this.DEBOUNCE_DELAY);
+        }
       }
     });
     effect(() => {
-      if (this.selectedResult()) {
+      if (this.selectedResult() && Object.keys(this.selectedResult()).length > 0) {
         const result = this.selectedResult();
         const location: Location = {
           name: result.name,
@@ -61,8 +67,9 @@ export class LocationInput implements OnInit, OnDestroy, OnChanges {
           lon: result.lon,
         };
         this.newLocation.emit(location);
+       
+        this.initialLocationName = location.name;
         this.results.set([]);
-        this.searchQuery.set(location.name);
       }
     });
   }
@@ -83,12 +90,6 @@ export class LocationInput implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  ngOnChanges(): void {
-    if (this.location?.name && this.searchQuery() !== this.location.name) {
-      this.searchQuery.set(this.location.name);
-      this.selectedResult.set(this.location);
-    }
-  }
   async locationSearch(search: string) {
     try {
       const searchLimit = '10';

@@ -80,6 +80,7 @@ span {
 
 input, select {
   @include input();
+  margin : 0,5rem 0;
 }
 form {
   display: flex;

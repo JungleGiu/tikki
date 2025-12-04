@@ -11,6 +11,7 @@ import { ToastAppService } from '../../../core/services/toast/toast-service';
 import { ConfirmDeleteDialog } from '../confirm-delete-dialog/confirm-delete-dialog';
 import { SupabaseDb } from '../../../core/services/supabase/supabase-db';
 import { LocationInput } from '../location-input/location-input';
+import { Location } from '../../../core/models/user';
 
 @Component({
   selector: 'app-ticket-details',
@@ -37,7 +38,7 @@ export class TicketDetails {
   deleteDialog = signal<boolean>(false);
   supabaseDb = inject(SupabaseDb);
   toastService = inject(ToastAppService);
-  newLocation: any = null;
+  newLocation: Location | null = null;
 
   // Priority and Status mappings
   priorityOptions = [
@@ -54,7 +55,7 @@ export class TicketDetails {
     { value: '3', label: 'Completed' },
   ];
 
-  onLocationSelected(location: any) {
+  onLocationSelected(location: Location) {
     this.newLocation = location;
   }
   editForm = new FormGroup({
@@ -77,10 +78,10 @@ export class TicketDetails {
   constructor() {
     effect(() => {
       if (this.editMode() && this.ticket) {
-        // Convert ISO string deadline to YYYY-MM-DD format for date input
+      
         let dateString = '';
         if (this.ticket.deadline) {
-          // Extract just the date part (YYYY-MM-DD) from ISO string
+      
           dateString = this.ticket.deadline.split('T')[0];
         }
 
@@ -99,12 +100,11 @@ export class TicketDetails {
 
   onEditSubmit() {
     try {
-      // Convert deadline to ISO string if it's a date input value
+
       const deadlineValue = this.editForm.value.deadline;
       let deadlineString = this.ticket.deadline;
 
       if (deadlineValue) {
-        // If it's from a date input (YYYY-MM-DD format), convert to ISO string
         if (typeof deadlineValue === 'string' && deadlineValue.length === 10) {
           deadlineString = new Date(deadlineValue + 'T00:00:00').toISOString();
         } else {
