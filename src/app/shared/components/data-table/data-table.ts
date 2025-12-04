@@ -21,7 +21,7 @@ export class DataTable {
 
   @Output() selectEditUser = new EventEmitter<User>();
   @Output() deleteUser = new EventEmitter<string>();
-  @Output() selectEditTicket = new EventEmitter<Ticket>();
+  @Output() selectTicket = new EventEmitter<Ticket>();
   @Output() deleteTicket = new EventEmitter<string>();
 
   onSelectEdit(selected: User) {
@@ -31,8 +31,8 @@ export class DataTable {
   onDeleteUser(id: string) {
     this.deleteUser.emit(id);
   }
-  onSelectEditTicket(selected: Ticket) {
-    this.selectEditTicket.emit(selected);
+  onSelectTicket(selected: Ticket) {
+    this.selectTicket.emit(selected);
   }
   onDeleteTicket(id: string) {
     this.deleteTicket.emit(id);

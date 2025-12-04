@@ -78,7 +78,7 @@ span {
   font-weight: bold;
 }
 
-input, select {
+input, select, textarea {
   @include input();
   margin : 0,5rem 0;
 }

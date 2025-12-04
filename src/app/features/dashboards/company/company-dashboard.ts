@@ -24,8 +24,9 @@ export class Dashboard {
 
   private loadDashboardData() {
     this.database
-      .getTickets()
-      .then((data) => {
+    .getTickets()
+    .then((data) => {
+      
         this.tickets.set(data);
 
        const locs = data.map((ticket) => {

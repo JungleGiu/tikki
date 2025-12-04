@@ -24,7 +24,9 @@ export class Tickets implements OnInit {
   displayTickets = signal<Ticket[]>([]);
   ticketSelected = signal<Ticket | null>(null);
   isTicketDetailsVisible = signal<boolean>(false);
+  ticketdetailsMode = signal<'create' | 'edit' | 'view'>('view');
   deleteConfirmation = signal<boolean>(false);
+
   userId = this.auth.authUser()?.id;
 
   async ngOnInit() {
@@ -35,11 +37,19 @@ export class Tickets implements OnInit {
 
   async onSelectEditTicket(ticket: Ticket) {
     this.ticketSelected.set(ticket);
+    this.ticketdetailsMode.set('view');
     this.isTicketDetailsVisible.set(true);
+  }
+
+  openCreateDialog() {
+    this.ticketSelected.set(null);
+    this.isTicketDetailsVisible.set(true);
+    this.ticketdetailsMode.set('create');
   }
 
   closeTicketDetails() {
     this.isTicketDetailsVisible.set(false);
+    this.ticketdetailsMode.set('view');
     this.ticketSelected.set(null);
   }
 

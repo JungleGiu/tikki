@@ -7,7 +7,6 @@ import { Teams } from './teams/teams';
 
 export default [
   { path: '', component: Dashboard },
-  
   { path: 'tickets', component: Tickets },
   { path: 'teams', component: Teams },
 ] as Routes;

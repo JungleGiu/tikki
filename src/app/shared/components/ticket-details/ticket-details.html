@@ -3,11 +3,53 @@
   <div class="modal">
     <header>
       <button class="close" (click)="isVisible.set(false)">X</button>
+      @if (mode() === 'edit' || mode() === 'view') { 
       <h3>{{ ticket.title }}</h3>
-      <p>{{ ticket.description }}</p>
+      <p>{{ ticket.description }}</p>}
+      @if (mode() === 'create') {
+      <h3>New Ticket</h3>
+      }
     </header>
     <div class="modal-body">
-      @if (!editMode()) {
+      @if (mode() === 'create') {
+      <form [formGroup]="createForm">
+        <div class="field">
+          <label for="title">Title</label>
+          <input type="text" id="title" formControlName="title" />
+        </div>
+        <div class="field">
+          <label for="description">Description</label>
+          <textarea
+            id="description"
+            formControlName="description"
+          ></textarea>
+        </div>
+        <div class="field">
+          <label for="priority">Priority</label>
+          <select id="priority" formControlName="priority">
+            <option value="1">Critical</option>
+            <option value="2">High</option>
+            <option value="3">Medium</option>
+            <option value="4">Low</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="department">Department</label>
+          <select id="department" formControlName="department_id">
+            <option value="1">IT</option>
+            <option value="2">HR</option>
+            <option value="3">Sales</option>
+            <option value="4">Marketing</option>
+          </select>
+        </div>
+        <app-location-input (newLocation)="onLocationSelected($event)"></app-location-input>
+        <div class="field">
+          <label for="deadline">Deadline</label>
+          <input type="date" id="deadline" formControlName="deadline" />
+        </div>
+      </form>
+      }
+      @if (mode() === 'view') {
       <div class="categories">
         <span>Department:</span
         ><app-badge [variant]="ticket.department_id | departmentPipe"
@@ -27,7 +69,7 @@
       <p><span>Resolved At:</span> {{ ticket.resolved_at | date }}</p>
       <p><span>Status:</span> {{ ticket.status | status }}</p>
 
-      } @if (editMode()) {
+      } @if (mode() === 'edit' && ticket) {
       <form [formGroup]="editForm">
         <div class="field">
           <label for="priority">Priority</label>
@@ -65,13 +107,16 @@
       }
     </div>
     <div class="modal-footer">
-      @if (!editMode()) {
-      <button (click)="editMode.set(true)">Edit</button>
-      } @if (editMode()) {
-      <button (click)="editMode.set(false)">Cancel</button>
+      @if (!editMode() && mode() === 'view') {
+      <button (click)="editMode.set(true); mode.set('edit')">Edit</button>
+      <button (click)="deleteDialog.set(true)">Delete</button>
+      } @if (editMode() ) {
+      <button (click)="editMode.set(false); mode.set('view')">Cancel</button>
       <button (click)="onEditSubmit()">Save</button>
       }
-      <button (click)="deleteDialog.set(true)">Delete</button>
+@if (mode() === 'create') {
+      <button (click)="onCreateSubmit()">Create</button>
+      }
     </div>
   </div>
 </div>
@@ -85,3 +130,4 @@
 ></app-confirm-delete-dialog>
 
 }
+

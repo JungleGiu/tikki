@@ -7,11 +7,11 @@
         [searchFields]="['title', 'department_id', 'deadline', 'status', 'priority']"
         [allData]="allTickets"
       ></app-searcher>
-      <button>+ New Ticket</button>
+      <button (click)="openCreateDialog()">+ New Ticket</button>
     </div>
   </header>
   <app-team-table
-    (selectEditTicket)="onSelectEditTicket($event)"
+    (selectTicket)="onSelectEditTicket($event)"
     (deleteTicket)="onDeleteTicket($event)"
     [ticketsElements]="displayTickets"
   ></app-team-table>
@@ -28,9 +28,16 @@
   (confirm)="onDeleteConfirm($event)"
   (cancel)="deleteConfirmation.set(false)"
 ></app-confirm-delete-dialog>
-} @if(ticketSelected()){
+} @if(ticketSelected() && ticketdetailsMode() === 'view' && isTicketDetailsVisible()){
 <app-ticket-details
   [ticket]="ticketSelected()!"
+  [isVisible]="isTicketDetailsVisible"
+  (recharge)="rechargeTickets()"
+></app-ticket-details>
+}
+@if (isTicketDetailsVisible() && !ticketSelected()){
+<app-ticket-details
+  [mode]="ticketdetailsMode"
   [isVisible]="isTicketDetailsVisible"
   (recharge)="rechargeTickets()"
 ></app-ticket-details>

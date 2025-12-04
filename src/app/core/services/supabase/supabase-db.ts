@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { supabase } from './supabase-client';
 import { User } from '../../models/user';
-import { Ticket } from '../../models/ticket';
+import { Ticket, createTicketDTO } from '../../models/ticket';
 import { AppError } from '../errors/app-error';
 import { ToastAppService } from '../toast/toast-service';
 
@@ -49,7 +49,7 @@ export class SupabaseDb {
     this.toastService.showSuccess('Ticket deleted successfully');
     return data as Ticket;
   }
-  async createTicket(ticket: Ticket): Promise<Ticket> {
+  async createTicket(ticket: createTicketDTO): Promise<Ticket> {
     const { data, error } = await supabase.from('ticket').insert(ticket).select().single();
     if (error) throw new AppError(error.code);
     await this.getTickets();
@@ -101,4 +101,6 @@ export class SupabaseDb {
     this.toastService.showSuccess('User deleted successfully');
     return data as User;
   }
+
+
 }
