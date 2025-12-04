@@ -147,9 +147,9 @@ export class TicketDetails {
           deadlineString = deadlineValue;
         }
       }
-
+const currentUser = this.auth.authUser()?.id;
       const newTicket: createTicketDTO = {
-       created_by: 'currentUserId', // Replace with actual current user ID
+       created_by: currentUser ?? '', 
     
         department_id: this.createForm.value.department_id
           ? parseInt(this.createForm.value.department_id)
