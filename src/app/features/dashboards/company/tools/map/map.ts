@@ -55,14 +55,14 @@ export class Map implements AfterViewInit, OnChanges {
       }).addTo(this.map);
     }
 
-    if (this.locations.length > 0) {
-      this.locations.forEach((location) => {
-        const marker = L.marker([location.lat, location.lng])
+    if (this.tickets.length > 0) {
+      this.tickets.forEach((ticket) => {
+        const marker = L.marker([parseFloat(ticket.location.lat), parseFloat(ticket.location.lon)])
           .addTo(this.map!)
-          .bindPopup(location.title || 'Ticket');
+          .bindPopup(ticket.title || 'Ticket');
 
         marker.on('click', () => {
-          const ticketData = this.tickets.find((t) => t.id === location.id);
+          const ticketData = this.tickets.find((t) => t.id === ticket.id);
           if (ticketData) {
             this.openTicket(ticketData);
           }

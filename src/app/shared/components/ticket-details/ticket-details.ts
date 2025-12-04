@@ -11,7 +11,6 @@ import { ToastAppService } from '../../../core/services/toast/toast-service';
 import { ConfirmDeleteDialog } from '../confirm-delete-dialog/confirm-delete-dialog';
 import { SupabaseDb } from '../../../core/services/supabase/supabase-db';
 import { LocationInput } from '../location-input/location-input';
-import { Location } from '../../../core/models/user';
 
 @Component({
   selector: 'app-ticket-details',
@@ -38,7 +37,7 @@ export class TicketDetails {
   deleteDialog = signal<boolean>(false);
   supabaseDb = inject(SupabaseDb);
   toastService = inject(ToastAppService);
-  newLocation: Location | null = null;
+  newLocation: any = null;
 
   // Priority and Status mappings
   priorityOptions = [
@@ -55,7 +54,7 @@ export class TicketDetails {
     { value: '3', label: 'Completed' },
   ];
 
-  onLocationSelected(location: Location) {
+  onLocationSelected(location: any) {
     this.newLocation = location;
   }
   editForm = new FormGroup({
@@ -78,10 +77,9 @@ export class TicketDetails {
   constructor() {
     effect(() => {
       if (this.editMode() && this.ticket) {
-      
+   
         let dateString = '';
         if (this.ticket.deadline) {
-      
           dateString = this.ticket.deadline.split('T')[0];
         }
 
@@ -100,7 +98,7 @@ export class TicketDetails {
 
   onEditSubmit() {
     try {
-
+      // Convert deadline to ISO string if it's a date input value
       const deadlineValue = this.editForm.value.deadline;
       let deadlineString = this.ticket.deadline;
 
@@ -111,19 +109,18 @@ export class TicketDetails {
           deadlineString = deadlineValue;
         }
       }
-console.log('New Location to be set:', this.newLocation);
+      let locationForDb: any = this.ticket.location;
+    
       const updatedTicket: Partial<Ticket> = {
         priority: this.editForm.value.priority
           ? parseInt(this.editForm.value.priority)
           : this.ticket.priority,
         deadline: deadlineString,
-        location: this.newLocation ? this.newLocation : this.ticket.location,
-        assigned_to: this.editForm.value.assigned_to
-          ? parseInt(this.editForm.value.assigned_to)
-          : this.ticket.assigned_to,
+        location: locationForDb,
+        assigned_to:this.editForm.value.assigned_to ? this.editForm.value.assigned_to : this.ticket.assigned_to,
         status: this.editForm.value.status ? this.editForm.value.status : this.ticket.status,
       };
-
+      console.log('Updated Ticket:', this.ticket.id, updatedTicket);
       this.supabaseDb.updateTicket(updatedTicket, this.ticket.id).then(() => {
         this.toastService.showSuccess('Ticket updated successfully');
         this.recharge.emit();
@@ -141,6 +138,7 @@ console.log('New Location to be set:', this.newLocation);
       this.toastService.showSuccess('Ticket deleted successfully');
       this.recharge.emit();
       this.deleteDialog.set(false);
+      this.editMode.set(false);
       this.isVisible.set(false);
     } catch (error) {
       throw error;

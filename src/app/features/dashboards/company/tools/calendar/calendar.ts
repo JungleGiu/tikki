@@ -14,7 +14,6 @@ import { TicketDetails } from '../../../../../shared/components/ticket-details/t
 })
 export class Calendar implements OnChanges {
   @Input() events: any[] = [];
-
   calendarOptions!: CalendarOptions;
   isVisible = signal<boolean>(false);
   ticket = signal<Ticket>({} as Ticket);
@@ -51,11 +50,12 @@ export class Calendar implements OnChanges {
       headerToolbar: {
         left: 'prev,next',
         center: 'title',
+
         right: 'currentMonth,multiMonthFourMonth',
       },
       themeSystem: 'standard',
-      contentHeight: 500,
-      aspectRatio: 0.8,
+      contentHeight: 400,
+      aspectRatio: 1,
       selectable: true,
       selectMirror: true,
       eventClick: (info) => {
@@ -65,8 +65,9 @@ export class Calendar implements OnChanges {
     };
   }
 
-  openTicket(ticket: any) {
+  openTicket(ticket: Ticket) {
     this.isVisible.set(true);
+    console.log ('Opening ticket from calendar:', ticket.id);
     this.ticket.set(ticket);
   }
   onrechargeData() {

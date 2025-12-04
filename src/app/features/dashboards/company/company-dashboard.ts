@@ -5,6 +5,7 @@ import { Calendar } from './tools/calendar/calendar';
 import { Map } from './tools/map/map';
 import { Charts } from './tools/charts/charts';
 
+
 @Component({
   selector: 'app-dashboard',
   imports: [Calendar, Map, Charts],
@@ -27,12 +28,11 @@ export class Dashboard {
       .then((data) => {
         this.tickets.set(data);
 
-        const locs = data.map((ticket) => {
-          const location =
-            typeof ticket.location === 'string' ? JSON.parse(ticket.location) : ticket.location;
+       const locs = data.map((ticket) => {
+      
           return {
-            lat: location.lat,
-            lng: location.lon,
+            lat: ticket.location.lat,
+            lng: ticket.location.lon,
             title: ticket.title,
             id: ticket.id,
           };

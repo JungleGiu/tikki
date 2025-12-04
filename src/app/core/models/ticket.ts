@@ -7,7 +7,7 @@ export interface Ticket {
     department_id: number;
     status: string;
     created_by: string;
-    assigned_to: number;
+    assigned_to: string;
 
     title: string;
     description: string;

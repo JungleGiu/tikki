@@ -14,30 +14,17 @@ export class SupabaseDb {
 
   constructor(private toastService: ToastAppService) {}
 
-  private parseTickets(tickets: any[]): Ticket[] {
-    return tickets.map((ticket) => ({
-      ...ticket,
-      location: typeof ticket.location === 'string' ? JSON.parse(ticket.location) : ticket.location,
-    }));
-  }
-
-  private parseTicket(ticket: any): Ticket {
-    return {
-      ...ticket,
-      location: typeof ticket.location === 'string' ? JSON.parse(ticket.location) : ticket.location,
-    };
-  }
+ 
   async getTickets() {
     const { data, error } = await supabase.from('ticket').select('*');
     if (error) throw new AppError(error.code);
-    const parsedTickets = this.parseTickets(data || []);
-    this.tickets.set(parsedTickets);
-    return parsedTickets;
+    this.tickets.set(data as Ticket[]);
+    return data as Ticket[];
   }
   async getTicketById(id: string) {
     const { data, error } = await supabase.from('ticket').select('*').eq('id', id).single();
     if (error) throw new AppError(error.code);
-    return this.parseTicket(data);
+    return data as Ticket;
   }
 
   async updateTicket(ticket: Partial<Ticket> | Ticket, id: string): Promise<Ticket> {
@@ -52,7 +39,7 @@ export class SupabaseDb {
     if (error) throw new AppError(error.code);
     await this.getTickets();
     this.toastService.showSuccess('Ticket updated successfully');
-    return this.parseTicket(data);
+    return data as Ticket;
   }
 
   async deleteTicket(id: string): Promise<Ticket> {
