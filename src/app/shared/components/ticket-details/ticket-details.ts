@@ -98,7 +98,7 @@ export class TicketDetails implements OnInit {
             priority: this.ticket.priority ? this.ticket.priority.toString() : '',
             deadline: dateString,
             assigned_to: this.ticket.assigned_to ? this.ticket.assigned_to.toString() : '',
-            status: this.ticket.status ? this.ticket.status : '',
+            status: this.ticket.status ? this.ticket.status.toString() : '0',
           },
           { emitEvent: false }
         );
@@ -131,7 +131,7 @@ export class TicketDetails implements OnInit {
         assigned_to: this.editForm.value.assigned_to
           ? this.editForm.value.assigned_to
           : this.ticket.assigned_to,
-        status: this.editForm.value.status ? this.editForm.value.status : this.ticket.status,
+        status: this.editForm.value.status ? parseInt(this.editForm.value.status) : this.ticket.status,
       };
 
       this.supabaseDb.updateTicket(updatedTicket, this.ticket.id).then(() => {

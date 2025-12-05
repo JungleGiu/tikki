@@ -5,7 +5,7 @@ export interface Ticket {
     priority: number;
     resolved_at: string | null;
     department_id: number;
-    status: string;
+    status: number;
     created_by: string;
     assigned_to: string | null;
     title: string;

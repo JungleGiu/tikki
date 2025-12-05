@@ -1,0 +1,9 @@
+<section id="kanban">
+  @for (kanbacolumn of kanbanColumns(); track kanbacolumn.title) {
+  <app-kanba-column [title]="kanbacolumn.title" (drop)="onDrop($event)">
+    @for (ticket of kanbacolumn.tickets; track ticket.id) {
+    <app-kanban-card cdkDrag [cdkDragData]="ticket" [ticket]="ticket"></app-kanban-card>
+    }
+  </app-kanba-column>
+  }
+</section>

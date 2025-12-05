@@ -1,0 +1,15 @@
+.kanban-card {
+    display: flex;
+    flex-direction: column;
+    width: 20rem;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}       
+.categories {
+    width: 50%;
+    margin: auto;
+}
