@@ -1,14 +1,14 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { Ticket } from '../../../../core/models/ticket';
-import { DataTable } from '../../../../shared/components/data-table/data-table';
-import { TicketDetails } from '../../../../shared/components/ticket-details/ticket-details';
-import { Searcher } from '../../../../shared/components/searcher/searcher';
-import { SupabaseDb } from '../../../../core/services/supabase/supabase-db';
-import { supabaseAuth } from '../../../../core/services/supabase/supabaseAuth';
-import { AppError } from '../../../../core/services/errors/app-error';
-import { ToastAppService } from '../../../../core/services/toast/toast-service';
-import { ConfirmDeleteDialog } from '../../../../shared/components/confirm-delete-dialog/confirm-delete-dialog';
-import { PaginationTool } from '../../../../shared/components/pagination-tool/pagination-tool';
+import { Ticket } from '../../core/models/ticket';
+import { DataTable } from '../../shared/components/data-table/data-table';
+import { TicketDetails } from '../../shared/components/ticket-details/ticket-details';
+import { Searcher } from '../../shared/components/searcher/searcher';
+import { SupabaseDb } from '../../core/services/supabase/supabase-db';
+import { supabaseAuth } from '../../core/services/supabase/supabaseAuth';
+import { AppError } from '../../core/services/errors/app-error';
+import { ToastAppService } from '../../core/services/toast/toast-service';
+import { ConfirmDeleteDialog } from '../../shared/components/confirm-delete-dialog/confirm-delete-dialog';
+import { PaginationTool } from '../../shared/components/pagination-tool/pagination-tool';
 
 @Component({
   selector: 'app-tickets',

@@ -1,19 +1,15 @@
 <header>
   <div class="logo"><img src="assets/tikki-logo.png" alt="Tikki App logo" /></div>
   <nav>
-    <a routerLink="dashboard"> Overview </a>
-
-    <a routerLink="dashboard/tickets"> Tickets </a>
-
-    <a routerLink="dashboard/teams"> Teams </a>
-
+    @for (feature of featuresRoutes; track feature.key) {
+    <a [routerLink]="feature.path">{{ feature.label }}</a>
+    }
   </nav>
   <div class="user">
     <img src="assets/advisors.png" alt="User avatar" />
     <hgroup>
-      <h1>{{ user()?.name }}</h1>
-      <span>{{ user()?.role_id ?? 0 | rolePipe}} </span>
-      
+      <h1>{{ user?.name }}</h1>
+      <span>{{ user?.role_id ?? 0 | rolePipe }} </span>
     </hgroup>
     <button (click)="logout()">Logout</button>
   </div>

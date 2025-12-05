@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 import { CalendarOptions } from '@fullcalendar/core'; // useful for typechecking
 import dayGridPlugin from '@fullcalendar/daygrid';
 import multimonthPlugin from '@fullcalendar/multimonth';
-import { Ticket } from '../../../../../core/models/ticket';
-import { TicketDetails } from '../../../../../shared/components/ticket-details/ticket-details';
+import { Ticket } from '../../../core/models/ticket';
+import { TicketDetails } from '../../../shared/components/ticket-details/ticket-details';
 @Component({
   selector: 'app-calendar',
   imports: [FullCalendarModule, CommonModule, TicketDetails],

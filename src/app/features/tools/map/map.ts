@@ -8,10 +8,10 @@ import {
   OnChanges,
   SimpleChanges,
 } from '@angular/core';
-import { config } from '../../../../../shared/config';
+import { config } from '../../../shared/config';
 import * as L from 'leaflet';
-import { TicketDetails } from '../../../../../shared/components/ticket-details/ticket-details';
-import { Ticket } from '../../../../../core/models/ticket';
+import { TicketDetails } from '../../../shared/components/ticket-details/ticket-details';
+import { Ticket } from '../../../core/models/ticket';
 @Component({
   selector: 'app-map',
   imports: [TicketDetails],

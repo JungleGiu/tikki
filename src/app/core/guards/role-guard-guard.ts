@@ -25,17 +25,17 @@ export const roleGuardGuard: CanActivateFn = async (route, state) => {
 
 function redirectToDashboard(roleId: number, router: Router): void {
   switch(roleId) {
-    case 1: // Admin
+    case 0: // Admin
       router.navigate(['/dashboard/admin']);
       break;
-    case 2: // Manager
+    case 1: // Manager
       router.navigate(['/dashboard/manager']);
       break;
-    case 3: // User
+    case 2: // User
       router.navigate(['/dashboard/user']);
       break;
     default:
-      // Handle other roles if needed
+      router.navigate(['/login']);
       break;
   }
 }
