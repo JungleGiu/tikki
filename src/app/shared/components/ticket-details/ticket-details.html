@@ -92,7 +92,12 @@
         </div>
         <div class="field">
           <label for="assigned_to">Assigned To</label>
-          <input type="text" id="assigned_to" formControlName="assigned_to" />
+          <select id="assigned_to" formControlName="assigned_to">
+            <option value="" disabled>Select User</option>
+            @for (user of users(); track user.id) {
+            <option [value]="user.id">{{ user.name }}</option>
+            }
+          </select>
         </div>
         <div class="field">
           <label for="status">Status</label>

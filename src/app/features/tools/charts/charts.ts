@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Input, ViewChild, ElementRef, OnChanges } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
-import { Ticket } from '../../../../../core/models/ticket';
+import { Ticket } from '../../../core/models/ticket';
 
 Chart.register(...registerables);
 @Component({

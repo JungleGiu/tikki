@@ -28,11 +28,24 @@ export class Tickets implements OnInit {
   deleteConfirmation = signal<boolean>(false);
 
   userId = this.auth.authUser()?.id;
+  userRole = this.auth.appUser()?.role_id;
+  userDepartment = this.auth.appUser()?.department_id;
+
+  private applyRoleFilter(tickets: Ticket[]): Ticket[] {
+    if (this.userRole === 0) {
+      return tickets;
+    } else if (this.userRole === 1) {
+      return tickets.filter((t) => t.department_id === this.userDepartment);
+    } else if (this.userRole === 2) {
+      return tickets.filter((t) => t.assigned_to === this.userId);
+    }
+    return [];
+  }
 
   async ngOnInit() {
     const tickets = await this.database.getTickets();
     this.allTickets.set(tickets);
-    this.displayTickets.set(tickets);
+    this.displayTickets.set(this.applyRoleFilter(tickets));
   }
 
   async onSelectEditTicket(ticket: Ticket) {
@@ -63,22 +76,21 @@ export class Tickets implements OnInit {
       throw new AppError('TICKET_NOT_FOUND');
     }
     this.deleteConfirmation.set(false);
-    // TODO: Implement delete ticket in database
-    // await this.database.deleteTicket(id);
-    // const tickets = await this.database.getTickets();
-    // this.allTickets.set(tickets);
-    // this.displayTickets.set(tickets);
+    await this.database.deleteTicket(id);
+    const tickets = await this.database.getTickets();
+    this.allTickets.set(tickets);
+    this.displayTickets.set(this.applyRoleFilter(tickets));
   }
 
-  onSearch(tickets: Ticket[]) {
-    this.displayTickets.set(tickets);
+  async onSearch(tickets: Ticket[]) {
+    this.displayTickets.set(this.applyRoleFilter(tickets));
   }
 
   async rechargeTickets() {
     try {
       const tickets = await this.database.getTickets();
       this.allTickets.set(tickets);
-      this.displayTickets.set(tickets);
+      this.displayTickets.set(this.applyRoleFilter(tickets));
       this.closeTicketDetails();
     } catch (error) {
       console.error('Error reloading tickets:', error);

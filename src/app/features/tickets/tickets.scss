@@ -1,4 +1,4 @@
-@use '../../../../../styles' as *;
+@use '../../../styles' as *;
 .card {
   @include card();
   @include tikki-vertical-gradient-border();

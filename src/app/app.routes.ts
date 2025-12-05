@@ -26,18 +26,18 @@ export const routes: Routes = [
         canActivate: [roleGuardGuard],
         data: { role: 0 } // Company role_id
       },
-      // {
-      //   path: 'dashboard',
-      //   loadChildren: () => import('./features/dashboards/head/head-dashboard.routes'),
-      //   canActivate: [roleGuardGuard],
-      //   data: { role: 1 } // Manager role_id
-      // },
-      // {
-      //   path: 'dashboard',
-      //   loadChildren: () => import('./features/dashboards/user/user-dashboard.routes'),
-      //   canActivate: [roleGuardGuard],
-      //   data: { role: 2 } // User/Employee role_id
-      // },
+      {
+        path: 'dashboard',
+        loadChildren: () => import('./features/dashboards/head/head-dashboard.routes'),
+        canActivate: [roleGuardGuard],
+        data: { role: 1 } // Manager role_id
+      },
+      {
+        path: 'dashboard',
+        loadChildren: () => import('./features/dashboards/user/user-dashboard.routes'),
+        canActivate: [roleGuardGuard],
+        data: { role: 2 } // User/Employee role_id
+      },
     ],
   },
 ];

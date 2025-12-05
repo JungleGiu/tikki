@@ -1,5 +1,6 @@
-import { Component, effect, Input, signal, inject, Output, EventEmitter } from '@angular/core';
+import { Component, effect, Input, signal, inject, Output, EventEmitter, OnInit } from '@angular/core';
 import { Ticket } from '../../../core/models/ticket';
+import { User } from '../../../core/models/user';
 import { DatePipe } from '@angular/common';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { StatusPipe } from '../../pipes/status-pipe';
@@ -29,7 +30,7 @@ import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
   templateUrl: './ticket-details.html',
   styleUrl: './ticket-details.scss',
 })
-export class TicketDetails {
+export class TicketDetails implements OnInit {
   @Input() ticket!: Ticket;
   @Input() mode = signal<'create' | 'edit' | 'view'>('view');
   @Input() isVisible = signal<boolean>(false);
@@ -38,9 +39,18 @@ export class TicketDetails {
   deleteDialog = signal<boolean>(false);
   supabaseDb = inject(SupabaseDb);
   auth = inject(supabaseAuth);
+  users = signal<User[]>([]);
   toastService = inject(ToastAppService);
   newLocation: any = null;
 
+  async ngOnInit() {
+    try {
+      const usersData = await this.supabaseDb.getUsers();
+      this.users.set(usersData);
+    } catch (error) {
+      throw error;
+    }
+  }
   // Priority and Status mappings
   priorityOptions = [
     { value: 1, label: 'Critical' },
@@ -82,6 +92,7 @@ export class TicketDetails {
         if (this.ticket.deadline) {
           dateString = this.ticket.deadline.split('T')[0];
         }
+      
         this.editForm.patchValue(
           {
             priority: this.ticket.priority ? this.ticket.priority.toString() : '',
@@ -147,24 +158,20 @@ export class TicketDetails {
           deadlineString = deadlineValue;
         }
       }
-const currentUser = this.auth.authUser()?.id;
+      const currentUser = this.auth.authUser()?.id;
       const newTicket: createTicketDTO = {
-       created_by: currentUser ?? '', 
-    
+        created_by: currentUser ?? '',
+
         department_id: this.createForm.value.department_id
           ? parseInt(this.createForm.value.department_id)
           : 0,
         title: this.createForm.value.title ? this.createForm.value.title : '',
-        description: this.createForm.value.description
-          ? this.createForm.value.description
-          : '',
-        priority: this.createForm.value.priority
-          ? parseInt(this.createForm.value.priority)
-          : 4,
+        description: this.createForm.value.description ? this.createForm.value.description : '',
+        priority: this.createForm.value.priority ? parseInt(this.createForm.value.priority) : 4,
         deadline: deadlineString,
         location: this.newLocation ? this.newLocation : { lat: '', lon: '' },
-      assigned_to:  null,
-      status: '0',
+        assigned_to: null,
+        status: '0',
       };
 
       this.supabaseDb.createTicket(newTicket).then(() => {
@@ -175,7 +182,7 @@ const currentUser = this.auth.authUser()?.id;
     } catch (error) {
       throw error;
     }
-   }
+  }
   async onDelete(id: string) {
     try {
       await this.supabaseDb.deleteTicket(id);

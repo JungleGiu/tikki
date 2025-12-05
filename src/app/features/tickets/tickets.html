@@ -17,7 +17,7 @@
   ></app-team-table>
   <app-pagination-tool
     [elements]="allTickets"
-    (currentResults)="displayTickets.set($event)"
+    (currentResults)="onSearch($event)"
   ></app-pagination-tool>
 </div>
 
@@ -34,8 +34,7 @@
   [isVisible]="isTicketDetailsVisible"
   (recharge)="rechargeTickets()"
 ></app-ticket-details>
-}
-@if (isTicketDetailsVisible() && !ticketSelected()){
+} @if (isTicketDetailsVisible() && !ticketSelected()){
 <app-ticket-details
   [mode]="ticketdetailsMode"
   [isVisible]="isTicketDetailsVisible"

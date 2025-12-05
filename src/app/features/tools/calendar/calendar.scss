@@ -1,4 +1,4 @@
-@use '../../../../../../styles' as *;
+@use '../../../../styles' as *;
 .calendar-container {
   @include card();
   height: max-content;

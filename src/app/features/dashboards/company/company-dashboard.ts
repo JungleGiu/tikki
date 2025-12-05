@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { SupabaseDb } from '../../../core/services/supabase/supabase-db';
 import { Ticket } from '../../../core/models/ticket';
 import { Calendar } from '../../tools/calendar/calendar';
-import { Map } from './tools/map/map';
+import { Map } from '../../tools/map/map';
 import { Charts } from '../../tools/charts/charts';
 
 

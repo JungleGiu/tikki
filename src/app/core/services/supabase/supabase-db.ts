@@ -14,7 +14,6 @@ export class SupabaseDb {
 
   constructor(private toastService: ToastAppService) {}
 
- 
   async getTickets() {
     const { data, error } = await supabase.from('ticket').select('*');
     if (error) throw new AppError(error.code);
@@ -28,33 +27,27 @@ export class SupabaseDb {
   }
 
   async updateTicket(ticket: Partial<Ticket> | Ticket, id: string): Promise<Ticket> {
-    const ticketData = { ...ticket };
-
-    const { data, error } = await supabase
-      .from('ticket')
-      .update(ticketData)
-      .eq('id', id)
-      .select()
-      .single();
+    const { error } = await supabase.from('ticket').update(ticket).eq('id', id);
     if (error) throw new AppError(error.code);
+    const updatedTicket = await this.getTicketById(id);
     await this.getTickets();
     this.toastService.showSuccess('Ticket updated successfully');
-    return data as Ticket;
+    return updatedTicket;
   }
 
-  async deleteTicket(id: string): Promise<Ticket> {
-    const { data, error } = await supabase.from('ticket').delete().eq('id', id).select().single();
+  async deleteTicket(id: string): Promise<void> {
+    const { error } = await supabase.from('ticket').delete().eq('id', id);
     if (error) throw new AppError(error.code);
     await this.getTickets();
     this.toastService.showSuccess('Ticket deleted successfully');
-    return data as Ticket;
   }
   async createTicket(ticket: createTicketDTO): Promise<Ticket> {
-    const { data, error } = await supabase.from('ticket').insert(ticket).select().single();
+    const { error } = await supabase.from('ticket').insert(ticket);
     if (error) throw new AppError(error.code);
-    await this.getTickets();
+    const tickets = await this.getTickets();
+    const newTicket = tickets[tickets.length - 1];
     this.toastService.showSuccess('Ticket created successfully');
-    return data as Ticket;
+    return newTicket;
   }
   async getUsers() {
     const { data, error } = await supabase.from('users').select('*');
@@ -70,37 +63,26 @@ export class SupabaseDb {
   }
 
   async updateUser(user: User, id: string): Promise<User> {
-    const { data, error } = await supabase
-      .from('users')
-      .update(user)
-      .eq('id', id)
-      .select()
-      .single();
+    const { error } = await supabase.from('users').update(user).eq('id', id);
     if (error) throw new AppError(error.code);
+    const updatedUser = await this.getUserById(id);
     await this.getUsers();
     this.toastService.showSuccess('User updated successfully');
-    return data as User;
+    return updatedUser;
   }
 
   async updateUserFromSelf(user: Partial<User>, id: string): Promise<User> {
-    const { data, error } = await supabase
-      .from('users')
-      .update(user)
-      .eq('id', id)
-      .select()
-      .single();
+    const { error } = await supabase.from('users').update(user).eq('id', id);
     if (error) throw new AppError(error.code);
+    const updatedUser = await this.getUserById(id);
     await this.getUsers();
     this.toastService.showSuccess('User updated successfully');
-    return data as User;
+    return updatedUser;
   }
-  async deleteUser(id: string): Promise<User> {
-    const { data, error } = await supabase.from('users').delete().eq('id', id).select().single();
+  async deleteUser(id: string): Promise<void> {
+    const { error } = await supabase.from('users').delete().eq('id', id);
     if (error) throw new AppError(error.code);
     await this.getUsers();
     this.toastService.showSuccess('User deleted successfully');
-    return data as User;
   }
-
-
 }
