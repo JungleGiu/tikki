@@ -1,19 +1,28 @@
-import { Component, effect, Input, signal, inject, Output, EventEmitter, OnInit } from '@angular/core';
-import { Ticket } from '../../../core/models/ticket';
+import {
+  Component,
+  effect,
+  Input,
+  signal,
+  inject,
+  Output,
+  EventEmitter,
+  OnInit,
+} from '@angular/core';
+import { Ticket, updateTicketDTO, createTicketDTO } from '../../../core/models/ticket';
 import { User } from '../../../core/models/user';
-import { DatePipe } from '@angular/common';
+import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
+import { SupabaseDb } from '../../../core/services/supabase/supabase-db';
+import { ToastAppService } from '../../../core/services/toast/toast-service';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 import { StatusPipe } from '../../pipes/status-pipe';
 import { DepartmentPipePipe } from '../../pipes/department-pipe-pipe';
 import { PriorityPipe } from '../../pipes/priority-pipe';
 import { UserNamePipe } from '../../pipes/user-name-pipe';
-import { Badge } from '../badge/badge';
-import { ToastAppService } from '../../../core/services/toast/toast-service';
-import { ConfirmDeleteDialog } from '../confirm-delete-dialog/confirm-delete-dialog';
-import { SupabaseDb } from '../../../core/services/supabase/supabase-db';
 import { LocationInput } from '../location-input/location-input';
-import { createTicketDTO } from '../../../core/models/ticket';
-import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
+import { Badge } from '../badge/badge';
+import { ConfirmDeleteDialog } from '../confirm-delete-dialog/confirm-delete-dialog';
+import { timestamptzToDateInput, dateInputToTimestamptz } from '../../utils/date-utils';
 @Component({
   selector: 'app-ticket-details',
   imports: [
@@ -74,7 +83,9 @@ export class TicketDetails implements OnInit {
     deadline: new FormControl(''),
     location: new FormControl(''),
     assigned_to: new FormControl(''),
+    description: new FormControl(''),
     status: new FormControl(''),
+    title: new FormControl(''),
   });
 
   createForm = new FormGroup({
@@ -82,19 +93,21 @@ export class TicketDetails implements OnInit {
     title: new FormControl('', [Validators.required]),
     description: new FormControl('', [Validators.required]),
     priority: new FormControl(''),
+    assigned_to: new FormControl(''),
+    status: new FormControl(''),
     deadline: new FormControl('', [Validators.required]),
     location: new FormControl(''),
   });
   constructor() {
     effect(() => {
       if (this.mode() === 'edit' && this.ticket) {
-        let dateString = '';
-        if (this.ticket.deadline) {
-          dateString = this.ticket.deadline.split('T')[0];
-        }
-      
+        const dateString = timestamptzToDateInput(this.ticket.deadline);
+
         this.editForm.patchValue(
           {
+            title: this.ticket.title,
+            description: this.ticket.description,
+            location: this.ticket.location.name,
             priority: this.ticket.priority ? this.ticket.priority.toString() : '',
             deadline: dateString,
             assigned_to: this.ticket.assigned_to ? this.ticket.assigned_to.toString() : '',
@@ -106,62 +119,49 @@ export class TicketDetails implements OnInit {
     });
   }
 
-  onEditSubmit() {
+  async onEditSubmit() {
+    const deadlineValue = this.editForm.value.deadline;
+    const deadlineString = dateInputToTimestamptz(deadlineValue, this.ticket.deadline);
+
+    const updatedTicket: updateTicketDTO = {
+      priority: this.editForm.value.priority
+        ? parseInt(this.editForm.value.priority)
+        : this.ticket.priority,
+      deadline: deadlineString,
+      location: this.newLocation ? this.newLocation : this.ticket.location,
+      assigned_to: this.editForm.value.assigned_to
+        ? this.editForm.value.assigned_to
+        : this.ticket.assigned_to,
+      status: this.editForm.value.status
+        ? parseInt(this.editForm.value.status)
+        : this.ticket.status,
+      company_ref: this.ticket.company_ref,
+    };
+
     try {
-      if (!this.ticket) return;
-
-      const deadlineValue = this.editForm.value.deadline;
-      let deadlineString = this.ticket.deadline;
-
-      if (deadlineValue) {
-        if (!isNaN(Date.parse(deadlineValue))) {
-          const deadlineDate = new Date(deadlineValue);
-          deadlineString = deadlineDate.toISOString();
-        } else {
-          deadlineString = deadlineValue;
-        }
-      }
-
-      const updatedTicket: Partial<Ticket> = {
-        priority: this.editForm.value.priority
-          ? parseInt(this.editForm.value.priority)
-          : this.ticket.priority,
-        deadline: deadlineString,
-        location: this.newLocation ? this.newLocation : this.ticket.location,
-        assigned_to: this.editForm.value.assigned_to
-          ? this.editForm.value.assigned_to
-          : this.ticket.assigned_to,
-        status: this.editForm.value.status ? parseInt(this.editForm.value.status) : this.ticket.status,
-      };
-
-      this.supabaseDb.updateTicket(updatedTicket, this.ticket.id).then(() => {
-        this.toastService.showSuccess('Ticket updated successfully');
-        this.recharge.emit();
-        this.isVisible.set(false);
-        this.editMode.set(false);
-      });
+      await this.supabaseDb.updateTicket(updatedTicket, this.ticket.id);
+      this.toastService.showSuccess('Ticket updated successfully');
+      this.recharge.emit();
+      this.isVisible.set(false);
+      this.editMode.set(false);
+      this.mode.set('view');
+      this.editForm.reset();
+      this.newLocation = null;
     } catch (error) {
-      throw error;
+      this.toastService.showError('Error updating ticket');
+      console.error(error);
     }
   }
 
-  onCreateSubmit() {
+  async onCreateSubmit() {
     try {
       const deadlineValue = this.createForm.value.deadline;
-      let deadlineString = '';
+      const deadlineString = dateInputToTimestamptz(deadlineValue);
 
-      if (deadlineValue) {
-        if (!isNaN(Date.parse(deadlineValue))) {
-          const deadlineDate = new Date(deadlineValue);
-          deadlineString = deadlineDate.toISOString();
-        } else {
-          deadlineString = deadlineValue;
-        }
-      }
       const currentUser = this.auth.authUser()?.id;
       const newTicket: createTicketDTO = {
         created_by: currentUser ?? '',
-
+        company_ref: this.auth.appUser()?.created_by ?? '',
         department_id: this.createForm.value.department_id
           ? parseInt(this.createForm.value.department_id)
           : 0,
@@ -170,17 +170,21 @@ export class TicketDetails implements OnInit {
         priority: this.createForm.value.priority ? parseInt(this.createForm.value.priority) : 4,
         deadline: deadlineString,
         location: this.newLocation ? this.newLocation : { lat: '', lon: '' },
-        assigned_to: null,
-        status: '0',
+        assigned_to: this.createForm.value.assigned_to ? this.createForm.value.assigned_to : null,
+        status: this.createForm.value.status ? parseInt(this.createForm.value.status) : 0,
       };
 
-      this.supabaseDb.createTicket(newTicket).then(() => {
-        this.toastService.showSuccess('Ticket created successfully');
-        this.recharge.emit();
-        this.isVisible.set(false);
-      });
+      await this.supabaseDb.createTicket(newTicket);
+      this.toastService.showSuccess('Ticket created successfully');
+      this.recharge.emit();
+      this.editMode.set(false);
+      this.mode.set('view');
+      this.createForm.reset();
+      this.newLocation = null;
+      this.isVisible.set(false);
     } catch (error) {
-      throw error;
+      this.toastService.showError('Error creating ticket');
+      console.error(error);
     }
   }
   async onDelete(id: string) {
@@ -190,6 +194,9 @@ export class TicketDetails implements OnInit {
       this.recharge.emit();
       this.deleteDialog.set(false);
       this.editMode.set(false);
+      this.mode.set('view');
+      this.createForm.reset();
+      this.newLocation = null;
       this.isVisible.set(false);
     } catch (error) {
       throw error;

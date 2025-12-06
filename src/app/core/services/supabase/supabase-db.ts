@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { supabase } from './supabase-client';
 import { User } from '../../models/user';
-import { Ticket, createTicketDTO } from '../../models/ticket';
+import { Ticket, createTicketDTO, updateTicketDTO } from '../../models/ticket';
 import { AppError } from '../errors/app-error';
 import { ToastAppService } from '../toast/toast-service';
 
@@ -26,13 +26,19 @@ export class SupabaseDb {
     return data as Ticket;
   }
 
-  async updateTicket(ticket: Partial<Ticket> | Ticket, id: string): Promise<Ticket> {
-    const { error } = await supabase.from('ticket').update(ticket).eq('id', id);
-    if (error) throw new AppError(error.code);
-    const updatedTicket = await this.getTicketById(id);
-    await this.getTickets();
-    this.toastService.showSuccess('Ticket updated successfully');
-    return updatedTicket;
+  async updateTicket(ticket: updateTicketDTO, id: string): Promise<Ticket> {
+    try {
+      const { error } = await supabase.from('ticket').update(ticket).eq('id', id);
+      if (error) {
+        throw new AppError(error.code);
+      }
+      const updatedTicket = await this.getTicketById(id);
+      await this.getTickets();
+      return updatedTicket;
+    } catch (error) {
+      console.error('Error in updateTicket:', error);
+      throw error;
+    }
   }
 
   async deleteTicket(id: string): Promise<void> {
@@ -45,9 +51,9 @@ export class SupabaseDb {
     const { error } = await supabase.from('ticket').insert(ticket);
     if (error) throw new AppError(error.code);
     const tickets = await this.getTickets();
-    const newTicket = tickets[tickets.length - 1];
+
     this.toastService.showSuccess('Ticket created successfully');
-    return newTicket;
+    return tickets[tickets.length - 1];
   }
   async getUsers() {
     const { data, error } = await supabase.from('users').select('*');
