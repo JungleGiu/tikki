@@ -19,6 +19,11 @@ export class AuthLayout {
   authService = inject(supabaseAuth);
   user = this.authService.appUser();
 
+  constructor() {
+    if (!this.user) {
+      this.authService.loadAppUser(this.authService.authUser()?.id!);
+    }
+  }
   allFeatures: Feature[] = [
     { key: 'dashboard', path: 'dashboard', label: 'Dashboard' },
     { key: 'tickets', path: 'dashboard/tickets', label: 'Tickets' },

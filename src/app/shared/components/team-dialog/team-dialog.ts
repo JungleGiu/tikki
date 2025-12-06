@@ -1,9 +1,38 @@
-import { Component, Input, Output, EventEmitter, effect, signal, inject, computed } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  effect,
+  signal,
+  inject,
+  computed,
+} from '@angular/core';
 import { User } from '../../../core/models/user';
 import { LocationInput } from '../location-input/location-input';
-import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
 import { ToastAppService } from '../../../core/services/toast/toast-service';
 import { config } from '../../../shared/config';
+
+// Custom validator for password matching
+function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+  const password = control.get('password')?.value;
+  const confirmPassword = control.get('confirmPassword')?.value;
+
+  if (!password || !confirmPassword) {
+    return null;
+  }
+
+  return password === confirmPassword ? null : { mustMatch: true };
+}
+
 @Component({
   selector: 'app-team-dialog',
   imports: [LocationInput, ReactiveFormsModule],
@@ -28,20 +57,23 @@ export class TeamDialog {
     email: new FormControl('', [Validators.required, Validators.pattern(config.regex.email)]),
     role: new FormControl('', Validators.required),
   });
-  passwordForm = new FormGroup({
-    password: new FormControl('', [
-      Validators.required,
-      Validators.minLength(8),
-      Validators.maxLength(24),
-      Validators.pattern(config.regex.password),
-    ]),
-    confirmPassword: new FormControl('', [
-      Validators.required,
-      Validators.minLength(8),
-      Validators.maxLength(24),
-      Validators.pattern(config.regex.password),
-    ]),
-  });
+  passwordForm = new FormGroup(
+    {
+      password: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.maxLength(24),
+        Validators.pattern(config.regex.password),
+      ]),
+      confirmPassword: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.maxLength(24),
+        Validators.pattern(config.regex.password),
+      ]),
+    },
+    { validators: passwordMatchValidator }
+  );
   constructor() {
     effect(() => {
       const userData = this.user();
@@ -70,13 +102,8 @@ export class TeamDialog {
       this.toast.showWarning('Please reset your password for your next login');
       return;
     }
-    const { password, confirmPassword } = this.passwordForm.value;
-    if (password !== confirmPassword) {
-      this.toast.showWarning('Passwords do not match');
-      return;
-    }
     this.submit.emit(this.userForm.value as User);
-    this.passwordChange.emit(password);
+    this.passwordChange.emit(this.passwordForm.value.password);
   }
 
   onSaveLocation(location: any) {

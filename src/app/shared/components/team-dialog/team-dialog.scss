@@ -18,41 +18,40 @@
   @include card();
   @include tikki-vertical-gradient-border();
   width: 50rem;
-  height: 30rem;
- display : flex;
- flex-direction: column;
- align-items: center;
- justify-content: center;
-
-
- header{
+  max-height: auto;
+  overflow: visible;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-around;
- 
- }
-  .close{
+  justify-content: flex-start;
+  padding: 2rem 3rem;
+
+  header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+  }
+  .close {
     position: absolute;
     top: 1rem;
     right: 1rem;
     cursor: pointer;
     background-color: red;
-    padding: 0.5rem 1rem; 
+    padding: 0.5rem 1rem;
     border-radius: 25%;
- 
   }
-  input,select{
+  input,
+  select {
     @include input();
-    margin: 0.5rem 0;
+    width: 60%;
   }
 
-  option{
-  top: 2.1rem;
-}
+  option {
+    top: 2.1rem;
+  }
 
-
- .modal-button{
+  .modal-button {
     display: flex;
     flex-direction: row;
     align-items: flex-end;
@@ -62,28 +61,69 @@
 }
 
 form {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center ;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 2rem;
-  margin: 3rem auto;
+  margin: 2rem auto;
+  width: 100%;
 }
-.field{
+.field {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
   gap: 0.5rem;
-}
+  min-height: 75px;
 
-button {
-  @include tikki-vertical-gradient-border(3rem, 2px, --primary-color);
-  @include button();
-}
-span{
+  span {
     color: red;
-    font-size:x-small;
+    font-size: x-small;
     position: relative;
-    
     text-align: left;
- }
+    margin-top: 0.25rem;
+    min-height: 1rem;
+  }
+}
+button {
+  @include tikki-vertical-gradient-border(2.5rem, 3px, var(--primary-color));
+  color: var(--background-color);
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.5rem 2rem;
+  cursor: pointer;
+  &:hover {
+    @include tikki-vertical-gradient-border();
+    color: var(--primary-color);
+  }
+}
+#passwordForm {
+  display: grid;
+  grid-template-columns: 1fr;
+gap:0;
+  width: 100%;
+  margin-top: 0;
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    min-height: 120px;
+    padding-bottom: 1rem;
+
+    input {
+      width: 100%;
+    }
+
+    span {
+      color: red;
+      font-size: x-small;
+      position: relative;
+      text-align: left;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+    }
+  }
+}

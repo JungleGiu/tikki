@@ -28,19 +28,10 @@ export class Teams implements OnInit {
   companyId = this.auth.authUser()?.id;
   deleteConfirmation = signal<boolean>(false);
 
-  async ngOnInit() {
-    this.database
-      .getUsers()
-      .then(() => {
-        const filteredUsers = this.database
-          .users()
-          .filter((user) => user.id !== this.auth.authUser()?.id);
-        this.allUsers.set(filteredUsers);
-        this.displayUsers.set(filteredUsers);
-      })
-      .catch((error) => {
-        throw new AppError(error.code);
-      });
+  ngOnInit() {
+    const filteredUsers = this.auth.users().filter((user) => user.id !== this.auth.authUser()?.id);
+    this.allUsers.set(filteredUsers);
+    this.displayUsers.set(filteredUsers);
   }
 
   openCreateDialog() {
@@ -69,10 +60,9 @@ export class Teams implements OnInit {
     this.visible.set(false);
     this.userSelected.set(null);
     this.locationSelected.set(null);
-    await this.database.getUsers();
-    let filteredUsers = this.database
+    let filteredUsers = this.auth
       .users()
-      .filter((user) => user.id !== this.auth.authUser()?.id);
+      .filter((user: User) => user.id !== this.auth.authUser()?.id);
     this.displayUsers.set(filteredUsers);
     this.allUsers.set(filteredUsers);
   }
@@ -92,8 +82,9 @@ export class Teams implements OnInit {
     if (success) {
       this.toast.showSuccess('User created successfully');
     }
-    const newUsers = await this.database.getUsers();
-    const filteredUsers = newUsers.filter((user) => user.created_by === this.companyId);
+    const filteredUsers = this.auth
+      .users()
+      .filter((user: User) => user.created_by === this.companyId);
     this.allUsers.set(filteredUsers);
     this.displayUsers.set(filteredUsers);
     this.closeDialog();
@@ -112,9 +103,9 @@ export class Teams implements OnInit {
     };
 
     await this.database.updateUser(user, this.userSelected()!.id!);
-    const filteredUsers = this.database
+    const filteredUsers = this.auth
       .users()
-      .filter((user) => user.created_by === this.companyId);
+      .filter((user: User) => user.created_by === this.companyId);
     this.allUsers.set(filteredUsers);
     this.displayUsers.set(filteredUsers);
     this.closeDialog();
@@ -134,9 +125,9 @@ export class Teams implements OnInit {
     }
     this.deleteConfirmation.set(false);
     await this.database.deleteUser(id);
-    const filteredUsers = this.database
+    const filteredUsers = this.auth
       .users()
-      .filter((user) => user.created_by === this.companyId);
+      .filter((user: User) => user.created_by === this.companyId);
     this.allUsers.set(filteredUsers);
     this.displayUsers.set(filteredUsers);
   }

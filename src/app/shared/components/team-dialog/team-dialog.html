@@ -28,7 +28,7 @@
         <app-location-input (newLocation)="onSaveLocation($event)"></app-location-input>
         } @else {
         <app-location-input
-          [location]="user()?.location "
+          [location]="user()?.location"
           (newLocation)="onSaveLocation($event)"
         ></app-location-input>
         }
@@ -74,14 +74,41 @@
         } }
       </div>
       } @if (mode() === 'onboarding') {
-      <form [formGroup]="passwordForm">
+      <form id="passwordForm" [formGroup]="passwordForm">
         <div class="field">
           <label>Password</label>
           <input formControlName="password" type="password" placeholder="Password" />
+          @let password = passwordForm.controls.password; @if (password.invalid && password.touched)
+          { @if (password.errors?.['minlength']) {
+          <span class="pwd">Password must be at least 8 characters</span>
+          } @else if (password.errors?.['required']) {
+          <span class="pwd">Password is required</span> } @else if (password.errors?.['maxlength'])
+          {
+          <span class="pwd">Password must be at most 24 characters</span>
+          } @else if (password.errors?.['pattern']) {
+          <span class="pwd"
+            >Password must contain at least one uppercase letter, one lowercase letter, one number,
+            one special character</span
+          >
+          } }
         </div>
         <div class="field">
           <label>Confirm Password</label>
           <input formControlName="confirmPassword" type="password" placeholder="Confirm Password" />
+          @let confirmPassword = passwordForm.controls.confirmPassword; @if (confirmPassword.invalid
+          && confirmPassword.touched) { @if (confirmPassword.errors?.['required']) {
+          <span class="pwd">Confirm Password is required</span>
+          } @else if (confirmPassword.errors?.['minlength']) {
+          <span class="pwd">Password must be at least 8 characters</span>
+          } @else if (confirmPassword.errors?.['maxlength']) {
+          <span class="pwd">Password must be at most 24 characters</span>
+          } @else if (confirmPassword.errors?.['pattern']) {
+          <span class="pwd"
+            >Password must contain uppercase, lowercase, number, and special character</span
+          >
+          } } @if (passwordForm.errors?.['mustMatch'] && confirmPassword.touched) {
+          <span class="pwd">Passwords must match</span>
+          }
         </div>
       </form>
       }

@@ -3,6 +3,8 @@ import { supabase } from './supabase-client';
 import type { Session } from '@supabase/supabase-js';
 import { User, Company } from '../../models/user';
 import { AppError } from '../errors/app-error';
+import { Ticket } from '../../models/ticket';
+import { SupabaseDb } from './supabase-db';
 
 @Injectable({
   providedIn: 'root',
@@ -12,8 +14,11 @@ export class supabaseAuth {
   sessionSignal = signal<Session | null>(undefined as any);
   authUser = computed(() => this.sessionSignal()?.user ?? null);
   appUser = signal<User | null>(null);
+  tickets = signal<Array<Ticket>>([]);
+  users = signal<Array<User>>([]);
+  SessionData = computed(() => [this.tickets(), this.users()]);
   isInitialized = signal(false);
-  constructor() {
+  constructor(private supabaseDb: SupabaseDb) {
     this.supabaseAuth.auth
       .getSession()
       .then(({ data }) => {
@@ -29,15 +34,27 @@ export class supabaseAuth {
       this.isInitialized.set(true);
       if (session?.user) {
         this.loadAppUser(session.user.id);
+        this.loadUserData();
       }
     });
-
   }
 
   async loadAppUser(id: string) {
     const { data, error } = await this.supabaseAuth.from('users').select('*').eq('id', id).single();
     this.appUser.set(data ?? null);
     if (error) throw new AppError(error.code);
+  }
+
+  private async loadUserData() {
+    try {
+      const ticketsData = await this.supabaseDb.getTickets();
+      this.tickets.set(ticketsData);
+
+      const usersData = await this.supabaseDb.getUsers();
+      this.users.set(usersData);
+    } catch (error) {
+      console.error('Failed to load user data:', error);
+    }
   }
 
   async registerCompany(company: Company, email: string, password: string) {

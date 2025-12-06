@@ -1,4 +1,5 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
+import { supabaseAuth } from '../../core/services/supabase/supabaseAuth';
 import { SupabaseDb } from '../../core/services/supabase/supabase-db';
 import { KanbanColumn } from '../../shared/components/kanban-column/kanban-column';
 import { Ticket } from '../../core/models/ticket';
@@ -16,12 +17,13 @@ interface KanColumn {
   styleUrl: './kanban.scss',
 })
 export class Kanban implements OnInit {
+  supabaseAuth = inject(supabaseAuth);
   supabaseDb = inject(SupabaseDb);
   states = [0, 1, 2, 3];
   kanbanColumns = signal<Array<KanColumn>>([]);
 
-  async ngOnInit() {
-    const tickets = await this.supabaseDb.getTickets();
+   ngOnInit() {
+    const tickets = this.supabaseAuth.tickets();
     const columns: Array<KanColumn> = this.states.map((state) => ({
       title: this.getStateTitle(state),
       tickets: tickets.filter((ticket) => ticket.status === state),

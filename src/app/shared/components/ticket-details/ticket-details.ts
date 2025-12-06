@@ -52,13 +52,9 @@ export class TicketDetails implements OnInit {
   toastService = inject(ToastAppService);
   newLocation: any = null;
 
-  async ngOnInit() {
-    try {
-      const usersData = await this.supabaseDb.getUsers();
-      this.users.set(usersData);
-    } catch (error) {
-      throw error;
-    }
+  ngOnInit() {
+    // Use centralized users from auth service
+    this.users.set(this.auth.users());
   }
   // Priority and Status mappings
   priorityOptions = [

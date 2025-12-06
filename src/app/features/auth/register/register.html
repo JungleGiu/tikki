@@ -4,46 +4,37 @@
       <h1>Register your team</h1>
     </header>
 
-    <form [formGroup]="registerForm">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       <div class="field">
         @let teamName = registerForm.controls.teamName;
         <label>Company name</label>
         <input formControlName="teamName" type="text" placeholder="Company name" />
-        @if (teamName.invalid && teamName.touched ) {
-        @if (teamName.errors?.['required']) {
-            <span>Company name is required</span>
-        }
-        @if (teamName.errors?.['minlength']) {
-            <span>Team name must be at least 3 characters</span>
-        }
-        @if (teamName.errors?.['maxlength']) {
-          
-          <span>Team name must be at most 24 characters</span>
-        }
-        }
+        @if (teamName.invalid && teamName.touched ) { @if (teamName.errors?.['required']) {
+        <span>Company name is required</span>
+        } @if (teamName.errors?.['minlength']) {
+        <span>Team name must be at least 3 characters</span>
+        } @if (teamName.errors?.['maxlength']) {
+
+        <span>Team name must be at most 24 characters</span>
+        } }
       </div>
-   
+
       <div class="field">
-        @let adminEmail = registerForm.controls.adminEmail; 
+        @let adminEmail = registerForm.controls.adminEmail;
         <label>Admin Email</label>
         <input formControlName="adminEmail" type="email" placeholder="Admin Email" />
-        @if (adminEmail.invalid && adminEmail.touched ) {
-        @if (adminEmail.errors?.['required']) {
+        @if (adminEmail.invalid && adminEmail.touched ) { @if (adminEmail.errors?.['required']) {
         <span>Admin email is required</span>
-        }
-         @if (adminEmail.errors?.['pattern']) {
+        } @if (adminEmail.errors?.['pattern']) {
         <span>Please enter a valid email</span>
-        }
-     
-    }
+        } }
       </div>
       <div class="field">
         @let password = registerForm.controls.password;
         <label> Password</label>
         <input formControlName="password" type="password" placeholder="Password" />
 
-        @if (password.invalid && password.touched) 
-        { @if (password.errors?.['minlength']) {
+        @if (password.invalid && password.touched) { @if (password.errors?.['minlength']) {
         <span class="pwd">Password must be at least 8 characters</span>
         } @else if (password.errors?.['required']) {
         <span class="pwd">Password is required</span> } @else if (password.errors?.['maxlength']) {
@@ -57,7 +48,7 @@
       </div>
     </form>
     <div class="button">
-      <button (click)="onSubmit()">Register your Team</button>
+      <button type="submit" form="registerForm">Register your Team</button>
     </div>
   </div>
 </main>

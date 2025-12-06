@@ -1,68 +1,58 @@
-import { Component } from '@angular/core';
-import { Dashboard } from '../company/company-dashboard';
-import { inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
+import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
 import { SupabaseDb } from '../../../core/services/supabase/supabase-db';
 import { Ticket } from '../../../core/models/ticket';
+
 @Component({
   selector: 'app-head-dashboard',
   imports: [],
   templateUrl: './head-dashboard.html',
   styleUrl: './head-dashboard.scss',
 })
-export class HeadDashboard{
- database = inject(SupabaseDb);
-  tickets = signal<Ticket[]>([]);
+export class HeadDashboard {
+  session = inject(supabaseAuth);
+  database = inject(SupabaseDb);
   events = signal<any[]>([]);
   locations = signal<any[]>([]);
 
-  ngOnInit() {
-    this.loadDashboardData();
+  constructor() {
+    // Whenever tickets change, recalculate events and locations
+    effect(() => {
+      const tickets = this.session.tickets();
+      if (tickets.length > 0) {
+        this.updateDashboardData(tickets);
+      }
+    });
   }
 
-  private loadDashboardData() {
-    this.database
-    .getTickets()
-    .then((data) => {
-      
-        this.tickets.set(data);
 
-       const locs = data.map((ticket) => {
-      
-          return {
-            lat: ticket.location.lat,
-            lng: ticket.location.lon,
-            title: ticket.title,
-            id: ticket.id,
-          };
-        });
+  private updateDashboardData(tickets: Ticket[]) {
+    const locs = tickets.map((ticket) => ({
+      lat: ticket.location.lat,
+      lng: ticket.location.lon,
+      title: ticket.title,
+      id: ticket.id,
+    }));
 
-        const events = data.map((ticket) => ({
-          title: ticket.title,
-          start: ticket.deadline,
-          end: ticket.deadline,
-          extendedProps: {
-            ticketData: ticket,
-          },
-        }));
+    const events = tickets.map((ticket) => ({
+      title: ticket.title,
+      start: ticket.deadline,
+      end: ticket.deadline,
+      extendedProps: {
+        ticketData: ticket,
+      },
+    }));
 
-        this.events.set(events);
-        this.locations.set(locs);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    this.database
-      .getUsers()
-      .then((data) => {
-        this.database.users.set(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    this.events.set(events);
+    this.locations.set(locs);
   }
 
-  rechargeData() {
-    this.loadDashboardData();
+  async rechargeData() {
+    try {
+      const freshTickets = await this.database.getTickets();
+      this.session.tickets.set(freshTickets);
+    } catch (error) {
+      console.error('Failed to refresh data:', error);
+    }
   }
 }

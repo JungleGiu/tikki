@@ -1,9 +1,9 @@
-<main>
+<section>
   <div class="card">
     <header>
       <h1>Enter your Hub</h1>
     </header>
-    <form [formGroup]="loginForm">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div class="field">
         <label> Email</label>
         <input formControlName="email" type="email" placeholder="Email" />
@@ -17,4 +17,4 @@
       <button (click)="onSubmit()">Enter your Hub</button>
     </div>
   </div>
-</main>
+</section>

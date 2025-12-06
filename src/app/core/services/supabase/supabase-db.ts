@@ -9,15 +9,14 @@ import { ToastAppService } from '../toast/toast-service';
   providedIn: 'root',
 })
 export class SupabaseDb {
-  users = signal<User[]>([]);
-  tickets = signal<Ticket[]>([]);
+
 
   constructor(private toastService: ToastAppService) {}
 
   async getTickets() {
     const { data, error } = await supabase.from('ticket').select('*');
     if (error) throw new AppError(error.code);
-    this.tickets.set(data as Ticket[]);
+   
     return data as Ticket[];
   }
   async getTicketById(id: string) {
@@ -58,7 +57,6 @@ export class SupabaseDb {
   async getUsers() {
     const { data, error } = await supabase.from('users').select('*');
     if (error) throw new AppError(error.code);
-    this.users.set(data as User[]);
     return data as User[];
   }
 

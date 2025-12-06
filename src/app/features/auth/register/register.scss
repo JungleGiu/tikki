@@ -1,79 +1,74 @@
 @use '../../../../styles.scss' as *;
 
 main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
-header{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between; 
-    padding: 0 0 2rem 0;
-   h1{
-    font-size: 1.4rem;}
+header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 2rem 0;
+  h1 {
+    font-size: 1.4rem;
+  }
 }
-.card{
-     @include tikki-vertical-gradient-border();
-  padding: 3rem;
+.card {
+  @include tikki-vertical-gradient-border();
+  padding: 2rem 3rem;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  width: 60%;
+  max-width: 600px;
   height: 48%;
   margin: 2rem auto;
 }
 form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 3rem;
+  height: fit-content;
+
+  .field {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     justify-content: flex-start;
-    align-items: center;
-   gap: 3rem;
-   height: fit-content; 
+    gap : 0.5rem;
+    width: 35%;
+    min-height: 90px;
 
-   .field{
-       display: flex;
-       flex-direction: column;
-       justify-content: flex-start;
-      
-       width: 35%;
-       input {
-        @include input;
-        margin: 0 0;
-       }
-          label{
-           font-size: 0.9rem;
-          
-       }
-   }
+    input {
+      @include input;
+      margin: 0 0;
+    }
+    label {
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    span {
+      color: red;
+      font-size: x-small;
+      position: relative;
+      text-align: left;
+    
+      min-height: 1rem;
+    }
+  }
 }
-.button{
-    display: flex;
-    justify-content: flex-end;
-    margin: 3rem 0.2rem 0 0;
+.button {
+  display: flex;
+  justify-content: flex-end;
+
 }
-button{
+button {
   @include button;
-    @include tikki-vertical-gradient-border(3rem, 3px , var(--primary-color));
-    margin: 0 1rem;
-    font-size: 1.2rem;
+  @include tikki-vertical-gradient-border(3rem, 3px, var(--primary-color));
+  margin: 0 1rem;
+  font-size: 1.2rem;
 }
-
- span{
-    color: red;
-    font-size:x-small;
-    position: relative;
-    
-    text-align: left;
- }
- .pwd{
-    color: red;
-    font-size:x-small;
-    position: relative;
-    
-    text-align: left;
-    width: 100%;
-    
- }

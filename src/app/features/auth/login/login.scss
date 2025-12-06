@@ -1,66 +1,72 @@
 @use '../../../../styles.scss' as *;
 
-main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  padding: 2rem;
 }
-header{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center; 
-    padding: 0 2rem;
-   h1{
-    font-size: 1.4rem;}
+
+header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2rem;
+  h1 {
+    font-size: 1.4rem;
+  }
 }
-.card{
-     @include tikki-vertical-gradient-border();
-  padding: 2rem 0;
-  width: 50%;
-  height: 50%;
-  margin: 2rem auto;
+
+.card {
+  @include tikki-vertical-gradient-border();
+  padding: 2rem 3rem;
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  margin: 2rem;
+
+  .field {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-   gap: 2rem;
-   margin:2rem;
-
-   
-   .field{
-       display: flex;
-       flex-direction: column;
-       width: 60%;
-       label{
-           font-size: 0.9rem;
-          
-       }
-       input {
-        @include input;
-    
-       }
-   }
+    width: 80%;
+    gap: 0.5rem;
+    label {
+      font-size: 0.9rem;
+    }
+    input {
+      @include input;
+    }
+  }
 }
-.button{
-    display: flex;
-    justify-content: center;
-    margin: 3rem 0.2rem 0 0;
+.button {
+  display: flex;
+  justify-content: center;
+  margin: 3rem 0.2rem 0 0;
 }
-button{
+button {
   @include button;
-    @include tikki-vertical-gradient-border(3rem, 3px , var(--primary-color));
-    margin: 0 1rem;
-    font-size: 1.2rem;
+  @include tikki-vertical-gradient-border(3rem, 3px, var(--primary-color));
+  margin: 0 1rem;
+  font-size: 1.2rem;
 }
 
- span{
-    color: red;
-    font-size:x-small;
-    display: block;
-    position: relative;
-    text-align: left;
- }
+span {
+  color: red;
+  font-size: x-small;
+  display: block;
+  position: relative;
+  text-align: left;
+}
