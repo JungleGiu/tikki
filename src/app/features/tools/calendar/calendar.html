@@ -1,4 +1,8 @@
 <div class="calendar-container">
-    <full-calendar class="calendar" [options]="calendarOptions"></full-calendar>
+  <full-calendar class="calendar" [options]="calendarOptions()"></full-calendar>
 </div>
-<app-ticket-details (recharge)="onrechargeData()" [isVisible]="isVisible" [ticket]="ticket()"></app-ticket-details>
+<app-ticket-details
+  (recharge)="onrechargeData()"
+  [isVisible]="isVisible"
+  [ticket]="ticket()"
+></app-ticket-details>

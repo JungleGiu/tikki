@@ -1,6 +1,12 @@
-<section #kanbanContainer cdkDropListGroup  id="kanban">
-  @for (kanbacolumn of kanbanColumns(); track kanbacolumn.title) {
-  <app-kanba-column cdkDropList [cdkDropListData]="kanbacolumn.tickets" [title]="kanbacolumn.title" (cdkDropListDropped)="drop($event)">
+<section #kanbanContainer cdkDropListGroup id="kanban">
+  @for (kanbacolumn of kanbanColumns(); let i = $index; track kanbacolumn.title) {
+  <app-kanba-column
+    [id]="i.toString()"
+    cdkDropList
+    [cdkDropListData]="kanbacolumn.tickets"
+    [title]="kanbacolumn.title"
+    (cdkDropListDropped)="drop($event)"
+  >
     @for (ticket of kanbacolumn.tickets; track ticket.id) {
     <app-kanban-card
       cdkDrag
@@ -11,3 +17,6 @@
   </app-kanba-column>
   }
 </section>
+@if (assignModalVisible()) {
+<app-kanban-assign (close)="onAssignConfirm($event)"></app-kanban-assign>
+}

@@ -1,0 +1,14 @@
+<div class="overlay-modal">
+  <div class="modal">
+    <header>
+      <h3>Select a user to assign this ticket to</h3>
+    </header>
+    <select [(ngModel)]="userId">
+      <option [value]="null">Unassigned</option>
+      @for (user of users(); track user.id) {
+      <option [value]="user.id">{{ user.name }}</option>
+      }
+    </select>
+    <div class="modal-buttons"><button (click)="close.emit(userId)">Assign</button></div>
+  </div>
+</div>

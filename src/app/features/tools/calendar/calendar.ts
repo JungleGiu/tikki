@@ -1,4 +1,4 @@
-import { Component, Input,  signal, OnChanges, SimpleChanges, EventEmitter , Output} from '@angular/core';
+import { Component, input, signal, effect, EventEmitter, Output } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CommonModule } from '@angular/common';
 import { CalendarOptions } from '@fullcalendar/core'; // useful for typechecking
@@ -12,27 +12,25 @@ import { TicketDetails } from '../../../shared/components/ticket-details/ticket-
   templateUrl: './calendar.html',
   styleUrl: './calendar.scss',
 })
-export class Calendar implements OnChanges {
-  @Input() events: any[] = [];
-  calendarOptions!: CalendarOptions;
+export class Calendar {
+  events = input<any[]>([]);
+  calendarOptions = signal<CalendarOptions>({});
   isVisible = signal<boolean>(false);
   ticket = signal<Ticket>({} as Ticket);
   @Output() recharge = new EventEmitter<void>();
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['events'] && !changes['events'].firstChange) {
-      this.updateCalendarOptions();
-    }
-  }
-  
+
   constructor() {
-    this.updateCalendarOptions();
+    effect(() => {
+      const eventsData = this.events();
+      this.updateCalendarOptions(eventsData);
+    });
   }
-  
-  private updateCalendarOptions(): void {
-    this.calendarOptions = {
+
+  private updateCalendarOptions(eventsData: any[]): void {
+    const options: CalendarOptions = {
       initialView: 'currentMonth',
       plugins: [multimonthPlugin, dayGridPlugin],
-      events: this.events,
+      events: eventsData,
       dayMaxEvents: true,
       views: {
         multiMonthFourMonth: {
@@ -63,11 +61,12 @@ export class Calendar implements OnChanges {
         this.openTicket(ticket);
       },
     };
+    this.calendarOptions.set(options);
   }
 
   openTicket(ticket: Ticket) {
     this.isVisible.set(true);
-    console.log ('Opening ticket from calendar:', ticket.id);
+    console.log('Opening ticket from calendar:', ticket.id);
     this.ticket.set(ticket);
   }
   onrechargeData() {

@@ -37,4 +37,5 @@ export interface updateTicketDTO {
   deadline?: string;
   location?: Location;
   company_ref?: string;
+  resolved_at?: string | null;
 }

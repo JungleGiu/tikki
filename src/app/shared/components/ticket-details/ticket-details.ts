@@ -75,10 +75,10 @@ export class TicketDetails implements OnInit {
     this.newLocation = location;
   }
   editForm = new FormGroup({
-    priority: new FormControl(''),
+    priority: new FormControl<string>(''),
     deadline: new FormControl(''),
     location: new FormControl(''),
-    assigned_to: new FormControl(''),
+    assigned_to: new FormControl<string | null>(null),
     description: new FormControl(''),
     status: new FormControl(''),
     title: new FormControl(''),
@@ -119,19 +119,35 @@ export class TicketDetails implements OnInit {
     const deadlineValue = this.editForm.value.deadline;
     const deadlineString = dateInputToTimestamptz(deadlineValue, this.ticket.deadline);
 
+    // Determine assigned_to value
+    const assignedToValue = this.editForm.value.assigned_to
+      ? this.editForm.value.assigned_to
+      : null;
+    const statusValue = this.editForm.value.status
+      ? parseInt(this.editForm.value.status)
+      : this.ticket.status;
+
+    if ((statusValue === 1 || statusValue === 2 || statusValue === 3) && !assignedToValue) {
+      this.toastService.showWarning(
+        'Please assign the ticket to a user before changing its status.'
+      );
+      return;
+    }
+
+    const finalAssignedTo = statusValue === 0 ? null : assignedToValue;
+
+    const resolvedAt = statusValue === 3 ? new Date().toISOString() : null;
+
     const updatedTicket: updateTicketDTO = {
       priority: this.editForm.value.priority
         ? parseInt(this.editForm.value.priority)
         : this.ticket.priority,
       deadline: deadlineString,
       location: this.newLocation ? this.newLocation : this.ticket.location,
-      assigned_to: this.editForm.value.assigned_to
-        ? this.editForm.value.assigned_to
-        : this.ticket.assigned_to,
-      status: this.editForm.value.status
-        ? parseInt(this.editForm.value.status)
-        : this.ticket.status,
+      assigned_to: finalAssignedTo,
+      status: statusValue,
       company_ref: this.ticket.company_ref,
+      resolved_at: resolvedAt,
     };
 
     try {
