@@ -2,7 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { SupabaseDb } from '../../core/services/supabase/supabase-db';
 import { KanbanColumn } from '../../shared/components/kanban-column/kanban-column';
 import { Ticket } from '../../core/models/ticket';
-import { CdkDrag, transferArrayItem } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDropListGroup, CdkDropList, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { KanbanCard } from '../../shared/components/kanban-card/kanban-card';
 
 interface KanColumn {
@@ -11,7 +11,7 @@ interface KanColumn {
 }
 @Component({
   selector: 'app-kanban',
-  imports: [KanbanColumn, CdkDrag, KanbanCard],
+  imports: [KanbanColumn, CdkDrag, KanbanCard, CdkDropList, CdkDropListGroup],
   templateUrl: './kanban.html',
   styleUrl: './kanban.scss',
 })
@@ -29,22 +29,36 @@ export class Kanban implements OnInit {
     this.kanbanColumns.set(columns);
   }
 
-  onDrop(event: any) {
-    if (event.previousContainer === event.container) {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    } else {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    }
+drop(event: CdkDragDrop<Ticket[]>) {
+  const { container, previousIndex, currentIndex, previousContainer} = event;
+
+  if (container === previousContainer) {
+    moveItemInArray(container.data, previousIndex, currentIndex);
+    
+  }else {
+  transferArrayItem(
+      previousContainer.data,
+      container.data,
+      previousIndex,
+      currentIndex
+    );
+
+    const movedTicket = container.data[currentIndex];
+    const newStatus = this.states[container.id as unknown as number];
+
+    this.supabaseDb.updateTicket( { status: newStatus }, movedTicket.id!)
+      .catch((error) => {
+        console.error('Error updating ticket status:', error);
+        transferArrayItem(
+          container.data,
+          previousContainer.data,
+          currentIndex,
+          previousIndex
+        );
+      });
+    };
+ 
+ 
   }
 
 
