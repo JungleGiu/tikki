@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, effect } from '@angular/core';
+import { Component, inject, signal, OnInit, effect, OnDestroy } from '@angular/core';
 import { supabaseAuth } from '../../core/services/supabase/supabaseAuth';
 import { SupabaseDb } from '../../core/services/supabase/supabase-db';
 import { KanbanColumn } from '../../shared/components/kanban-column/kanban-column';
@@ -23,7 +23,6 @@ interface KanColumn {
   selector: 'app-kanban',
   imports: [
     KanbanColumn,
-  
     KanbanCard,
     CdkDropList,
     CdkDropListGroup,
@@ -32,7 +31,7 @@ interface KanColumn {
   templateUrl: './kanban.html',
   styleUrl: './kanban.scss',
 })
-export class Kanban implements OnInit {
+export class Kanban implements OnInit, OnDestroy {
   supabaseAuth = inject(supabaseAuth);
   supabaseDb = inject(SupabaseDb);
   states = [0, 1, 2, 3];
@@ -40,7 +39,7 @@ export class Kanban implements OnInit {
   assignModalVisible = signal<boolean>(false);
   pendingTicket = signal<Ticket | null>(null);
   pendingNewStatus = signal<number | null>(null);
-
+  isLocalUpdate = signal<boolean>(false);
   constructor() {
     effect(() => {
       const tickets = this.supabaseAuth.tickets();
@@ -51,6 +50,37 @@ export class Kanban implements OnInit {
   ngOnInit() {
     const tickets = this.supabaseAuth.tickets();
     this.updateKanbanColumns(tickets);
+    this.supabaseDb.ticketsUpdatesListener((payload) => {
+      this.handleTicketUpdate(payload)
+    });
+  }
+  ngOnDestroy(): void {
+    this.supabaseDb.unsubscribeFromTicketUpdates();
+  }
+
+  private handleTicketUpdate(payload: any) {
+    if (this.isLocalUpdate()) {
+      this.isLocalUpdate.set(false);
+      return;
+    }
+
+    console.log('Handling remote ticket update:', payload);
+    
+    // Reload tickets from auth service (which fetches latest data)
+    const tickets = this.supabaseAuth.tickets();
+    
+    if (payload.eventType === 'DELETE') {
+      // Remove deleted ticket
+      const filtered = tickets.filter((t) => t.id !== payload.old.id);
+      this.supabaseAuth.tickets.set(filtered);
+    } else if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
+      // For real-time to work properly, you'll want to refetch
+      // But for now, update the specific ticket in memory
+      const updatedTickets = tickets.map((t) =>
+        t.id === payload.new.id ? { ...t, ...payload.new } : t
+      );
+      this.supabaseAuth.tickets.set(updatedTickets);
+    }
   }
 
   private updateKanbanColumns(tickets: Ticket[]) {
@@ -58,7 +88,6 @@ export class Kanban implements OnInit {
     const columns: Array<KanColumn> = this.states.map((state) => {
       const stateTickets = tickets.filter((ticket) => ticket.status === state);
 
-      // Sort: my department tickets first, then others
       const sorted = stateTickets.sort((a, b) => {
         const aIsMyDept = appUser && a.department_id === appUser.department_id ? 0 : 1;
         const bIsMyDept = appUser && b.department_id === appUser.department_id ? 0 : 1;
@@ -77,35 +106,20 @@ export class Kanban implements OnInit {
     const { container, previousIndex, currentIndex, previousContainer } = event;
     const movedTicket = previousContainer.data[previousIndex];
     const appUser = this.supabaseAuth.appUser();
-
-    // Only allow dragging tickets from your own department
     if (!appUser || movedTicket.department_id !== appUser.department_id) {
-      // Revert the drag
       return;
     }
-
     if (container === previousContainer) {
       moveItemInArray(container.data, previousIndex, currentIndex);
       return;
     }
-
     transferArrayItem(previousContainer.data, container.data, previousIndex, currentIndex);
     const newStatus = this.states[container.id as unknown as number];
-
     if (movedTicket.status === newStatus) {
       return;
     }
-
     const isFromQueued = movedTicket.status === 0;
     const isToAssignedStatus = newStatus === 1 || newStatus === 2 || newStatus === 3;
-
-    console.log('Drop event:', {
-      ticketId: movedTicket.id,
-      ticketStatus: movedTicket.status,
-      newStatus,
-      isFromQueued,
-      isToAssignedStatus,
-    });
 
     if (isFromQueued && isToAssignedStatus) {
       console.log('Showing modal');
@@ -119,6 +133,7 @@ export class Kanban implements OnInit {
   }
 
   private updateTicketStatus(ticket: Ticket, newStatus: number, assignedToUserId: string | null) {
+    this.isLocalUpdate.set(true);
     const updateData: updateTicketDTO = {
       status: newStatus,
       assigned_to: assignedToUserId,
@@ -127,7 +142,6 @@ export class Kanban implements OnInit {
 
     this.supabaseDb.updateTicket(updateData, ticket.id).catch((error) => {
       console.error('Error updating ticket status:', error);
-      // Revert the UI change by reloading columns
       const tickets = this.supabaseAuth.tickets();
       const columns: Array<KanColumn> = this.states.map((state) => ({
         title: this.getStateTitle(state),

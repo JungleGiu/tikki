@@ -10,16 +10,17 @@ export class UserNamePipe implements PipeTransform {
 
   transform(userId: string | null | undefined): string {
     if (!userId) {
-      return 'Unknown';
+      return 'Unassigned';
     }
-    const users = this.auth.users();
 
+    const users = this.auth.users();
+    
+ 
     if (users.length === 0) {
       return 'Loading...';
     }
-
+    
     const user = users.find((u) => u.id === userId);
-
-    return user ? user.name : `Unknown (${userId})`;
+    return user?.name || 'Unknown';
   }
 }

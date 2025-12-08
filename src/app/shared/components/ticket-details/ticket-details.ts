@@ -53,8 +53,7 @@ export class TicketDetails implements OnInit {
   newLocation: any = null;
 
   ngOnInit() {
-    // Use centralized users from auth service
-    this.users.set(this.auth.users());
+  const filtered = this.auth.users()
   }
   // Priority and Status mappings
   priorityOptions = [
@@ -119,11 +118,11 @@ export class TicketDetails implements OnInit {
     const deadlineValue = this.editForm.value.deadline;
     const deadlineString = dateInputToTimestamptz(deadlineValue, this.ticket.deadline);
 
-    // Determine assigned_to value
+ 
     const assignedToValue = this.editForm.value.assigned_to
       ? this.editForm.value.assigned_to
       : null;
-    const statusValue = this.editForm.value.status
+    let statusValue = this.editForm.value.status
       ? parseInt(this.editForm.value.status)
       : this.ticket.status;
 
@@ -135,7 +134,7 @@ export class TicketDetails implements OnInit {
     }
 
     const finalAssignedTo = statusValue === 0 ? null : assignedToValue;
-
+    const finalStatusValue = finalAssignedTo && statusValue === 0 ? statusValue = 1 : statusValue;
     const resolvedAt = statusValue === 3 ? new Date().toISOString() : null;
 
     const updatedTicket: updateTicketDTO = {
@@ -145,7 +144,7 @@ export class TicketDetails implements OnInit {
       deadline: deadlineString,
       location: this.newLocation ? this.newLocation : this.ticket.location,
       assigned_to: finalAssignedTo,
-      status: statusValue,
+      status: finalStatusValue,
       company_ref: this.ticket.company_ref,
       resolved_at: resolvedAt,
     };
@@ -153,12 +152,7 @@ export class TicketDetails implements OnInit {
     try {
       await this.supabaseDb.updateTicket(updatedTicket, this.ticket.id);
       this.toastService.showSuccess('Ticket updated successfully');
-      this.recharge.emit();
-      this.isVisible.set(false);
-      this.editMode.set(false);
-      this.mode.set('view');
-      this.editForm.reset();
-      this.newLocation = null;
+      this.reset();
     } catch (error) {
       this.toastService.showError('Error updating ticket');
       console.error(error);
@@ -177,8 +171,6 @@ export class TicketDetails implements OnInit {
 
       const currentUser = this.auth.authUser()?.id;
       const appUser = this.auth.appUser();
-
-      // For company users (role_id === 0), use the company's own ID; for regular users, use created_by
       const company_ref = appUser?.role_id === 0 ? appUser?.id ?? '' : appUser?.created_by ?? '';
 
       const newTicket: createTicketDTO = {
@@ -196,12 +188,7 @@ export class TicketDetails implements OnInit {
 
       await this.supabaseDb.createTicket(newTicket);
       this.toastService.showSuccess('Ticket created successfully');
-      this.recharge.emit();
-      this.editMode.set(false);
-      this.mode.set('view');
-      this.createForm.reset();
-      this.newLocation = null;
-      this.isVisible.set(false);
+      this.reset();
     } catch (error) {
       this.toastService.showError('Error creating ticket');
       console.error(error);
@@ -211,6 +198,12 @@ export class TicketDetails implements OnInit {
     try {
       await this.supabaseDb.deleteTicket(id);
       this.toastService.showSuccess('Ticket deleted successfully');
+      this.reset();
+    } catch (error) {
+      throw error;
+    }
+  }
+  private reset() {
       this.recharge.emit();
       this.deleteDialog.set(false);
       this.editMode.set(false);
@@ -218,8 +211,5 @@ export class TicketDetails implements OnInit {
       this.createForm.reset();
       this.newLocation = null;
       this.isVisible.set(false);
-    } catch (error) {
-      throw error;
-    }
   }
 }

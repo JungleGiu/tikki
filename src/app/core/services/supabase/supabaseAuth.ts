@@ -24,6 +24,11 @@ export class supabaseAuth {
       .then(({ data }) => {
         this.sessionSignal.set(data.session);
         this.isInitialized.set(true);
+        // Load user data if session exists
+        if (data.session?.user) {
+          this.loadAppUser(data.session.user.id);
+          this.loadUserData();
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -43,10 +48,9 @@ export class supabaseAuth {
     const { data, error } = await this.supabaseAuth.from('users').select('*').eq('id', id).single();
     this.appUser.set(data ?? null);
     if (error) throw new AppError(error.code);
-   
   }
 
-  private async loadUserData() {
+  async loadUserData() {
     try {
       const ticketsData = await this.supabaseDb.getTickets();
       this.tickets.set(ticketsData);

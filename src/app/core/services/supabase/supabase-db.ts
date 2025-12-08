@@ -4,15 +4,41 @@ import { User } from '../../models/user';
 import { Ticket, createTicketDTO, updateTicketDTO } from '../../models/ticket';
 import { AppError } from '../errors/app-error';
 import { ToastAppService } from '../toast/toast-service';
+import { RealtimeChannel } from '@supabase/supabase-js';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SupabaseDb {
-
+private ticketsUpdatesChannel: RealtimeChannel | null = null;
 
   constructor(private toastService: ToastAppService) {}
 
+  async ticketsUpdatesListener(onChange: (payload: any) => void): Promise<void> {
+    if (this.ticketsUpdatesChannel) {
+    await supabase.removeChannel(this.ticketsUpdatesChannel);
+    }
+    try {
+      this.ticketsUpdatesChannel = await supabase
+        .channel('tickets-updates')
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'ticket' }, payload => {
+          onChange(payload);
+        })
+        .subscribe((status) => {
+          if (status === 'SUBSCRIBED') {
+            console.log('Subscribed to tickets updates channel');
+          }
+        });
+    } catch (error) {
+      console.error('Error in ticketsUpdatesListener:', error);
+    }
+  }
+  async unsubscribeFromTicketUpdates(): Promise<void> {
+    if (this.ticketsUpdatesChannel) {
+      await supabase.removeChannel(this.ticketsUpdatesChannel);
+      this.ticketsUpdatesChannel = null;
+    }
+  }
   async getTickets() {
     const { data, error } = await supabase.from('ticket').select('*');
     if (error) throw new AppError(error.code);
