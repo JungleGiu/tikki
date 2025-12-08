@@ -43,6 +43,7 @@ export class supabaseAuth {
     const { data, error } = await this.supabaseAuth.from('users').select('*').eq('id', id).single();
     this.appUser.set(data ?? null);
     if (error) throw new AppError(error.code);
+   
   }
 
   private async loadUserData() {
@@ -111,6 +112,7 @@ export class supabaseAuth {
   }
 
   async createUserViaFunction(userData: User) {
+    // Refactor edge function on deploy!!
     try {
       const { data, error } = await this.supabaseAuth.functions.invoke('create-user-company', {
         body: {

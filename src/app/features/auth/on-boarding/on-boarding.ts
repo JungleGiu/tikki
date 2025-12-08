@@ -6,6 +6,7 @@ import { AppError } from '../../../core/services/errors/app-error';
 import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
 import { SupabaseDb } from '../../../core/services/supabase/supabase-db';
 import { Router } from '@angular/router';
+import { getDashboardPathForRole } from '../../../core/guards/role-guard-guard';
 @Component({
   selector: 'app-on-boarding',
   imports: [TeamDialog],
@@ -73,7 +74,7 @@ constructor() {
       await this.auth.supabaseAuth.auth.updateUser({ password });
 
       this.toast.showSuccess('User updated successfully');
-      this.router.navigate(['/dashboard']);
+      this.router.navigate([getDashboardPathForRole(user.role_id)]);
     } catch (error: any) {
       console.error('Save error:', error);
       throw new AppError(error.code);

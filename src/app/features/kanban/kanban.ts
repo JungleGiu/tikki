@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, effect } from '@angular/core';
 import { supabaseAuth } from '../../core/services/supabase/supabaseAuth';
 import { SupabaseDb } from '../../core/services/supabase/supabase-db';
 import { KanbanColumn } from '../../shared/components/kanban-column/kanban-column';
@@ -14,13 +14,21 @@ import {
 import { KanbanCard } from '../../shared/components/kanban-card/kanban-card';
 import { updateTicketDTO } from '../../core/models/ticket';
 import { KanbanAssign } from '../../shared/components/kanban-assign/kanban-assign';
+
 interface KanColumn {
   title: string;
   tickets: Ticket[];
 }
 @Component({
   selector: 'app-kanban',
-  imports: [KanbanColumn, CdkDrag, KanbanCard, CdkDropList, CdkDropListGroup, KanbanAssign],
+  imports: [
+    KanbanColumn,
+  
+    KanbanCard,
+    CdkDropList,
+    CdkDropListGroup,
+    KanbanAssign,
+  ],
   templateUrl: './kanban.html',
   styleUrl: './kanban.scss',
 })
@@ -33,17 +41,48 @@ export class Kanban implements OnInit {
   pendingTicket = signal<Ticket | null>(null);
   pendingNewStatus = signal<number | null>(null);
 
+  constructor() {
+    effect(() => {
+      const tickets = this.supabaseAuth.tickets();
+      this.updateKanbanColumns(tickets);
+    });
+  }
+
   ngOnInit() {
     const tickets = this.supabaseAuth.tickets();
-    const columns: Array<KanColumn> = this.states.map((state) => ({
-      title: this.getStateTitle(state),
-      tickets: tickets.filter((ticket) => ticket.status === state),
-    }));
+    this.updateKanbanColumns(tickets);
+  }
+
+  private updateKanbanColumns(tickets: Ticket[]) {
+    const appUser = this.supabaseAuth.appUser();
+    const columns: Array<KanColumn> = this.states.map((state) => {
+      const stateTickets = tickets.filter((ticket) => ticket.status === state);
+
+      // Sort: my department tickets first, then others
+      const sorted = stateTickets.sort((a, b) => {
+        const aIsMyDept = appUser && a.department_id === appUser.department_id ? 0 : 1;
+        const bIsMyDept = appUser && b.department_id === appUser.department_id ? 0 : 1;
+        return aIsMyDept - bIsMyDept;
+      });
+
+      return {
+        title: this.getStateTitle(state),
+        tickets: sorted,
+      };
+    });
     this.kanbanColumns.set(columns);
   }
 
   drop(event: CdkDragDrop<Ticket[]>) {
     const { container, previousIndex, currentIndex, previousContainer } = event;
+    const movedTicket = previousContainer.data[previousIndex];
+    const appUser = this.supabaseAuth.appUser();
+
+    // Only allow dragging tickets from your own department
+    if (!appUser || movedTicket.department_id !== appUser.department_id) {
+      // Revert the drag
+      return;
+    }
 
     if (container === previousContainer) {
       moveItemInArray(container.data, previousIndex, currentIndex);
@@ -51,15 +90,12 @@ export class Kanban implements OnInit {
     }
 
     transferArrayItem(previousContainer.data, container.data, previousIndex, currentIndex);
-
-    const movedTicket = container.data[currentIndex];
     const newStatus = this.states[container.id as unknown as number];
 
     if (movedTicket.status === newStatus) {
       return;
     }
 
-    // Show assignment modal only when moving FROM Queued (0) TO an assigned status (1, 2, 3)
     const isFromQueued = movedTicket.status === 0;
     const isToAssignedStatus = newStatus === 1 || newStatus === 2 || newStatus === 3;
 
@@ -72,14 +108,11 @@ export class Kanban implements OnInit {
     });
 
     if (isFromQueued && isToAssignedStatus) {
-      // Moving from Queued to an assigned status - prompt for assignment
       console.log('Showing modal');
       this.pendingTicket.set(movedTicket);
       this.pendingNewStatus.set(newStatus);
       this.assignModalVisible.set(true);
     } else {
-      // For other status changes, update directly
-      // When moving to Queued, unassign the ticket (set assigned_to to null)
       const assignedTo = newStatus === 0 ? null : movedTicket.assigned_to || null;
       this.updateTicketStatus(movedTicket, newStatus, assignedTo);
     }

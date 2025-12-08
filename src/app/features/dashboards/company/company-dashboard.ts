@@ -1,4 +1,4 @@
-import { Component, inject, signal, effect } from '@angular/core';
+import { Component, inject, signal, effect, OnInit } from '@angular/core';
 import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
 import { SupabaseDb } from '../../../core/services/supabase/supabase-db';
 import { Ticket } from '../../../core/models/ticket';
@@ -7,12 +7,12 @@ import { Map } from '../../tools/map/map';
 import { Charts } from '../../tools/charts/charts';
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-company-dashboard',
   imports: [Calendar, Map, Charts],
   templateUrl: './company-dashboard.html',
   styleUrl: './company-dashboard.scss',
 })
-export class Dashboard {
+export class CompanyDashboard implements OnInit {
   session = inject(supabaseAuth);
   database = inject(SupabaseDb);
   events = signal<any[]>([]);
@@ -28,6 +28,27 @@ export class Dashboard {
         this.updateDashboardData(tickets);
       }
     });
+  }
+
+  ngOnInit() {
+    // Load company tickets on component initialization
+    this.loadCompanyTickets();
+  }
+
+  async loadCompanyTickets() {
+    try {
+      const currentUser = this.session.appUser();
+      if (!currentUser) return;
+
+      const allTickets = await this.database.getTickets();
+      // For company users (role_id: 0), company_ref is set to their created_by field
+      const companyTickets = allTickets.filter(
+        (ticket) => ticket.company_ref === currentUser.created_by
+      );
+      this.session.tickets.set(companyTickets);
+    } catch (error) {
+      console.error('Failed to load company tickets:', error);
+    }
   }
 
   private updateDashboardData(tickets: Ticket[]) {
@@ -52,14 +73,6 @@ export class Dashboard {
   }
 
   rechargeData() {
-    // Refresh from database
-    this.database
-      .getTickets()
-      .then((freshTickets) => {
-        this.session.tickets.set(freshTickets);
-      })
-      .catch((error) => {
-        console.error('Failed to refresh data:', error);
-      });
+    this.loadCompanyTickets();
   }
 }

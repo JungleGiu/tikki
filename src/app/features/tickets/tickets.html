@@ -1,6 +1,14 @@
 <div class="card">
   <header>
-    <h3>Tickets</h3>
+    @if (userRole === 0){
+    <h3>All Tickets</h3>
+    }
+    @if (userRole === 1){
+    <h3>Department Tickets</h3>
+    }
+    @if (userRole === 2){
+    <h3>Assigned Tickets</h3>
+    }
     <div class="actions">
       <app-searcher
         (onSearch)="onSearch($event)"
@@ -10,16 +18,40 @@
       <button (click)="openCreateDialog()">+ New Ticket</button>
     </div>
   </header>
-  <app-team-table
+  <app-data-table
     (selectTicket)="onSelectEditTicket($event)"
     (deleteTicket)="onDeleteTicket($event)"
     [ticketsElements]="displayTickets"
-  ></app-team-table>
+  ></app-data-table>
   <app-pagination-tool
     [elements]="allTickets"
     (currentResults)="onSearch($event)"
   ></app-pagination-tool>
 </div>
+@if (userRole=== 1){
+<div class="card">
+  <header>
+    <h3>Followed Tickets</h3>
+    <div class="actions">
+      <app-searcher
+        (onSearch)="onSearch($event)"
+        [searchFields]="['title', 'department_id', 'deadline', 'status', 'priority']"
+        [allData]="allTickets"
+      ></app-searcher>
+      <button (click)="openCreateDialog()">+ New Ticket</button>
+    </div>
+  </header>
+  <app-data-table
+    (selectTicket)="onSelectEditTicket($event)"
+    (deleteTicket)="onDeleteTicket($event)"
+    [ticketsElements]="followedTickets"
+  ></app-data-table>
+  <app-pagination-tool
+    [elements]="allTickets"
+    (currentResults)="onSearch($event)"
+  ></app-pagination-tool>
+</div>
+}
 
 @if (deleteConfirmation()){
 <app-confirm-delete-dialog

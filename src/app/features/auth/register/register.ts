@@ -5,6 +5,7 @@ import { Company } from '../../../core/models/user';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AppError } from '../../../core/services/errors/app-error';
+import { getDashboardPathForRole } from '../../../core/guards/role-guard-guard';
 @Component({
   selector: 'app-register',
   imports: [ReactiveFormsModule],
@@ -13,7 +14,11 @@ import { AppError } from '../../../core/services/errors/app-error';
 })
 export class Register {
   registerForm = new FormGroup({
-    teamName: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(24)]),
+    teamName: new FormControl('', [
+      Validators.required,
+      Validators.minLength(3),
+      Validators.maxLength(24),
+    ]),
 
     adminEmail: new FormControl('', [Validators.required, Validators.pattern(config.regex.email)]),
     password: new FormControl('', [
@@ -45,7 +50,10 @@ export class Register {
       this.auth
         .registerCompany(newAdmin, adminEmail, password)
         .then(() => {
-          this.router.navigate(['/dashboard']);
+          const user = this.auth.appUser();
+          if (user) {
+            this.router.navigate([getDashboardPathForRole(user.role_id)]);
+          }
         })
         .catch((error) => {
           this.registerForm.reset();

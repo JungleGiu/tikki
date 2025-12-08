@@ -4,6 +4,7 @@ import { AuthLayout } from './layout/auth-layout/auth-layout';
 import { OnBoarding } from './features/auth/on-boarding/on-boarding';
 import { authGuard } from './core/guards/auth-guard';
 import { roleGuardGuard } from './core/guards/role-guard-guard';
+
 export const routes: Routes = [
   {
     path: '',
@@ -21,22 +22,22 @@ export const routes: Routes = [
     children: [
       { path: 'onboarding', component: OnBoarding },
       {
-        path: 'dashboard',
+        path: 'dashboard-admin',
         loadChildren: () => import('./features/dashboards/company/company-dashboard.routes'),
         canActivate: [roleGuardGuard],
-        data: { role: 0 } // Company role_id
+        data: { role: 0 },
       },
       {
-        path: 'dashboard',
+        path: 'dashboard-manager',
         loadChildren: () => import('./features/dashboards/head/head-dashboard.routes'),
         canActivate: [roleGuardGuard],
-        data: { role: 1 } // Manager role_id
+        data: { role: 1 },
       },
       {
-        path: 'dashboard',
+        path: 'dashboard-user',
         loadChildren: () => import('./features/dashboards/user/user-dashboard.routes'),
         canActivate: [roleGuardGuard],
-        data: { role: 2 } // User/Employee role_id
+        data: { role: 2 },
       },
     ],
   },

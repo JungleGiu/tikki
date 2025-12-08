@@ -2,6 +2,7 @@ import { Component, inject, computed } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Navbar } from '../../shared/components/navbar/navbar';
 import { supabaseAuth } from '../../core/services/supabase/supabaseAuth';
+import { getDashboardPathForRole } from '../../core/guards/role-guard-guard';
 
 export interface Feature {
   key: string;
@@ -24,13 +25,17 @@ export class AuthLayout {
       this.authService.loadAppUser(this.authService.authUser()?.id!);
     }
   }
-  allFeatures: Feature[] = [
-    { key: 'dashboard', path: 'dashboard', label: 'Dashboard' },
-    { key: 'tickets', path: 'dashboard/tickets', label: 'Tickets' },
-    { key: 'teams', path: 'dashboard/teams', label: 'Teams' },
-    { key: 'kanban', path: 'dashboard/kanban', label: 'Kanban' },
-    { key: 'chat', path: 'dashboard/chat', label: 'Chat' },
-  ];
+  allFeatures = computed(() => {
+    const currentUser = this.user;
+    const dashboardPath = currentUser ? getDashboardPathForRole(currentUser.role_id) : 'dashboard';
+    return [
+      { key: 'dashboard', path: dashboardPath, label: 'Dashboard' },
+      { key: 'tickets', path: `${dashboardPath}/tickets`, label: 'Tickets' },
+      { key: 'teams', path: `${dashboardPath}/teams`, label: 'Teams' },
+      { key: 'kanban', path: `${dashboardPath}/kanban`, label: 'Kanban' },
+      { key: 'chat', path: `${dashboardPath}/chat`, label: 'Chat' },
+    ];
+  });
 
   roleFeatures: Record<number, string[]> = {
     0: ['dashboard', 'tickets', 'teams'],
@@ -43,6 +48,6 @@ export class AuthLayout {
     if (!currentUser) return [];
 
     const userFeatureKeys = this.roleFeatures[currentUser.role_id] || [];
-    return this.allFeatures.filter((f) => userFeatureKeys.includes(f.key));
+    return this.allFeatures().filter((f) => userFeatureKeys.includes(f.key));
   });
 }

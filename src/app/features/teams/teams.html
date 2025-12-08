@@ -8,14 +8,16 @@
   [searchFields]="['name', 'email', 'role', 'department']"
   (onSearch)="onSearch($event)"
 ></app-searcher>
+@if (userRole === 0){
   <button (click)="openCreateDialog(); dialogType.set('create')">+ New Team Member</button>
+}
 </div>
   </header>
-  <app-team-table
+  <app-data-table
     (selectEditUser)="openUpdateDialog($event)"
     (deleteUser)="onDeleteUser($event)"
     [usersElements]="displayUsers"
-  ></app-team-table>
+  ></app-data-table>
   <app-pagination-tool
     [elements]="allUsers"
     (currentResults)="displayUsers.set($event)"

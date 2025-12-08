@@ -1,19 +1,23 @@
-<article class="kanban-card">
-    <ng-content></ng-content>
-      <header><h3>{{ ticket.title }}</h3>
-        <p>{{ ticket.description }}</p>
-        <div class="categories">
-        <app-badge [variant]="ticket.department_id | departmentPipe"
-          >Department: {{ ticket.department_id | departmentPipe }}</app-badge>
-          <app-badge [variant]="ticket.priority | priority">{{
-          ticket.priority | priority
-        }}</app-badge>
-        </div>
-    </header>
+<article
+  class="kanban-card"
+  [ngClass]="{ 'grayed-out': !isMydept() }"
+  cdkDrag
+  [cdkDragDisabled]="!isDraggable()"
+>
+  <ng-content></ng-content>
+  <header>
+    <h3>{{ ticket.title }}</h3>
+    <p>{{ ticket.description }}</p>
     <div class="categories">
+      <app-badge [variant]="ticket.department_id | departmentPipe"
+        >Department: {{ ticket.department_id | departmentPipe }}</app-badge
+      >
+      <app-badge [variant]="ticket.priority | priority">{{ ticket.priority | priority }}</app-badge>
     </div>
-    <p><span>Deadline:</span> {{ ticket.deadline | date }}</p>
-    <p><span>Created By:</span> {{ ticket.created_by | userName }}</p>
-    <p><span>Created At:</span> {{ ticket.created_at | date }}</p>
-    <p><span>Assigned To:</span> {{ ticket.assigned_to | userName }}</p>  
+  </header>
+  <div class="categories"></div>
+  <p><span>Deadline:</span> {{ ticket.deadline | date }}</p>
+  <p><span>Created By:</span> {{ ticket.created_by | userName }}</p>
+  <p><span>Created At:</span> {{ ticket.created_at | date }}</p>
+  <p><span>Assigned To:</span> {{ ticket.assigned_to | userName }}</p>
 </article>

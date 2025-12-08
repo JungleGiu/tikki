@@ -9,7 +9,7 @@ import { StatusPipe } from '../../pipes/status-pipe';
 import { DatePipe } from '@angular/common';
 import { UserNamePipe } from '../../pipes/user-name-pipe';
 @Component({
-  selector: 'app-team-table',
+  selector: 'app-data-table',
   standalone: true,
   imports: [RolePipePipe, StatusPipe, Badge, DepartmentPipePipe, PriorityPipe, DatePipe, UserNamePipe],
   templateUrl: './data-table.html',

@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AppError } from '../../../core/services/errors/app-error';
+import { getDashboardPathForRole } from '../../../core/guards/role-guard-guard';
+
 @Component({
   selector: 'app-login',
   imports: [ReactiveFormsModule],
@@ -22,10 +24,13 @@ export class Login {
     this.auth
       .logiAdmin(this.loginForm.value.email ?? '', this.loginForm.value.password ?? '')
       .then(() => {
-        this.router.navigate(['/dashboard']);
+        const user = this.auth.appUser();
+        if (user) {
+          // Redirect to the correct dashboard based on user role
+          this.router.navigate([getDashboardPathForRole(user.role_id)]);
+        }
       })
       .catch((error) => {
-        
         throw new AppError(error.code);
       });
   }

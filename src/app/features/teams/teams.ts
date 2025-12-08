@@ -27,7 +27,7 @@ export class Teams implements OnInit {
   dialogType = signal<string>('');
   companyId = this.auth.authUser()?.id;
   deleteConfirmation = signal<boolean>(false);
-
+  userRole = this.auth.appUser()?.role_id;
   ngOnInit() {
     const filteredUsers = this.auth.users().filter((user) => user.id !== this.auth.authUser()?.id);
     this.allUsers.set(filteredUsers);

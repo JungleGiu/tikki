@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { Ticket } from '../../core/models/ticket';
 import { DataTable } from '../../shared/components/data-table/data-table';
 import { TicketDetails } from '../../shared/components/ticket-details/ticket-details';
@@ -26,10 +26,22 @@ export class Tickets implements OnInit {
   isTicketDetailsVisible = signal<boolean>(false);
   ticketdetailsMode = signal<'create' | 'edit' | 'view'>('view');
   deleteConfirmation = signal<boolean>(false);
-
+  followedTickets = signal<Ticket[]>([]);
   userId = this.auth.authUser()?.id;
   userRole = this.auth.appUser()?.role_id;
   userDepartment = this.auth.appUser()?.department_id;
+
+  constructor() {
+    effect(() => {
+      // Sync with auth service tickets whenever they change
+      const tickets = this.auth.tickets();
+      this.allTickets.set(tickets);
+      this.displayTickets.set(this.applyRoleFilter(tickets));
+      this.followedTickets.set(
+        tickets.filter((ticket) => ticket.created_by === this.userId && ticket.department_id !== this.userDepartment),
+      );
+    });
+  }
 
   private applyRoleFilter(tickets: Ticket[]): Ticket[] {
     if (this.userRole === 0) {
@@ -44,8 +56,7 @@ export class Tickets implements OnInit {
 
   async ngOnInit() {
     const tickets = await this.database.getTickets();
-    this.allTickets.set(tickets);
-    this.displayTickets.set(this.applyRoleFilter(tickets));
+    this.auth.tickets.set(tickets);
   }
 
   async onSelectEditTicket(ticket: Ticket) {
@@ -78,8 +89,7 @@ export class Tickets implements OnInit {
     this.deleteConfirmation.set(false);
     await this.database.deleteTicket(id);
     const tickets = await this.database.getTickets();
-    this.allTickets.set(tickets);
-    this.displayTickets.set(this.applyRoleFilter(tickets));
+    this.auth.tickets.set(tickets);
   }
 
   async onSearch(tickets: Ticket[]) {
@@ -89,8 +99,7 @@ export class Tickets implements OnInit {
   async rechargeTickets() {
     try {
       const tickets = await this.database.getTickets();
-      this.allTickets.set(tickets);
-      this.displayTickets.set(this.applyRoleFilter(tickets));
+      this.auth.tickets.set(tickets);
       this.closeTicketDetails();
     } catch (error) {
       console.error('Error reloading tickets:', error);

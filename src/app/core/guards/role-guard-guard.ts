@@ -2,40 +2,42 @@ import { CanActivateFn } from '@angular/router';
 import { Router } from '@angular/router';
 import { supabaseAuth } from '../services/supabase/supabaseAuth';
 import { inject } from '@angular/core';
+
 export const roleGuardGuard: CanActivateFn = async (route, state) => {
   const supabase = inject(supabaseAuth);
   const router = inject(Router);
 
-  const user = supabase.appUser();
+  let user = supabase.appUser();
 
   if (!user) {
-  await supabase.loadAppUser(supabase.authUser()?.id!);
+    await supabase.loadAppUser(supabase.authUser()?.id!);
+    user = supabase.appUser();
   }
- const expectedRole = route.data['role'];
-    if (user) {
-    // Check if user's role matches the expected role
-    if (expectedRole && user.role_id !== expectedRole) {
-      // Redirect to appropriate dashboard based on role_id
-      redirectToDashboard(user.role_id, router);
+
+  const expectedRole = route.data['role'];
+
+  if (user && expectedRole !== undefined) {
+    if (user.role_id === expectedRole) {
+      // User has the correct role, allow access
+      return true;
+    } else {
+      // User doesn't have the correct role for this route, deny access
       return false;
     }
   }
+
   return true;
 };
 
-function redirectToDashboard(roleId: number, router: Router): void {
-  switch(roleId) {
-    case 0: // Admin
-      router.navigate(['/dashboard/admin']);
-      break;
-    case 1: // Manager
-      router.navigate(['/dashboard/manager']);
-      break;
-    case 2: // User
-      router.navigate(['/dashboard/user']);
-      break;
+export function getDashboardPathForRole(roleId: number): string {
+  switch (roleId) {
+    case 0:
+      return '/dashboard-admin';
+    case 1:
+      return '/dashboard-manager';
+    case 2:
+      return '/dashboard-user';
     default:
-      router.navigate(['/login']);
-      break;
+      return '/login';
   }
 }

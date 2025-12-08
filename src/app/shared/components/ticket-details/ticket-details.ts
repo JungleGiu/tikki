@@ -167,16 +167,24 @@ export class TicketDetails implements OnInit {
 
   async onCreateSubmit() {
     try {
+      if (!this.createForm.value.department_id) {
+        this.toastService.showWarning('Please select a department');
+        return;
+      }
+
       const deadlineValue = this.createForm.value.deadline;
       const deadlineString = dateInputToTimestamptz(deadlineValue);
 
       const currentUser = this.auth.authUser()?.id;
+      const appUser = this.auth.appUser();
+
+      // For company users (role_id === 0), use the company's own ID; for regular users, use created_by
+      const company_ref = appUser?.role_id === 0 ? appUser?.id ?? '' : appUser?.created_by ?? '';
+
       const newTicket: createTicketDTO = {
         created_by: currentUser ?? '',
-        company_ref: this.auth.appUser()?.created_by ?? '',
-        department_id: this.createForm.value.department_id
-          ? parseInt(this.createForm.value.department_id)
-          : 0,
+        company_ref: company_ref,
+        department_id: parseInt(this.createForm.value.department_id),
         title: this.createForm.value.title ? this.createForm.value.title : '',
         description: this.createForm.value.description ? this.createForm.value.description : '',
         priority: this.createForm.value.priority ? parseInt(this.createForm.value.priority) : 4,

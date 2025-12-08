@@ -8,11 +8,7 @@
     (cdkDropListDropped)="drop($event)"
   >
     @for (ticket of kanbacolumn.tickets; track ticket.id) {
-    <app-kanban-card
-      cdkDrag
-      [cdkDragPreviewContainer]="kanbanContainer"
-      [ticket]="ticket"
-    ></app-kanban-card>
+    <app-kanban-card [ticket]="ticket"></app-kanban-card>
     }
   </app-kanba-column>
   }

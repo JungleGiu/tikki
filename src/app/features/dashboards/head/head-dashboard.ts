@@ -1,11 +1,14 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
 import { SupabaseDb } from '../../../core/services/supabase/supabase-db';
 import { Ticket } from '../../../core/models/ticket';
+import { Calendar } from '../../tools/calendar/calendar';
+import { Map } from '../../tools/map/map';
+import { Charts } from '../../tools/charts/charts';
 
 @Component({
   selector: 'app-head-dashboard',
-  imports: [],
+  imports: [Calendar, Map, Charts],
   templateUrl: './head-dashboard.html',
   styleUrl: './head-dashboard.scss',
 })
@@ -14,18 +17,32 @@ export class HeadDashboard {
   database = inject(SupabaseDb);
   events = signal<any[]>([]);
   locations = signal<any[]>([]);
+  tickets = signal<Ticket[]>([]);
+
+  departmentTickets = computed(() => {
+    const tickets = this.tickets();
+    const appUser = this.session.appUser();
+
+    if (!appUser) {
+      return [];
+    }
+
+    return tickets.filter((ticket) => ticket.department_id === appUser.department_id);
+  });
 
   constructor() {
-    // Whenever tickets change, recalculate events and locations
+    console.log('HeadDashboard constructor called');
+
     effect(() => {
       const tickets = this.session.tickets();
-      if (tickets.length > 0) {
-        this.updateDashboardData(tickets);
-      }
+      console.log('Session tickets changed:', tickets.length);
+      this.tickets.set(tickets);
+
+      const deptTickets = this.departmentTickets();
+      console.log('Department tickets:', deptTickets.length);
+      this.updateDashboardData(deptTickets);
     });
   }
-
-
   private updateDashboardData(tickets: Ticket[]) {
     const locs = tickets.map((ticket) => ({
       lat: ticket.location.lat,
@@ -48,11 +65,14 @@ export class HeadDashboard {
   }
 
   async rechargeData() {
-    try {
-      const freshTickets = await this.database.getTickets();
-      this.session.tickets.set(freshTickets);
-    } catch (error) {
-      console.error('Failed to refresh data:', error);
-    }
+    // Refresh from database
+    this.database
+      .getTickets()
+      .then((freshTickets) => {
+        this.session.tickets.set(freshTickets);
+      })
+      .catch((error) => {
+        console.error('Failed to refresh data:', error);
+      });
   }
 }
