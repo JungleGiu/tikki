@@ -1,17 +1,16 @@
 <div class="card">
   <header>
     <h3>Team Members</h3>
-<div class="actions">
-  
-  <app-searcher 
-  [allData]="allUsers"
-  [searchFields]="['name', 'email', 'role', 'department']"
-  (onSearch)="onSearch($event)"
-></app-searcher>
-@if (userRole === 0){
-  <button (click)="openCreateDialog(); dialogType.set('create')">+ New Team Member</button>
-}
-</div>
+    <div class="actions">
+      <app-searcher
+        [allData]="displayUsers"
+        [searchFields]="['name', 'email', 'role', 'department']"
+        (onSearch)="afterSearchUsers.set($event)"
+      ></app-searcher>
+      @if (roleId === 0){
+      <button (click)="openCreateDialog(); dialogType.set('create')">+ New Team Member</button>
+      }
+    </div>
   </header>
   <app-data-table
     (selectEditUser)="openUpdateDialog($event)"
@@ -19,13 +18,24 @@
     [usersElements]="displayUsers"
   ></app-data-table>
   <app-pagination-tool
-    [elements]="allUsers"
+    [elements]="afterSearchUsers"
     (currentResults)="displayUsers.set($event)"
   ></app-pagination-tool>
 </div>
 @if (visible()){
-<app-team-dialog [mode]="dialogType" [user]="userSelected" [isVisible]="visible" (submit)="onDialogSubmit($event)" (close)="closeDialog()" (locationChange)="onSaveLocation($event)"></app-team-dialog>
-}
-@if (deleteConfirmation()){
-<app-confirm-delete-dialog [item]="'user'" [id]="userSelected()?.id?? ''" (confirm)="onDeleteConfirm($event)" (cancel)="deleteConfirmation.set(false)"></app-confirm-delete-dialog>
+<app-team-dialog
+  [mode]="dialogType"
+  [user]="userSelected"
+  [isVisible]="visible"
+  (submit)="onDialogSubmit($event)"
+  (close)="closeDialog()"
+  (locationChange)="onSaveLocation($event)"
+></app-team-dialog>
+} @if (deleteConfirmation()){
+<app-confirm-delete-dialog
+  [item]="'user'"
+  [id]="userSelected()?.id ?? ''"
+  (confirm)="onDeleteConfirm($event)"
+  (cancel)="deleteConfirmation.set(false)"
+></app-confirm-delete-dialog>
 }

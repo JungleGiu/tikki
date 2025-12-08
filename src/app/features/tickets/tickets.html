@@ -2,18 +2,16 @@
   <header>
     @if (userRole === 0){
     <h3>All Tickets</h3>
-    }
-    @if (userRole === 1){
+    } @if (userRole === 1){
     <h3>Department Tickets</h3>
-    }
-    @if (userRole === 2){
+    } @if (userRole === 2){
     <h3>Assigned Tickets</h3>
     }
     <div class="actions">
       <app-searcher
-        (onSearch)="onSearch($event)"
+        (onSearch)="searchResultTickets.set($event)"
         [searchFields]="['title', 'department_id', 'deadline', 'status', 'priority']"
-        [allData]="allTickets"
+        [allData]="roleFilteredTickets"
       ></app-searcher>
       <button (click)="openCreateDialog()">+ New Ticket</button>
     </div>
@@ -24,8 +22,8 @@
     [ticketsElements]="displayTickets"
   ></app-data-table>
   <app-pagination-tool
-    [elements]="allTickets"
-    (currentResults)="onSearch($event)"
+    [elements]="searchResultTickets"
+    (currentResults)="displayTickets.set($event)"
   ></app-pagination-tool>
 </div>
 @if (userRole=== 1){
@@ -34,26 +32,23 @@
     <h3>Followed Tickets</h3>
     <div class="actions">
       <app-searcher
-        (onSearch)="onSearch($event)"
+        (onSearch)="searchResultFollowedTickets.set($event)"
         [searchFields]="['title', 'department_id', 'deadline', 'status', 'priority']"
-        [allData]="allTickets"
+        [allData]="followedTickets"
       ></app-searcher>
       <button (click)="openCreateDialog()">+ New Ticket</button>
     </div>
   </header>
   <app-data-table
     (selectTicket)="onSelectEditTicket($event)"
-    (deleteTicket)="onDeleteTicket($event)"
-    [ticketsElements]="followedTickets"
+    [ticketsElements]="displayFollowedTickets"
   ></app-data-table>
   <app-pagination-tool
-    [elements]="allTickets"
-    (currentResults)="onSearch($event)"
+    [elements]="searchResultFollowedTickets"
+    (currentResults)="displayFollowedTickets.set($event)"
   ></app-pagination-tool>
 </div>
-}
-
-@if (deleteConfirmation()){
+} @if (deleteConfirmation()){
 <app-confirm-delete-dialog
   [item]="'ticket'"
   [id]="ticketSelected()?.id ?? ''"

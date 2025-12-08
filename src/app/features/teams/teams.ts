@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { User } from '../../core/models/user';
 import { SupabaseDb } from '../../core/services/supabase/supabase-db';
 import { supabaseAuth } from '../../core/services/supabase/supabaseAuth';
@@ -15,11 +15,12 @@ import { Searcher } from '../../shared/components/searcher/searcher';
   templateUrl: './teams.html',
   styleUrl: './teams.scss',
 })
-export class Teams implements OnInit {
+export class Teams {
   database = inject(SupabaseDb);
   auth = inject(supabaseAuth);
   toast = inject(ToastAppService);
   allUsers = signal<User[]>([]);
+  afterSearchUsers = signal<User[]>([]);
   displayUsers = signal<User[]>([]);
   visible = signal<boolean>(false);
   userSelected = signal<User | null>(null);
@@ -27,11 +28,25 @@ export class Teams implements OnInit {
   dialogType = signal<string>('');
   companyId = this.auth.authUser()?.id;
   deleteConfirmation = signal<boolean>(false);
-  userRole = this.auth.appUser()?.role_id;
-  ngOnInit() {
-    const filteredUsers = this.auth.users().filter((user) => user.id !== this.auth.authUser()?.id);
-    this.allUsers.set(filteredUsers);
-    this.displayUsers.set(filteredUsers);
+  roleId = this.auth.appUser()?.role_id;
+  departmentId = this.auth.appUser()?.department_id;
+
+  constructor() {
+    effect(() => {
+      const users = this.auth.users();
+      const filteredUsers = users.filter((user: User) => user.id !== this.auth.authUser()?.id);
+      this.allUsers.set(filteredUsers);
+      if (this.roleId === 0) {
+        this.displayUsers.set(filteredUsers);
+        this.afterSearchUsers.set(filteredUsers);
+      } else {
+        const displayedUsers = filteredUsers.filter(
+          (user: User) => user.department_id == this.departmentId
+        );
+        this.displayUsers.set(displayedUsers);
+        this.afterSearchUsers.set(displayedUsers);
+      }
+    });
   }
 
   openCreateDialog() {
@@ -60,11 +75,7 @@ export class Teams implements OnInit {
     this.visible.set(false);
     this.userSelected.set(null);
     this.locationSelected.set(null);
-    let filteredUsers = this.auth
-      .users()
-      .filter((user: User) => user.id !== this.auth.authUser()?.id);
-    this.displayUsers.set(filteredUsers);
-    this.allUsers.set(filteredUsers);
+    this.refreshUsersList();
   }
 
   async createUser(formData: any) {
@@ -82,12 +93,6 @@ export class Teams implements OnInit {
     if (success) {
       this.toast.showSuccess('User created successfully');
     }
-    const filteredUsers = this.auth
-      .users()
-      .filter((user: User) => user.created_by === this.companyId);
-    this.allUsers.set(filteredUsers);
-    this.displayUsers.set(filteredUsers);
-    this.closeDialog();
   }
 
   async updateUser(formData: any) {
@@ -103,12 +108,6 @@ export class Teams implements OnInit {
     };
 
     await this.database.updateUser(user, this.userSelected()!.id!);
-    const filteredUsers = this.auth
-      .users()
-      .filter((user: User) => user.created_by === this.companyId);
-    this.allUsers.set(filteredUsers);
-    this.displayUsers.set(filteredUsers);
-    this.closeDialog();
   }
 
   onSaveLocation(location: any) {
@@ -125,11 +124,7 @@ export class Teams implements OnInit {
     }
     this.deleteConfirmation.set(false);
     await this.database.deleteUser(id);
-    const filteredUsers = this.auth
-      .users()
-      .filter((user: User) => user.created_by === this.companyId);
-    this.allUsers.set(filteredUsers);
-    this.displayUsers.set(filteredUsers);
+    this.refreshUsersList();
   }
 
   closeDialog() {
@@ -137,7 +132,16 @@ export class Teams implements OnInit {
     this.userSelected.set(null);
     this.locationSelected.set(null);
   }
-  onSearch(users: User[]) {
-    this.displayUsers.set(users);
+
+  private refreshUsersList() {
+    const users = this.auth.users();
+    this.allUsers.set(users);
+    if (this.roleId === 0) {
+      const filteredUsers = users.filter((user: User) => user.id !== this.auth.authUser()?.id);
+      this.displayUsers.set(filteredUsers);
+    } else {
+      const displayedUsers = users.filter((user: User) => user.department_id == this.departmentId);
+      this.displayUsers.set(displayedUsers);
+    }
   }
 }

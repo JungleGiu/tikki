@@ -21,7 +21,11 @@ export class Tickets implements OnInit {
   toast = inject(ToastAppService);
   auth = inject(supabaseAuth);
   allTickets = signal<Ticket[]>([]);
+  roleFilteredTickets = signal<Ticket[]>([]);
+  searchResultTickets = signal<Ticket[]>([]);
   displayTickets = signal<Ticket[]>([]);
+  searchResultFollowedTickets = signal<Ticket[]>([]);
+  displayFollowedTickets = signal<Ticket[]>([]);
   ticketSelected = signal<Ticket | null>(null);
   isTicketDetailsVisible = signal<boolean>(false);
   ticketdetailsMode = signal<'create' | 'edit' | 'view'>('view');
@@ -36,10 +40,16 @@ export class Tickets implements OnInit {
       // Sync with auth service tickets whenever they change
       const tickets = this.auth.tickets();
       this.allTickets.set(tickets);
-      this.displayTickets.set(this.applyRoleFilter(tickets));
+      const roleFiltered = this.applyRoleFilter(tickets);
+      this.roleFilteredTickets.set(roleFiltered);
+      this.searchResultTickets.set(roleFiltered);
       this.followedTickets.set(
-        tickets.filter((ticket) => ticket.created_by === this.userId && ticket.department_id !== this.userDepartment),
+        tickets.filter(
+          (ticket) =>
+            ticket.created_by === this.userId && ticket.department_id !== this.userDepartment
+        )
       );
+      this.searchResultFollowedTickets.set(this.followedTickets());
     });
   }
 
@@ -90,10 +100,6 @@ export class Tickets implements OnInit {
     await this.database.deleteTicket(id);
     const tickets = await this.database.getTickets();
     this.auth.tickets.set(tickets);
-  }
-
-  async onSearch(tickets: Ticket[]) {
-    this.displayTickets.set(this.applyRoleFilter(tickets));
   }
 
   async rechargeTickets() {

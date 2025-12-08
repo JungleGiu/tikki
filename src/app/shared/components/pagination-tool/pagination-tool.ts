@@ -5,11 +5,9 @@ import {
   signal,
   EventEmitter,
   computed,
-  OnInit,
   effect,
 } from '@angular/core';
-import { Ticket } from '../../../core/models/ticket';
-import { FormArray } from '@angular/forms';
+
 @Component({
   selector: 'app-pagination-tool',
   imports: [],
@@ -24,16 +22,17 @@ export class PaginationTool {
   totalResults = computed(() => this.elements().length);
   resultsPerPage = 10;
   numberOfPages = computed(() => Math.ceil(this.totalResults() / this.resultsPerPage));
-  pages = signal<number[]>([]);
+  pages = computed(() => {
+    const num = this.numberOfPages();
+    return num > 0 ? Array.from({ length: num }, (_, index) => index + 1) : [];
+  });
   currentPage = signal(1);
 
   constructor() {
     effect(() => {
-      const num = this.numberOfPages();
-      if (num !== 0) {
-        this.pages.set(Array.from({ length: num }, (_, index) => index + 1));
-        this.emitCurrentPage();      
-      }
+      // Reset to page 1 when elements change
+      this.currentPage.set(1);
+      this.emitCurrentPage();
     });
   }
 

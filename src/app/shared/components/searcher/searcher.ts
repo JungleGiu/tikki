@@ -26,9 +26,12 @@ export class Searcher<T extends SearchableData = SearchableData> {
 
   constructor() {
     effect(() => {
-      this.allData.set(this.allData());
-      if (this.filteredResults().length === 0) {
-        this.filteredResults.set(this.allData());
+      // When input data changes, reset search state but don't emit
+      const data = this.allData();
+      this.filteredResults.set(data);
+      if (this.query() === '' && this.sortQuery() === '') {
+        // Only reset if no active search/sort
+        this.sortDirection.set('asc');
       }
     });
   }
@@ -95,10 +98,10 @@ export class Searcher<T extends SearchableData = SearchableData> {
 
   toggleSortOrder() {
     this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
-
-    const reversed = [...this.filteredResults()].reverse();
-    this.filteredResults.set(reversed);
-    this.onSearch.emit(reversed);
+    if (!this.sortQuery() && this.searchFields.length > 0) {
+      this.sortQuery.set(this.searchFields[0]);
+    }
+    this.applyFiltersAndSort();
   }
 
   toggleVisible(visibleType: 'search' | 'filters') {
@@ -110,6 +113,10 @@ export class Searcher<T extends SearchableData = SearchableData> {
       }
     } else if (visibleType === 'filters') {
       this.isFiltersVisible.set(!this.isFiltersVisible());
+      if (!this.isFiltersVisible()) {
+        this.sortQuery.set('');
+        this.applyFiltersAndSort();
+      }
     }
   }
 }
