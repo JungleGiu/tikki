@@ -1,4 +1,4 @@
-import { Component, input, signal, effect, EventEmitter, Output } from '@angular/core';
+import { Component, input, signal, effect, EventEmitter, Output, inject, computed } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CommonModule } from '@angular/common';
 import { CalendarOptions } from '@fullcalendar/core'; // useful for typechecking
@@ -6,6 +6,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import multimonthPlugin from '@fullcalendar/multimonth';
 import { Ticket } from '../../../core/models/ticket';
 import { TicketDetails } from '../../../shared/components/ticket-details/ticket-details';
+import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
 @Component({
   selector: 'app-calendar',
   imports: [FullCalendarModule, CommonModule, TicketDetails],
@@ -18,7 +19,9 @@ export class Calendar {
   isVisible = signal<boolean>(false);
   ticket = signal<Ticket>({} as Ticket);
   @Output() recharge = new EventEmitter<void>();
-
+  session = inject(supabaseAuth);
+  role = this.session.appUser()?.role_id;
+  computedRole = computed(() => this.role === 1 ? 'multiMonthFourMonth' : 'currentMonth');
   constructor() {
     effect(() => {
       const eventsData = this.events();
@@ -28,14 +31,14 @@ export class Calendar {
 
   private updateCalendarOptions(eventsData: any[]): void {
     const options: CalendarOptions = {
-      initialView: 'currentMonth',
+      initialView: this.computedRole(),
       plugins: [multimonthPlugin, dayGridPlugin],
       events: eventsData,
       dayMaxEvents: true,
       views: {
         multiMonthFourMonth: {
           type: 'multiMonth',
-          duration: { months: 6 },
+          duration: { months: 3 },
         },
         currentMonth: {
           type: 'dayGridMonth',
@@ -43,7 +46,7 @@ export class Calendar {
       },
       buttonText: {
         currentMonth: 'Current Month',
-        multiMonthFourMonth: '6 months',
+        multiMonthFourMonth: '3 months',
       },
       headerToolbar: {
         left: 'prev,next',
@@ -52,7 +55,7 @@ export class Calendar {
         right: 'currentMonth,multiMonthFourMonth',
       },
       themeSystem: 'standard',
-      contentHeight: 400,
+      contentHeight: 500,
       aspectRatio: 1,
       selectable: true,
       selectMirror: true,

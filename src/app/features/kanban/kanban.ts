@@ -21,13 +21,7 @@ interface KanColumn {
 }
 @Component({
   selector: 'app-kanban',
-  imports: [
-    KanbanColumn,
-    KanbanCard,
-    CdkDropList,
-    CdkDropListGroup,
-    KanbanAssign,
-  ],
+  imports: [KanbanColumn, KanbanCard, CdkDropList, CdkDropListGroup, KanbanAssign],
   templateUrl: './kanban.html',
   styleUrl: './kanban.scss',
 })
@@ -51,7 +45,7 @@ export class Kanban implements OnInit, OnDestroy {
     const tickets = this.supabaseAuth.tickets();
     this.updateKanbanColumns(tickets);
     this.supabaseDb.ticketsUpdatesListener((payload) => {
-      this.handleTicketUpdate(payload)
+      this.handleTicketUpdate(payload);
     });
   }
   ngOnDestroy(): void {
@@ -65,22 +59,16 @@ export class Kanban implements OnInit, OnDestroy {
     }
 
     console.log('Handling remote ticket update:', payload);
-    
-    // Reload tickets from auth service (which fetches latest data)
-    const tickets = this.supabaseAuth.tickets();
-    
-    if (payload.eventType === 'DELETE') {
-      // Remove deleted ticket
-      const filtered = tickets.filter((t) => t.id !== payload.old.id);
-      this.supabaseAuth.tickets.set(filtered);
-    } else if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
-      // For real-time to work properly, you'll want to refetch
-      // But for now, update the specific ticket in memory
-      const updatedTickets = tickets.map((t) =>
-        t.id === payload.new.id ? { ...t, ...payload.new } : t
-      );
-      this.supabaseAuth.tickets.set(updatedTickets);
-    }
+
+    // Reload tickets from database and update auth service
+    this.supabaseDb
+      .getTickets()
+      .then((freshTickets) => {
+        this.supabaseAuth.tickets.set(freshTickets);
+      })
+      .catch((error) => {
+        console.error('Error fetching fresh tickets:', error);
+      });
   }
 
   private updateKanbanColumns(tickets: Ticket[]) {
@@ -140,15 +128,21 @@ export class Kanban implements OnInit, OnDestroy {
       resolved_at: newStatus === 3 ? new Date().toISOString() : null,
     };
 
-    this.supabaseDb.updateTicket(updateData, ticket.id).catch((error) => {
-      console.error('Error updating ticket status:', error);
-      const tickets = this.supabaseAuth.tickets();
-      const columns: Array<KanColumn> = this.states.map((state) => ({
-        title: this.getStateTitle(state),
-        tickets: tickets.filter((ticket) => ticket.status === state),
-      }));
-      this.kanbanColumns.set(columns);
-    });
+    this.supabaseDb
+      .updateTicket(updateData, ticket.id)
+      .then(async () => {
+        const freshTickets = await this.supabaseDb.getTickets();
+        this.supabaseAuth.tickets.set(freshTickets);
+      })
+      .catch((error) => {
+        console.error('Error updating ticket status:', error);
+        const tickets = this.supabaseAuth.tickets();
+        const columns: Array<KanColumn> = this.states.map((state) => ({
+          title: this.getStateTitle(state),
+          tickets: tickets.filter((ticket) => ticket.status === state),
+        }));
+        this.kanbanColumns.set(columns);
+      });
   }
 
   onAssignConfirm(userId: string | null) {

@@ -18,7 +18,7 @@
   @include card();
   @include tikki-vertical-gradient-border();
   width: 20rem;
-  height: 10rem;
+  height: 15rem;
  display : flex;
  flex-direction: column;
  align-items: center;
@@ -33,4 +33,13 @@ gap :1rem;
   padding: 0 0rem;
 
  }
+}
+
+select {
+  @include input();
+}
+ button {
+   @include tikki-vertical-gradient-border(3rem, 2px, --primary-color);
+   @include button();
+  padding: 0.5rem 1rem;
 }

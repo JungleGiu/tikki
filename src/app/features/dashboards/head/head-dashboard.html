@@ -1,10 +1,12 @@
 <section id="dashboard">
   <app-tickets-status [tickets]="departmentTickets"></app-tickets-status>
-  <div class="top-section">
-    <app-charts [data]="departmentTickets()"></app-charts>
+  <div class="bento">
+    <div class="left-section">
+      <app-charts [data]="departmentTickets()"></app-charts>
+    </div>
+    <div class="right-section">
+      <app-map (recharge)="rechargeData()" [locations]="locations()" [tickets]="departmentTickets()"></app-map>
+    </div>
     <app-calendar (recharge)="rechargeData()" [events]="events()"></app-calendar>
-  </div>
-  <div class="bottom-section">
-    <app-map (recharge)="rechargeData()" [locations]="locations()" [tickets]="departmentTickets()"></app-map>
   </div>
 </section>

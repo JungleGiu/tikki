@@ -3,8 +3,9 @@
 section {
     display: flex;
     flex-direction: row;
-    align-items: center;
-    gap: 1rem;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 4rem;
 }
 .ticket-status-item {
     display: flex;
@@ -13,6 +14,7 @@ section {
     gap: 0.5rem;
     @include card();
     @include tikki-vertical-gradient-border(3rem, 2px, --primary-color);
+    margin: 1rem 0 2rem 0;
 }
 .queued {
 background-color: #f27979;

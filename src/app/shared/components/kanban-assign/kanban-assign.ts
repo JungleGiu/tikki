@@ -13,5 +13,6 @@ export class KanbanAssign {
   @Output() close = new EventEmitter<string | null>();
 
   auth = inject(supabaseAuth);
-  users = this.auth.users;
+  users = this.auth.users().filter((user) => user.department_id === this.auth.appUser()?.department_id);  ;
+
 }

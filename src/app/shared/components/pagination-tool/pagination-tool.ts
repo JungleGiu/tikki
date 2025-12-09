@@ -1,12 +1,4 @@
-import {
-  Component,
-  Input,
-  Output,
-  signal,
-  EventEmitter,
-  computed,
-  effect,
-} from '@angular/core';
+import { Component, Input, Output, signal, EventEmitter, computed, effect } from '@angular/core';
 
 @Component({
   selector: 'app-pagination-tool',
@@ -30,8 +22,12 @@ export class PaginationTool {
 
   constructor() {
     effect(() => {
-      // Reset to page 1 when elements change
+      this.elements(); 
       this.currentPage.set(1);
+    });
+
+    effect(() => {
+      this.currentPage();
       this.emitCurrentPage();
     });
   }
