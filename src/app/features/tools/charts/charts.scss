@@ -2,15 +2,17 @@
 .charts-container {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   width: 100%;
-  flex-shrink: 0;
+  flex-grow: 1;
   gap: 1rem
 }
 .chart {
   width: 100%;
+  min-width: 30rem;
   margin: 0 auto;
   @include card();
-  border: 2px solid var(--primary-color);
+  @include tikki-vertical-gradient-border();
   border-radius: 2rem;
   margin: 0 auto;
 }

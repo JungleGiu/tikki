@@ -3,8 +3,10 @@
     <h2>Tickets by priority</h2>
     <canvas #priorityChart></canvas>
   </div>
+  @if (userRole=== 0) {
   <div class="chart">
     <h2>Tickets by department</h2>
     <canvas #departmentChart></canvas>
   </div>
+}
 </div>

@@ -1,4 +1,5 @@
 <section id="dashboard">
+  <app-tickets-status [tickets]="departmentTickets"></app-tickets-status>
   <div class="top-section">
     <app-charts [data]="departmentTickets()"></app-charts>
     <app-calendar (recharge)="rechargeData()" [events]="events()"></app-calendar>

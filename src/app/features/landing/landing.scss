@@ -7,28 +7,30 @@ section {
     align-items: center;
     min-height: 100vh;
     width: 90%;
-    margin: 2rem auto;
+    margin: 2rem 0;
 }
 header{
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 3rem;
+    margin-bottom: 5rem;
 hgroup{
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin: 0 8rem;
-    width: 70%;
+    width: 100%;
     h1{
         font-size: 7rem ;
+        width: 100%;
         font-weight: 500;
     }
    
     h2{
         font-size: 3.5rem;
         font-weight: 500;
+        width: 100%;
          line-height: 3rem;
          margin: 0 0 0 2rem;
     }
@@ -37,7 +39,7 @@ hgroup{
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    justify-content: flex-end;
+    justify-content: flex-start;
     align-self : flex-start;
     margin: 2rem 1rem 0 0;
     width: 30%;
@@ -56,11 +58,18 @@ hgroup{
 }
 }
 article {
+    @include card();
+    @include tikki-vertical-gradient-border();
+    padding: 2rem 3rem;
+    width: 100%;
+    max-width: 1000px;
+    height: auto;
+    margin: 0 auto;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    
+    transform : translateX(5rem);
     img {
         margin: 1rem 2rem;
         width: 20rem;
@@ -70,6 +79,13 @@ article {
 .description{
     margin: 0 8rem 5rem;
     font-size: 1.2rem;
+    display : flex ;
+    flex-direction: column;
+    gap: 2rem;
+    h3{
+        font-size: 2rem;
+        font-weight: 500;
+    }
    p{
     color:gray;
     line-height: 2rem;
@@ -79,6 +95,9 @@ article {
 .feature-text{
     margin: 0 2rem;
     width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
  
     h4{
         font-size: 1.8rem;
@@ -90,4 +109,116 @@ article {
 }
 #feature-2{
 flex-direction: row-reverse;
+transform: translateX(-5rem);
+}
+
+@media (max-width: 768px) {
+    section {
+        width: 95%;
+        margin: 1rem auto;
+    }
+
+    header {
+        flex-direction: column;
+        margin-bottom: 2rem;
+    }
+
+    hgroup {
+        margin: 0 2rem;
+        width: 100%;
+        
+        h1 {
+            font-size: 4rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+            line-height: 2rem;
+            margin: 0 0 0 1rem;
+        }
+    }
+
+    .buttons {
+        width: 100%;
+        margin: 1.5rem 0 0 0;
+    }
+
+    article {
+        flex-direction: column;
+        padding: 1.5rem 2rem;
+        transform: translateX(0);
+        
+        img {
+            width: 15rem;
+            margin: 1rem 0;
+        }
+    }
+
+    #feature-2 {
+        flex-direction: column;
+        transform: translateX(0);
+    }
+
+    .description {
+        margin: 0 2rem 3rem;
+    }
+
+    .feature-text {
+        width: 100%;
+        margin: 0;
+    }
+}
+
+// Mobile breakpoint (480px and below)
+@media (max-width: 480px) {
+    section {
+        width: 100%;
+        margin: 0.5rem auto;
+    }
+
+    hgroup {
+        margin: 0 1rem;
+        
+        h1 {
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            font-size: 1.2rem;
+            line-height: 1.5rem;
+            margin: 0;
+        }
+    }
+
+    article {
+        padding: 1rem;
+        
+        img {
+            width: 10rem;
+            margin: 0.5rem 0;
+        }
+    }
+
+    .description {
+        margin: 0 1rem 2rem;
+        font-size: 1rem;
+        gap: 1rem;
+    }
+
+    .feature-text {
+        h4 {
+            font-size: 1.3rem;
+        }
+        
+        p {
+            font-size: 0.9rem;
+        }
+    }
+
+    .buttons {
+        button {
+            font-size: 1rem;
+            padding: 0.5rem 1.5rem;
+        }
+    }
 }

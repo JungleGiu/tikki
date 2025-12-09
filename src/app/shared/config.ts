@@ -1,7 +1,7 @@
 export const config = {
     leaflet: {
     mapImage: 'https://unpkg.com/leaflet@1.9.4/dist/images/',
-    mapTitle: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+    mapTitle: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
     mapAttribution: '© OpenStreetMap, © CARTO',
     nominatim:'https://nominatim.openstreetmap.org/search',
     },

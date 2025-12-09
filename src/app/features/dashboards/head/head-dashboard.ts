@@ -5,10 +5,10 @@ import { Ticket } from '../../../core/models/ticket';
 import { Calendar } from '../../tools/calendar/calendar';
 import { Map } from '../../tools/map/map';
 import { Charts } from '../../tools/charts/charts';
-
+import { TicketsStatus } from '../../../shared/components/tickets-status/tickets-status';
 @Component({
   selector: 'app-head-dashboard',
-  imports: [Calendar, Map, Charts],
+  imports: [Calendar, Map, Charts, TicketsStatus],
   templateUrl: './head-dashboard.html',
   styleUrl: './head-dashboard.scss',
 })
@@ -26,7 +26,6 @@ export class HeadDashboard {
     if (!appUser) {
       return [];
     }
-
     return tickets.filter((ticket) => ticket.department_id === appUser.department_id);
   });
 

@@ -1,17 +1,16 @@
 @use '../../../../styles' as *;
 .calendar-container {
   @include card();
+  @include tikki-vertical-gradient-border();
   height: max-content;
   width: max-content;
-  border: 2px solid var(--primary-color);
+  
   border-radius: 2rem;
   margin: 0;
   width: 100%;
  
 }
 .calendar {
-
-  
   margin: 0;
   position: relative;
   scroll-behavior: smooth;

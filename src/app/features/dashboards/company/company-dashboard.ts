@@ -5,10 +5,11 @@ import { Ticket } from '../../../core/models/ticket';
 import { Calendar } from '../../tools/calendar/calendar';
 import { Map } from '../../tools/map/map';
 import { Charts } from '../../tools/charts/charts';
+import { TicketsStatus } from '../../../shared/components/tickets-status/tickets-status';
 
 @Component({
   selector: 'app-company-dashboard',
-  imports: [Calendar, Map, Charts],
+  imports: [Calendar, Map, Charts, TicketsStatus],
   templateUrl: './company-dashboard.html',
   styleUrl: './company-dashboard.scss',
 })
@@ -31,7 +32,7 @@ export class CompanyDashboard implements OnInit {
   }
 
   ngOnInit() {
-    // Load company tickets on component initialization
+
     this.loadCompanyTickets();
   }
 
@@ -41,11 +42,9 @@ export class CompanyDashboard implements OnInit {
       if (!currentUser) return;
 
       const allTickets = await this.database.getTickets();
-      // For company users (role_id: 0), company_ref is set to their created_by field
-      const companyTickets = allTickets.filter(
-        (ticket) => ticket.company_ref === currentUser.created_by
-      );
-      this.session.tickets.set(companyTickets);
+    
+      this.tickets.set(allTickets);
+      this.session.tickets.set(allTickets);
     } catch (error) {
       console.error('Failed to load company tickets:', error);
     }

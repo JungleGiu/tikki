@@ -5,7 +5,7 @@ import { inject } from '@angular/core';
 
 export const roleGuardGuard: CanActivateFn = async (route, state) => {
   const supabase = inject(supabaseAuth);
-  const router = inject(Router);
+
 
   let user = supabase.appUser();
 

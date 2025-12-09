@@ -1,0 +1,29 @@
+@use '../../../../styles' as *;
+
+section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+}
+.ticket-status-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    @include card();
+    @include tikki-vertical-gradient-border(3rem, 2px, --primary-color);
+}
+.queued {
+background-color: #f27979;
+}
+.assigned {
+background-color: #f2b279;
+}
+ .in-progress {
+background-color: #f4ed84;
+ }
+
+ .completed {
+background-color: #98f486;
+ }
