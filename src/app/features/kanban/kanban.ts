@@ -118,6 +118,14 @@ export class Kanban implements OnInit, OnDestroy {
       const assignedTo = newStatus === 0 ? null : movedTicket.assigned_to || null;
       this.updateTicketStatus(movedTicket, newStatus, assignedTo);
     }
+    this.supabaseDb
+ .getTickets()
+ .then((freshTickets) => {
+   this.supabaseAuth.tickets.set(freshTickets);
+ })
+ .catch((error) => {
+   console.error('Error fetching fresh tickets:', error);
+ });
   }
 
   private updateTicketStatus(ticket: Ticket, newStatus: number, assignedToUserId: string | null) {

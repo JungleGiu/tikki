@@ -20,27 +20,23 @@ export class UserDashboard {
   locations = signal<any[]>([]);
   tickets = signal<Ticket[]>([]);
 
-  departmentTickets = computed(() => {
-    const tickets = this.tickets();
-    const appUser = this.session.appUser();
-
-    if (!appUser) {
-      return [];
-    }
-    return tickets.filter((ticket) => ticket.department_id === appUser.department_id);
-  });
+ myTickets = computed(() =>
+    this.tickets().filter(
+      (ticket) => ticket.assigned_to === this.session.authUser()?.id
+    )
+  );
 
   constructor() {
-    console.log('HeadDashboard constructor called');
+    console.log('UserDashboard constructor called');
 
     effect(() => {
       const tickets = this.session.tickets();
       console.log('Session tickets changed:', tickets.length);
       this.tickets.set(tickets);
 
-      const deptTickets = this.departmentTickets();
-      console.log('Department tickets:', deptTickets.length);
-      this.updateDashboardData(deptTickets);
+      const myTickets = this.myTickets();
+      console.log('My tickets:', myTickets.length);
+      this.updateDashboardData(myTickets);
     });
   }
   private updateDashboardData(tickets: Ticket[]) {
@@ -69,7 +65,9 @@ export class UserDashboard {
     this.database
       .getTickets()
       .then((freshTickets) => {
-        this.session.tickets.set(freshTickets);
+        this.session.tickets.set(freshTickets.filter(
+          (ticket) => ticket.assigned_to === this.session.authUser()?.id
+        ));
       })
       .catch((error) => {
         console.error('Failed to refresh data:', error);

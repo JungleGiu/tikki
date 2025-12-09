@@ -26,7 +26,7 @@
     (currentResults)="displayTickets.set($event)"
   ></app-pagination-tool>
 </div>
-@if (userRole=== 1){
+@if (userRole=== 1 || userRole === 2){
 <div class="card">
   <header>
     <h3>Followed Tickets</h3>

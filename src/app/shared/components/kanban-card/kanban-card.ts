@@ -20,12 +20,32 @@ export class KanbanCard {
   isMydept(): boolean {
     const appUser = this.auth.appUser();
     if (!appUser) {
-      return false;    
+      return false;
     }
     return appUser.department_id === this.ticket.department_id;
   }
 
+  isAssignedToMe(): boolean {
+    const appUser = this.auth.appUser();
+    if (!appUser) {
+      return false;
+    } 
+   
+    return this.ticket.assigned_to === appUser.id;
+  }
   isDraggable(): boolean {
-    return this.isMydept();
+    const appUser = this.auth.appUser();
+    if (!appUser) return false;
+
+
+    if (appUser.role_id === 1) {
+      return this.isMydept();
+    }
+
+    if (appUser.role_id === 2) {
+      return this.isAssignedToMe() && this.isMydept();
+    }
+
+    return false;
   }
 }

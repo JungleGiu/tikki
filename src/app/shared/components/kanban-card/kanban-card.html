@@ -1,6 +1,10 @@
 <article
   class="kanban-card"
-  [ngClass]="{ 'grayed-out': !isMydept() }"
+  [ngClass]="{
+    'grayed-out':
+      (auth.appUser()?.role_id === 1 && !isMydept()) ||
+      (auth.appUser()?.role_id === 2 && !isAssignedToMe())
+  }"
   cdkDrag
   [cdkDragDisabled]="!isDraggable()"
 >
