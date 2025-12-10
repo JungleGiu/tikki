@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Chat, ChatMessage } from '../../models/chat';
 import { supabase } from './supabase-client';
-
+import { SendMessageDTO } from '../../../shared/components/chat-open/open-chat';
 @Injectable({
   providedIn: 'root',
 })
@@ -60,11 +60,7 @@ export class ChatService {
   /**
    * Send a message to a chat
    */
-  async sendMessage(
-    chatId: string,
-    senderId: string,
-    message: string
-  ): Promise<ChatMessage | null> {
+  async sendMessage({ chatId, senderId, message }: SendMessageDTO): Promise<ChatMessage | null> {
     const { data, error } = await supabase
       .from('chat_messages')
       .insert([

@@ -1,1 +1,22 @@
-<p>open-chat works!</p>
+<div class="chat-open">
+@if (chat()) {
+    <header class="title">
+        <h3>{{toUserId() | userName}}</h3>
+    </header>
+
+    <div class="messages">
+       @for (message of chatMessages(); track message.id) {
+           <div class="message" [class.self]="message.sender_id === supabaseAuth.authUser()?.id">
+               <p>{{message.message}}</p>
+           </div>
+       }
+    </div>
+    <div class="message-input">
+        <input type="text" placeholder="Type a message" 
+        [ngModel]="message()"
+        (ngModelChange)="message.set($event)"
+        />
+        <button (click)="onSend(message())">Send</button>
+    </div>
+}
+</div>
