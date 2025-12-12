@@ -44,7 +44,8 @@ export class ChatsList {
 
     effect(() => {
       const sorted = this.sortedChats();
-      if (sorted.length > 0 && !this.selectedChat()) {
+      const ticketsLoaded = this.ticketRefsInfo().length > 0;
+      if (sorted.length > 0 && ticketsLoaded && !this.selectedChat()) {
         const firstChat = sorted[0];
         this.chatSelected(firstChat, this.toOrFrom(firstChat));
       }
@@ -81,9 +82,9 @@ export class ChatsList {
     return lastMessage?.message || '';
   }
 
-  getTicketRefInfo(chat: Chat): Ticket   {
+  getTicketRefInfo(chat: Chat): Ticket | null {
     const ticket = this.ticketRefsInfo().find(t => t.id === chat.ticket_ref);
-    return ticket as Ticket ;
+    return ticket || null;
   }
 
   private async loadLastMessages(chats: Chat[]): Promise<void> {

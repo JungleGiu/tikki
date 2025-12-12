@@ -26,6 +26,7 @@ h3 {
 article {
   @include card();
   border-radius: 2rem;
+  border : 1px solid transparent;
   margin: 0 0.5rem 0 0;
   display: flex;
   flex-direction: column;
@@ -38,9 +39,14 @@ article {
   header {
     display: flex;
     flex-direction: row;
+    align-items: flex-start;
     justify-content: space-between;
     height: min-content;
     width: 100%;
+    h4{
+        width: 50%;
+        height: min-content;
+    }
     p {
       font-weight: 600;
       font-size: 1rem;
@@ -50,7 +56,7 @@ article {
 article:hover {
   cursor: pointer;
   transition: 0.2s ease-in-out;
-  border: 2px solid var(--primary-color);
+ border: 1px solid var(--primary-color);
 }
 .title {
   margin: 0 0 1rem 0;
@@ -59,16 +65,17 @@ article:hover {
   margin: 0;
   display: grid;
   grid-template-columns: auto 1fr;
-  align-items: start;
+  align-items: flex-start;
+  justify-content: flex-start;
   gap: 0.5rem;
   width: fit-content;
 
   &::before {
-    content: 'About: ';
+    content: 'Ticket: ';
     color: #9ca3af;
     grid-column: 1;
     grid-row: 1 / -1;
-    align-self: center;
+    align-self: self-start;
   }
 
   p {
@@ -91,10 +98,4 @@ article:hover {
   transition: 0.2s ease-in-out;
 }
 
-.badges {
-  &::before {
-    content: 'About: ';
-    color: #9ca3af;
-    display: inline;
-  }
-}
+

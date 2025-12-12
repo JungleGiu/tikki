@@ -4,7 +4,11 @@ import { ChatService } from '../../../core/services/supabase/chat-service';
 import { UserNamePipe } from '../../pipes/user-name-pipe';
 import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
 import {FormsModule} from '@angular/forms';
+import { TicketDetails } from '../ticket-details/ticket-details';
+import { PriorityPipe } from '../../pipes/priority-pipe';
+import { DepartmentPipePipe } from '../../pipes/department-pipe-pipe';
 import { Ticket } from '../../../core/models/ticket';
+import { Badge } from "../badge/badge";
 export type SendMessageDTO = {
   chatId: string;
   senderId: string;
@@ -12,7 +16,7 @@ export type SendMessageDTO = {
 };
 @Component({
   selector: 'app-open-chat',
-  imports: [UserNamePipe, FormsModule],
+  imports: [UserNamePipe, FormsModule, TicketDetails, Badge, PriorityPipe, DepartmentPipePipe],
   templateUrl: './open-chat.html',
   styleUrl: './open-chat.scss',
 })
@@ -24,7 +28,9 @@ export class OpenChat implements OnDestroy{
   chatService = inject(ChatService);
   supabaseAuth = inject(supabaseAuth);
   message = signal<string>('');
+  ticketDetailsVisible = signal<boolean>(false);
   subscription: any;
+  viewTicketDetails = signal<'view' | 'edit' | 'create'>('view');
   constructor() {
     effect(() => {
       const chat = this.chat();
@@ -63,6 +69,10 @@ export class OpenChat implements OnDestroy{
 
     await this.chatService.sendMessage(message);
     this.message.set('');
+  }
+
+  openTicketDetails() {
+    this.ticketDetailsVisible.set(!this.ticketDetailsVisible());
   }
 }
   
