@@ -32,3 +32,18 @@ header{
     width: 100%;
     gap : 0.5rem
 }
+
+.actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap : 0.5rem;
+    width: 100%;
+}
+
+button{
+    @include tikki-vertical-gradient-border(3rem, 2px, --primary-color);
+    @include button();
+    padding: 0.5rem 1rem;
+}

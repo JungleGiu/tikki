@@ -29,8 +29,8 @@ export class OpenChat implements OnDestroy{
   chatService = inject(ChatService);
   supabaseAuth = inject(supabaseAuth);
   message = signal<string>('');
-  ticketDetailsVisible = signal<boolean>(false);
   subscription: any;
+  ticketDetailsVisible = signal<boolean>(false);
   viewTicketDetails = signal<'view' | 'edit' | 'create'>('view');
 
   constructor() {
