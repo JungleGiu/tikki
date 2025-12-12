@@ -4,7 +4,7 @@ import { ChatService } from '../../../core/services/supabase/chat-service';
 import { UserNamePipe } from '../../pipes/user-name-pipe';
 import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
 import {FormsModule} from '@angular/forms';
-
+import { Ticket } from '../../../core/models/ticket';
 export type SendMessageDTO = {
   chatId: string;
   senderId: string;
@@ -19,6 +19,7 @@ export type SendMessageDTO = {
 export class OpenChat implements OnDestroy{
   @Input() chat = signal<Chat | null>(null);
   @Input() toUserId = signal<string | null>(null);
+  @Input() relatedTicket = signal<Ticket | null>(null);
   chatMessages = signal<ChatMessage[]>([]);
   chatService = inject(ChatService);
   supabaseAuth = inject(supabaseAuth);
@@ -50,7 +51,7 @@ export class OpenChat implements OnDestroy{
     const currentUserId = this.supabaseAuth.authUser()?.id;
     return message.sender_id === currentUserId ? 'sent' : 'received';
   }
-  
+
   async onSend(messageText: string) {
        if (!messageText.trim()) return;
 

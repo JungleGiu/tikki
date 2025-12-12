@@ -2,7 +2,10 @@
 @if (chat()) {
     <header class="title">
         <h3>{{toUserId() | userName}}</h3>
-        
+        <div class="ticket-info">
+            <h4>{{relatedTicket()?.title}}</h4>
+            <p>{{relatedTicket()?.description}}</p>
+        </div>
     </header>
 
     <div class="messages">

@@ -8,8 +8,14 @@
       (click)="chatSelected(chat, toOrFrom(chat))"
       [class]="selectedChat() === chat ? 'active' : ''"
     >
-      <h4>{{ toOrFrom(chat) | userName }}</h4>
-
+    <header>
+        <h4>{{ toOrFrom(chat) | userName }}</h4> 
+        <div class="badges">
+            <p>{{ getTicketRefInfo(chat)?.title }}</p> 
+          <app-badge [variant]="((getTicketRefInfo(chat)?.department_id ?? 0) | departmentPipe)">{{ ((getTicketRefInfo(chat)?.department_id ?? 0) | departmentPipe) }}</app-badge>
+        
+      </div>
+    </header>
       <p>{{ getLastMessageText(chat) }}</p>
     </article>
     }
