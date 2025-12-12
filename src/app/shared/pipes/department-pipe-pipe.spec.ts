@@ -1,8 +1,8 @@
-import { DepartmentPipePipe } from './department-pipe-pipe';
+import { DepartmentPipe } from './department-pipe';
 
-describe('DepartmentPipePipe', () => {
+describe('DepartmentPipe', () => {
   it('create an instance', () => {
-    const pipe = new DepartmentPipePipe();
+    const pipe = new DepartmentPipe();
     expect(pipe).toBeTruthy();
   });
 });

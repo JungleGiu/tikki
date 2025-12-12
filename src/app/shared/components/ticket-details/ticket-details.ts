@@ -16,7 +16,7 @@ import { ToastAppService } from '../../../core/services/toast/toast-service';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { StatusPipe } from '../../pipes/status-pipe';
-import { DepartmentPipePipe } from '../../pipes/department-pipe-pipe';
+import { DepartmentPipe } from '../../pipes/department-pipe';
 import { PriorityPipe } from '../../pipes/priority-pipe';
 import { UserNamePipe } from '../../pipes/user-name-pipe';
 import { LocationInput } from '../location-input/location-input';
@@ -27,7 +27,7 @@ import { timestamptzToDateInput, dateInputToTimestamptz } from '../../utils/date
   selector: 'app-ticket-details',
   imports: [
     DatePipe,
-    DepartmentPipePipe,
+    DepartmentPipe,
     Badge,
     PriorityPipe,
     ReactiveFormsModule,
@@ -53,7 +53,7 @@ export class TicketDetails implements OnInit {
   newLocation: any = null;
 
   ngOnInit() {
-  const filtered = this.auth.users()
+    const filtered = this.auth.users();
   }
   // Priority and Status mappings
   priorityOptions = [
@@ -118,7 +118,6 @@ export class TicketDetails implements OnInit {
     const deadlineValue = this.editForm.value.deadline;
     const deadlineString = dateInputToTimestamptz(deadlineValue, this.ticket.deadline);
 
- 
     const assignedToValue = this.editForm.value.assigned_to
       ? this.editForm.value.assigned_to
       : null;
@@ -134,7 +133,7 @@ export class TicketDetails implements OnInit {
     }
 
     const finalAssignedTo = statusValue === 0 ? null : assignedToValue;
-    const finalStatusValue = finalAssignedTo && statusValue === 0 ? statusValue = 1 : statusValue;
+    const finalStatusValue = finalAssignedTo && statusValue === 0 ? (statusValue = 1) : statusValue;
     const resolvedAt = statusValue === 3 ? new Date().toISOString() : null;
 
     const updatedTicket: updateTicketDTO = {
@@ -204,12 +203,12 @@ export class TicketDetails implements OnInit {
     }
   }
   private reset() {
-      this.recharge.emit();
-      this.deleteDialog.set(false);
-      this.editMode.set(false);
-      this.mode.set('view');
-      this.createForm.reset();
-      this.newLocation = null;
-      this.isVisible.set(false);
+    this.recharge.emit();
+    this.deleteDialog.set(false);
+    this.editMode.set(false);
+    this.mode.set('view');
+    this.createForm.reset();
+    this.newLocation = null;
+    this.isVisible.set(false);
   }
 }

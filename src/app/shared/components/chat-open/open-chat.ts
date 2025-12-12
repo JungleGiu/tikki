@@ -3,12 +3,12 @@ import { Chat, ChatMessage } from '../../../core/models/chat';
 import { ChatService } from '../../../core/services/supabase/chat-service';
 import { UserNamePipe } from '../../pipes/user-name-pipe';
 import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
-import {FormsModule} from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { TicketDetails } from '../ticket-details/ticket-details';
 import { PriorityPipe } from '../../pipes/priority-pipe';
-import { DepartmentPipePipe } from '../../pipes/department-pipe-pipe';
+import { DepartmentPipe } from '../../pipes/department-pipe';
 import { Ticket } from '../../../core/models/ticket';
-import { Badge } from "../badge/badge";
+import { Badge } from '../badge/badge';
 export type SendMessageDTO = {
   chatId: string;
   senderId: string;
@@ -16,11 +16,11 @@ export type SendMessageDTO = {
 };
 @Component({
   selector: 'app-open-chat',
-  imports: [UserNamePipe, FormsModule, TicketDetails, Badge, PriorityPipe, DepartmentPipePipe],
+  imports: [UserNamePipe, FormsModule, TicketDetails, Badge, PriorityPipe, DepartmentPipe],
   templateUrl: './open-chat.html',
   styleUrl: './open-chat.scss',
 })
-export class OpenChat implements OnDestroy{
+export class OpenChat implements OnDestroy {
   @Input() chat = signal<Chat | null>(null);
   @Input() toUserId = signal<string | null>(null);
   @Input() relatedTicket = signal<Ticket | null>(null);
@@ -38,7 +38,7 @@ export class OpenChat implements OnDestroy{
         this.chatService.getChatMessages(chat.id).then((messages) => {
           this.chatMessages.set(messages);
         });
-         this.subscription = this.chatService.subscribeToChatMessages(chat.id, (newMessage) => {
+        this.subscription = this.chatService.subscribeToChatMessages(chat.id, (newMessage) => {
           this.chatMessages.set([...this.chatMessages(), newMessage]);
         });
       } else {
@@ -59,7 +59,7 @@ export class OpenChat implements OnDestroy{
   }
 
   async onSend(messageText: string) {
-       if (!messageText.trim()) return;
+    if (!messageText.trim()) return;
 
     const message: SendMessageDTO = {
       chatId: this.chat()?.id ?? '',
@@ -75,5 +75,3 @@ export class OpenChat implements OnDestroy{
     this.ticketDetailsVisible.set(!this.ticketDetailsVisible());
   }
 }
-  
-

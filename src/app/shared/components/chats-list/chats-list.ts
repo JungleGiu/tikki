@@ -15,11 +15,11 @@ import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
 import { UserNamePipe } from '../../pipes/user-name-pipe';
 import { SupabaseDb } from '../../../core/services/supabase/supabase-db';
 import { Badge } from "../badge/badge";
-import { DepartmentPipePipe } from '../../pipes/department-pipe-pipe';
+import { DepartmentPipe } from '../../pipes/department-pipe';
 
 @Component({
   selector: 'app-chats-list',
-  imports: [UserNamePipe, Badge,  DepartmentPipePipe],
+  imports: [UserNamePipe, Badge,  DepartmentPipe],
   templateUrl: './chats-list.html',
   styleUrl: './chats-list.scss',
 })
