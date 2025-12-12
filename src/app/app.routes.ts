@@ -3,7 +3,7 @@ import { PublicLayout } from './layout/public-layout/public-layout';
 import { AuthLayout } from './layout/auth-layout/auth-layout';
 import { OnBoarding } from './features/auth/on-boarding/on-boarding';
 import { authGuard } from './core/guards/auth-guard';
-import { roleGuardGuard } from './core/guards/role-guard-guard';
+import { roleGuard } from './core/guards/role-guard';
 
 export const routes: Routes = [
   {
@@ -24,19 +24,19 @@ export const routes: Routes = [
       {
         path: 'dashboard-admin',
         loadChildren: () => import('./features/dashboards/company/company-dashboard.routes'),
-        canActivate: [roleGuardGuard],
+        canActivate: [roleGuard],
         data: { role: 0 },
       },
       {
         path: 'dashboard-manager',
         loadChildren: () => import('./features/dashboards/head/head-dashboard.routes'),
-        canActivate: [roleGuardGuard],
+        canActivate: [roleGuard],
         data: { role: 1 },
       },
       {
         path: 'dashboard-user',
         loadChildren: () => import('./features/dashboards/user/user-dashboard.routes'),
-        canActivate: [roleGuardGuard],
+        canActivate: [roleGuard],
         data: { role: 2 },
       },
     ],

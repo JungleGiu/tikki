@@ -1,8 +1,8 @@
-import { RolePipePipe } from './role-pipe-pipe';
+import { RolePipe } from './role-pipe';
 
-describe('RolePipePipe', () => {
+describe('RolePipe', () => {
   it('create an instance', () => {
-    const pipe = new RolePipePipe();
+    const pipe = new RolePipe();
     expect(pipe).toBeTruthy();
   });
 });

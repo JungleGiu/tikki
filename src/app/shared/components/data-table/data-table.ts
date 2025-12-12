@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { User } from '../../../core/models/user';
-import { RolePipePipe } from '../../pipes/role-pipe-pipe';
+import { RolePipe } from '../../pipes/role-pipe';
 import { DepartmentPipe } from '../../pipes/department-pipe';
 import { Badge } from '../badge/badge';
 import { Ticket } from '../../../core/models/ticket';
@@ -11,7 +11,7 @@ import { UserNamePipe } from '../../pipes/user-name-pipe';
 @Component({
   selector: 'app-data-table',
   standalone: true,
-  imports: [RolePipePipe, StatusPipe, Badge, DepartmentPipe, PriorityPipe, DatePipe, UserNamePipe],
+  imports: [RolePipe, StatusPipe, Badge, DepartmentPipe, PriorityPipe, DatePipe, UserNamePipe],
   templateUrl: './data-table.html',
   styleUrl: './data-table.scss',
 })

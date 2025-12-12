@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { supabaseAuth } from '../services/supabase/supabaseAuth';
 import { inject } from '@angular/core';
 
-export const roleGuardGuard: CanActivateFn = async (route, state) => {
+export const roleGuard: CanActivateFn = async (route, state) => {
   const supabase = inject(supabaseAuth);
 
 

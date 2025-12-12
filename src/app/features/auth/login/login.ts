@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AppError } from '../../../core/services/errors/app-error';
-import { getDashboardPathForRole } from '../../../core/guards/role-guard-guard';
+import { getDashboardPathForRole } from '../../../core/guards/role-guard';
 
 @Component({
   selector: 'app-login',

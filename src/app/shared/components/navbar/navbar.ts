@@ -1,13 +1,13 @@
 import { Component, inject, Input } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
-import { RolePipePipe } from '../../pipes/role-pipe-pipe';
+import { RolePipe } from '../../pipes/role-pipe';
 import { User } from '../../../core/models/user';
 import { Feature } from '../../../layout/auth-layout/auth-layout';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, RouterLinkActive, RolePipePipe],
+  imports: [RouterLink, RouterLinkActive, RolePipe],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
 })

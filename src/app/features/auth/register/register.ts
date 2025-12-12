@@ -5,7 +5,7 @@ import { Company } from '../../../core/models/user';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AppError } from '../../../core/services/errors/app-error';
-import { getDashboardPathForRole } from '../../../core/guards/role-guard-guard';
+import { getDashboardPathForRole } from '../../../core/guards/role-guard';
 @Component({
   selector: 'app-register',
   imports: [ReactiveFormsModule],

@@ -6,7 +6,7 @@ import { AppError } from '../../../core/services/errors/app-error';
 import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
 import { SupabaseDb } from '../../../core/services/supabase/supabase-db';
 import { Router } from '@angular/router';
-import { getDashboardPathForRole } from '../../../core/guards/role-guard-guard';
+import { getDashboardPathForRole } from '../../../core/guards/role-guard';
 @Component({
   selector: 'app-on-boarding',
   imports: [TeamDialog],
@@ -27,21 +27,21 @@ export class OnBoarding implements OnInit {
   private hasLoadedUser = false;
   private hasSaved = false;
 
-constructor() {
-  effect(() => {
-    const u = this.updatedUser();
-    const p = this.passwordToSet();
-    const l = this.locationSelected();
-    if (u && p && l && !this.hasSaved) {
-      this.hasSaved = true;
-     const finalUser = {
-       ...u,
-       location: l,
-     };
-     this.saveAll(finalUser, p);
-     }
-});
-}
+  constructor() {
+    effect(() => {
+      const u = this.updatedUser();
+      const p = this.passwordToSet();
+      const l = this.locationSelected();
+      if (u && p && l && !this.hasSaved) {
+        this.hasSaved = true;
+        const finalUser = {
+          ...u,
+          location: l,
+        };
+        this.saveAll(finalUser, p);
+      }
+    });
+  }
 
   async ngOnInit() {
     const session = this.auth.sessionSignal();
@@ -57,18 +57,16 @@ constructor() {
     }
   }
 
-
   onChangePasword(password: string) {
     this.passwordToSet.set(password);
   }
 
   async saveAll(user: User, password: string) {
-
-  const newUser = {
-    name : user.name,
-    location : user.location,
-    email: user.email,
-  }
+    const newUser = {
+      name: user.name,
+      location: user.location,
+      email: user.email,
+    };
     try {
       await this.database.updateUserFromSelf(newUser as Partial<User>, this.user()!.id!);
       await this.auth.supabaseAuth.auth.updateUser({ password });

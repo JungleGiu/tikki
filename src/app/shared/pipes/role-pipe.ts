@@ -3,7 +3,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
   name: 'rolePipe'
 })
-export class RolePipePipe implements PipeTransform {
+export class RolePipe implements PipeTransform {
 
   private roles: { [key: number]: string } = {
     0: 'Company',
