@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Chat, ChatMessage } from '../../models/chat';
 import { supabase } from './supabase-client';
 import { SendMessageDTO } from '../../../shared/components/chat-open/open-chat';
+import { RealtimeChannel } from '@supabase/supabase-js';
 @Injectable({
   providedIn: 'root',
 })
@@ -120,7 +121,30 @@ export class ChatService {
   /**
    * Unsubscribe from chat messages
    */
-  unsubscribeFromChat(subscription: any) {
+  unsubscribeFromChat(subscription: RealtimeChannel) {
+    supabase.removeChannel(subscription);
+  }
+
+  subscribeToChatsUpdates(callback: (chat: Chat) => void) {
+    const subscription = supabase
+      .channel('chats-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'chats',
+        },
+        (payload) => {
+          callback(payload.new as Chat);
+        }
+      )
+      .subscribe();
+
+    return subscription;
+  }
+
+    unsubscribeFromChatsUpdates(subscription: RealtimeChannel) {
     supabase.removeChannel(subscription);
   }
 }

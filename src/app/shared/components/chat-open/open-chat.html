@@ -13,7 +13,7 @@
         </div>
     </header>
 
-    <div class="messages">
+    <div class="messages" #messageContainer>
        @for (message of chatMessages(); track message.id) {
            <div class="message" [class]="dynamicMessageClass(message)">
                <p>{{message.message}}</p>

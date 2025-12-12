@@ -7,6 +7,7 @@ import {
   Input,
   effect,
   computed,
+  OnChanges,
 } from '@angular/core';
 import { Ticket } from '../../../core/models/ticket';
 import { ChatService } from '../../../core/services/supabase/chat-service';
@@ -16,6 +17,7 @@ import { UserNamePipe } from '../../pipes/user-name-pipe';
 import { SupabaseDb } from '../../../core/services/supabase/supabase-db';
 import { Badge } from "../badge/badge";
 import { DepartmentPipe } from '../../pipes/department-pipe';
+import { RealtimeChannel } from '@supabase/supabase-js';
 
 @Component({
   selector: 'app-chats-list',
@@ -23,7 +25,7 @@ import { DepartmentPipe } from '../../pipes/department-pipe';
   templateUrl: './chats-list.html',
   styleUrl: './chats-list.scss',
 })
-export class ChatsList {
+export class ChatsList implements OnChanges{
   chatService = inject(ChatService);
   supabaseAuth = inject(supabaseAuth);
   supabaseDb = inject(SupabaseDb);
@@ -33,12 +35,14 @@ export class ChatsList {
   lastMessagesLoaded = signal<ChatMessage[]>([]);
   sortedChats = computed(() => this.sortChatsByLastMessage());
   ticketRefsInfo = signal <Ticket[]>([]);
+  chatSubscription: RealtimeChannel | null = null;
   constructor() {
     effect(() => {
       const currentChats = this.chats();
       if (currentChats.length > 0) {
         this.loadLastMessages(currentChats);
         this.loadTicketRefInfo(currentChats);
+        this.subscribeToChatsUpdates();
       }
     });
 
@@ -48,6 +52,42 @@ export class ChatsList {
       if (sorted.length > 0 && ticketsLoaded && !this.selectedChat()) {
         const firstChat = sorted[0];
         this.chatSelected(firstChat, this.toOrFrom(firstChat));
+      }
+    });
+  }
+  ngOnChanges(): void {
+    const currentChats = this.chats();
+    if (currentChats.length > 0) {
+      this.loadLastMessages(currentChats);
+      this.loadTicketRefInfo(currentChats);
+
+    }
+  }
+
+   private subscribeToChatsUpdates(): void {
+    if (this.chatSubscription) return;
+
+    this.chatSubscription = this.chatService.subscribeToChatsUpdates((updatedChat: Chat) => {
+      const currentChats = this.chats();
+      const chatIndex = currentChats.findIndex(c => c.id === updatedChat.id);
+      
+      if (chatIndex !== -1) {
+        const updatedChats = [...currentChats];
+        updatedChats[chatIndex] = updatedChat;
+        this.chats.set(updatedChats);
+        
+        this.chatService.getLastMessagePreview(updatedChat).then(message => {
+          const currentMessages = this.lastMessagesLoaded();
+          const messageIndex = currentMessages.findIndex(m => m.chat_id === updatedChat.id);
+          
+          if (messageIndex !== -1) {
+            const updatedMessages = [...currentMessages];
+            updatedMessages[messageIndex] = message;
+            this.lastMessagesLoaded.set(updatedMessages);
+          } else {
+            this.lastMessagesLoaded.set([...currentMessages, message]);
+          }
+        });
       }
     });
   }

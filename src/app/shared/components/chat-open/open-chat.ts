@@ -1,4 +1,4 @@
-import { Component, effect, Input, signal, inject, OnDestroy } from '@angular/core';
+import { Component, effect, Input, signal, inject, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Chat, ChatMessage } from '../../../core/models/chat';
 import { ChatService } from '../../../core/services/supabase/chat-service';
 import { UserNamePipe } from '../../pipes/user-name-pipe';
@@ -21,6 +21,7 @@ export type SendMessageDTO = {
   styleUrl: './open-chat.scss',
 })
 export class OpenChat implements OnDestroy {
+  @ViewChild('messageContainer') messageContainer!: ElementRef;
   @Input() chat = signal<Chat | null>(null);
   @Input() toUserId = signal<string | null>(null);
   @Input() relatedTicket = signal<Ticket | null>(null);
@@ -45,8 +46,19 @@ export class OpenChat implements OnDestroy {
         this.chatMessages.set([]);
       }
     });
+       effect(() => {
+      this.chatMessages(); 
+      setTimeout(() => this.scrollToBottom(), 0);
+    });
   }
 
+  
+  private scrollToBottom(): void {
+      if (this.messageContainer) {
+      const element = this.messageContainer.nativeElement;
+      element.scrollTop = element.scrollHeight;
+    }
+  }
   ngOnDestroy(): void {
     if (this.subscription) {
       this.chatService.unsubscribeFromChat(this.subscription);
