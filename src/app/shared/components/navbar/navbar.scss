@@ -1,66 +1,70 @@
 @use '../../../../styles' as *;
-header{
+header {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between; 
+  justify-content: space-between;
   padding: 0 2rem;
 }
 
-.logo{
+.logo {
   width: 12rem;
   cursor: pointer;
-  img{
-    width: 100%;  
+  img {
+    width: 100%;
     height: fit-content;
   }
 }
-.user{
-@include card();
-@include tikki-vertical-gradient-border();
-display: flex ;
+.user {
+  @include card();
+  @include tikki-vertical-gradient-border();
+  display: flex;
 
-img{
+  img {
     width: 3.5rem;
     border-radius: 50%;
     cursor: pointer;
   }
-  hgroup{
+  hgroup {
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin: 0 1rem;
-    h1{
+    h1 {
       font-size: 1rem;
     }
-    span{
+    span {
       font-size: 0.8rem;
     }
   }
-  button{
+  button {
     @include tikki-vertical-gradient-border(2.5rem, 3px, var(--primary-color));
     color: var(--background-color);
     padding: 0.5rem 1rem;
     cursor: pointer;
-    &:hover{
+    &:hover {
       @include tikki-vertical-gradient-border();
       color: var(--primary-color);
     }
   }
 }
- 
-nav{
+
+nav {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 2rem;
-  a{
+  a {
     text-decoration: none;
     @include tikki-vertical-gradient-border();
     padding: 0.5rem 1rem;
     color: var(--primary-color);
     cursor: pointer;
-    &:hover{
+    &:hover {
+      @include tikki-vertical-gradient-border(2.5rem, 3px, var(--primary-color));
+      color: var(--background-color);
+    }
+    &.active {
       @include tikki-vertical-gradient-border(2.5rem, 3px, var(--primary-color));
       color: var(--background-color);
     }

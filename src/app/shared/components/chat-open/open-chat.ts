@@ -46,6 +46,11 @@ export class OpenChat implements OnDestroy{
     }
   }
 
+  dynamicMessageClass(message: ChatMessage): string {
+    const currentUserId = this.supabaseAuth.authUser()?.id;
+    return message.sender_id === currentUserId ? 'sent' : 'received';
+  }
+  
   async onSend(messageText: string) {
        if (!messageText.trim()) return;
 

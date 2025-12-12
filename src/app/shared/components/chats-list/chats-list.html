@@ -1,14 +1,17 @@
 <aside>
-    <header class="title">
-        <h3>Chats</h3>
-    </header>
-    <div class="chats-list">
+  <header class="title">
+    <h3>Chats</h3>
+  </header>
+  <div class="chats-list">
     @for (chat of chats(); track chat.id) {
-        <article (click)="chatSelected(chat, toOrFrom(chat))">
-            <header>
-                <h4>{{ toOrFrom(chat) | userName }}</h4>
-            </header>
-            <p>{{lastMessagePreview(chat)}}</p>
-        </article>}
-    </div>
+    <article
+      (click)="chatSelected(chat, toOrFrom(chat))"
+      [class]="selectedChat() === chat ? 'active' : ''"
+    >
+      <h4>{{ toOrFrom(chat) | userName }}</h4>
+
+      <p>{{ getLastMessageText(chat) }}</p>
+    </article>
+    }
+  </div>
 </aside>

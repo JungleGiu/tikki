@@ -2,11 +2,12 @@
 @if (chat()) {
     <header class="title">
         <h3>{{toUserId() | userName}}</h3>
+        
     </header>
 
     <div class="messages">
        @for (message of chatMessages(); track message.id) {
-           <div class="message" [class.self]="message.sender_id === supabaseAuth.authUser()?.id">
+           <div class="message" [class]="dynamicMessageClass(message)">
                <p>{{message.message}}</p>
            </div>
        }

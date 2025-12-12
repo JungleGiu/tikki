@@ -1,5 +1,5 @@
 <section>
     <app-open-chat  [chat]="selectedChat" [toUserId]="toUserId"></app-open-chat>
 
-    <app-chats-list (chatSelectedEvent)="onChatSelected($event)"></app-chats-list>
+    <app-chats-list [chats]="chats" (chatSelectedEvent)="onChatSelected($event)"></app-chats-list>
 </section>

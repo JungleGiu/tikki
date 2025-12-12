@@ -24,7 +24,6 @@ export class ChatService {
     return data || [];
   }
 
-
   async getChatByTicketId(ticketId: string): Promise<Chat | null> {
     const { data, error } = await supabase
       .from('chats')
@@ -57,6 +56,20 @@ export class ChatService {
     return data || [];
   }
 
+  async getLastMessagePreview(chat: Chat): Promise<ChatMessage> {
+    const { data, error } = await supabase
+      .from('chat_messages')
+      .select('*')
+      .eq('chat_id', chat.id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error fetching last message preview:', error);
+    }
+    return data as ChatMessage;
+  }
   /**
    * Send a message to a chat
    */

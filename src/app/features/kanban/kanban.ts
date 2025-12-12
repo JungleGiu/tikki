@@ -34,12 +34,7 @@ export class Kanban implements OnInit, OnDestroy {
   pendingTicket = signal<Ticket | null>(null);
   pendingNewStatus = signal<number | null>(null);
   isLocalUpdate = signal<boolean>(false);
-  constructor() {
-    effect(() => {
-      const tickets = this.supabaseAuth.tickets();
-      this.updateKanbanColumns(tickets);
-    });
-  }
+
 
   ngOnInit() {
     const tickets = this.supabaseAuth.tickets();
@@ -57,25 +52,18 @@ export class Kanban implements OnInit, OnDestroy {
       this.isLocalUpdate.set(false);
       return;
     }
-
-    console.log('Handling remote ticket update:', payload);
-
-    // Reload tickets from database and update auth service
-    this.supabaseDb
-      .getTickets()
-      .then((freshTickets) => {
-        this.supabaseAuth.tickets.set(freshTickets);
-      })
-      .catch((error) => {
-        console.error('Error fetching fresh tickets:', error);
-      });
+    const updatedTicket = payload.new;
+    const currentTickets = this.supabaseAuth.tickets();
+    const updatedTickets = currentTickets.map((ticket) =>
+      ticket.id === updatedTicket.id ? updatedTicket : ticket
+    );
+    this.supabaseAuth.tickets.set(updatedTickets);
   }
 
   private updateKanbanColumns(tickets: Ticket[]) {
     const appUser = this.supabaseAuth.appUser();
     const columns: Array<KanColumn> = this.states.map((state) => {
       const stateTickets = tickets.filter((ticket) => ticket.status === state);
-
       const sorted = stateTickets.sort((a, b) => {
         const aIsMyDept = appUser && a.department_id === appUser.department_id ? 0 : 1;
         const bIsMyDept = appUser && b.department_id === appUser.department_id ? 0 : 1;
@@ -110,7 +98,6 @@ export class Kanban implements OnInit, OnDestroy {
     const isToAssignedStatus = newStatus === 1 || newStatus === 2 || newStatus === 3;
 
     if (isFromQueued && isToAssignedStatus) {
-      console.log('Showing modal');
       this.pendingTicket.set(movedTicket);
       this.pendingNewStatus.set(newStatus);
       this.assignModalVisible.set(true);
@@ -118,39 +105,31 @@ export class Kanban implements OnInit, OnDestroy {
       const assignedTo = newStatus === 0 ? null : movedTicket.assigned_to || null;
       this.updateTicketStatus(movedTicket, newStatus, assignedTo);
     }
-    this.supabaseDb
- .getTickets()
- .then((freshTickets) => {
-   this.supabaseAuth.tickets.set(freshTickets);
- })
- .catch((error) => {
-   console.error('Error fetching fresh tickets:', error);
- });
   }
 
   private updateTicketStatus(ticket: Ticket, newStatus: number, assignedToUserId: string | null) {
+    // Store original state for rollback
+    const originalTickets = this.supabaseAuth.tickets();
+
+    // Optimistically update UI immediately
+    const updatedTicket = { ...ticket, status: newStatus, assigned_to: assignedToUserId };
+    const optimisticTickets = originalTickets.map((t) => (t.id === ticket.id ? updatedTicket : t));
+    this.supabaseAuth.tickets.set(optimisticTickets);
+
+
     this.isLocalUpdate.set(true);
+
     const updateData: updateTicketDTO = {
       status: newStatus,
       assigned_to: assignedToUserId,
       resolved_at: newStatus === 3 ? new Date().toISOString() : null,
     };
 
-    this.supabaseDb
-      .updateTicket(updateData, ticket.id)
-      .then(async () => {
-        const freshTickets = await this.supabaseDb.getTickets();
-        this.supabaseAuth.tickets.set(freshTickets);
-      })
-      .catch((error) => {
-        console.error('Error updating ticket status:', error);
-        const tickets = this.supabaseAuth.tickets();
-        const columns: Array<KanColumn> = this.states.map((state) => ({
-          title: this.getStateTitle(state),
-          tickets: tickets.filter((ticket) => ticket.status === state),
-        }));
-        this.kanbanColumns.set(columns);
-      });
+    this.supabaseDb.updateTicket(updateData, ticket.id).catch((error) => {
+      console.error('Error updating ticket status:', error);
+     
+      this.supabaseAuth.tickets.set(originalTickets);
+    });
   }
 
   onAssignConfirm(userId: string | null) {
@@ -160,7 +139,6 @@ export class Kanban implements OnInit, OnDestroy {
     if (pendingTicket && pendingStatus !== null) {
       this.updateTicketStatus(pendingTicket, pendingStatus, userId);
     }
-
     this.assignModalVisible.set(false);
     this.pendingTicket.set(null);
     this.pendingNewStatus.set(null);
