@@ -1,4 +1,4 @@
-import { Component, effect, Input, signal, inject, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, effect, Input, signal, inject, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { Chat, ChatMessage } from '../../../core/models/chat';
 import { ChatService } from '../../../core/services/supabase/chat-service';
 import { UserNamePipe } from '../../pipes/user-name-pipe';
@@ -20,7 +20,7 @@ export type SendMessageDTO = {
   templateUrl: './open-chat.html',
   styleUrl: './open-chat.scss',
 })
-export class OpenChat implements OnDestroy {
+export class OpenChat implements OnDestroy{
   @ViewChild('messageContainer') messageContainer!: ElementRef;
   @Input() chat = signal<Chat | null>(null);
   @Input() toUserId = signal<string | null>(null);
@@ -32,6 +32,7 @@ export class OpenChat implements OnDestroy {
   ticketDetailsVisible = signal<boolean>(false);
   subscription: any;
   viewTicketDetails = signal<'view' | 'edit' | 'create'>('view');
+
   constructor() {
     effect(() => {
       const chat = this.chat();
@@ -47,17 +48,27 @@ export class OpenChat implements OnDestroy {
       }
     });
        effect(() => {
-      this.chatMessages(); 
-      setTimeout(() => this.scrollToBottom(), 0);
+        this.chatMessages();
+       requestAnimationFrame(() => {
+        this.scrollToLatest();
+       });
     });
   }
 
   
-  private scrollToBottom(): void {
-      if (this.messageContainer) {
+  private scrollToLatest(): void {
+  try {
+    if (this.messageContainer?.nativeElement) {
       const element = this.messageContainer.nativeElement;
-      element.scrollTop = element.scrollHeight;
+      const lastMessage = element.lastElementChild;
+      
+      if (lastMessage) {
+        lastMessage.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }
     }
+  } catch (error) {
+    console.error('Scroll error:', error);
+  }
   }
   ngOnDestroy(): void {
     if (this.subscription) {
