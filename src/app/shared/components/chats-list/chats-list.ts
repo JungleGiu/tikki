@@ -1,4 +1,13 @@
-import { Component, inject, signal, EventEmitter, Output, Input, effect } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  EventEmitter,
+  Output,
+  Input,
+  effect,
+  computed,
+} from '@angular/core';
 import { ChatService } from '../../../core/services/supabase/chat-service';
 import { Chat, ChatMessage } from '../../../core/models/chat';
 import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
@@ -16,6 +25,7 @@ export class ChatsList {
   selectedChat = signal<Chat | null>(null);
   @Output() chatSelectedEvent = new EventEmitter<{ chat: Chat; userId: string }>();
   lastMessagesLoaded = signal<ChatMessage[]>([]);
+  sortedChats = computed(() => this.sortChatsByLastMessage());
 
   constructor() {
     effect(() => {
@@ -24,8 +34,15 @@ export class ChatsList {
         this.loadLastMessages(currentChats);
       }
     });
-  }
 
+    effect(() => {
+      const sorted = this.sortedChats();
+      if (sorted.length > 0 && !this.selectedChat()) {
+        const firstChat = sorted[0];
+        this.chatSelected(firstChat, this.toOrFrom(firstChat));
+      }
+    });
+  }
   toOrFrom(chat: Chat): string {
     const currentUserId = this.supabaseAuth.authUser()?.id;
     if (chat.created_by === currentUserId) {
@@ -38,6 +55,18 @@ export class ChatsList {
   chatSelected(chat: Chat, userId: string) {
     this.selectedChat.set(chat);
     this.chatSelectedEvent.emit({ chat, userId });
+  }
+
+  sortChatsByLastMessage(): Chat[] {
+    const chatsWithLastMessage = this.chats().map((chat) => {
+      const lastMessage = this.lastMessagesLoaded().find((m) => m.chat_id === chat.id);
+      return {
+        chat,
+        lastMessageTime: lastMessage ? new Date(lastMessage.created_at) : new Date(0),
+      };
+    });
+    chatsWithLastMessage.sort((a, b) => a.lastMessageTime.getTime() - b.lastMessageTime.getTime());
+    return chatsWithLastMessage.map((item) => item.chat);
   }
 
   getLastMessageText(chat: Chat): string {

@@ -3,7 +3,7 @@
     <h3>Chats</h3>
   </header>
   <div class="chats-list">
-    @for (chat of chats(); track chat.id) {
+    @for (chat of sortedChats(); track chat.id) {
     <article
       (click)="chatSelected(chat, toOrFrom(chat))"
       [class]="selectedChat() === chat ? 'active' : ''"
