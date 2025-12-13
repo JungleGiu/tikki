@@ -98,13 +98,14 @@
             [location]="ticket.location"
           ></app-location-input>
         </div>
-        @if (mode() === 'edit' && (userRole !== 2  && userDepartment === ticket.department_id)){
+        @if (mode() === 'edit' && (userRole !== 2  && userDepartment === ticket.department_id) || userRole === 0) {
         <div class="field">
           <label for="assigned_to">Assigned To</label>
           <select id="assigned_to" formControlName="assigned_to">
             <option value="" disabled>Select User</option>
             @for (user of users(); track user.id) {
-            <option [value]="user.id">{{ user.name }}</option>
+              @if (user.department_id === ticket.department_id){
+            <option [value]="user.id">{{ user.name }}</option>}
             }
           </select>
         </div>

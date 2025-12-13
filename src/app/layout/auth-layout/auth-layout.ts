@@ -38,7 +38,7 @@ export class AuthLayout {
   });
 
   roleFeatures: Record<number, string[]> = {
-    0: ['dashboard', 'tickets', 'teams'],
+    0: ['dashboard', 'tickets', 'teams', 'chat'],
     1: ['dashboard', 'tickets', 'teams', 'kanban', 'chat'],
     2: ['dashboard', 'tickets', 'kanban', 'chat'],
   };

@@ -54,11 +54,14 @@ export class TicketDetails implements OnInit {
   userRole = this.auth.appUser()?.role_id;
   userDepartment = this.auth.appUser()?.department_id;
   ngOnInit() {
-    const filtered = this.auth.users();
+    const users = this.auth.users();
     if (this.userRole === 1) {
-      this.users.set(filtered.filter((u) => u.department_id === this.userDepartment));
+      this.users.set(users.filter((u) => u.department_id === this.userDepartment));
     } else if (this.userRole === 2) {
-      this.users.set(this.auth.users().filter((u) => u.id === this.auth.appUser()?.id));
+      this.users.set(users.filter((u) => u.id === this.auth.appUser()?.id));
+    }
+    else if (this.userRole === 0) {
+      this.users.set(users);
     }
   }
   // Priority and Status mappings
@@ -136,6 +139,9 @@ export class TicketDetails implements OnInit {
         'Please assign the ticket to a user before changing its status.'
       );
       return;
+    }
+    if (assignedToValue && statusValue === 0) {
+      statusValue = 1;
     }
 
     const finalAssignedTo = statusValue === 0 ? null : assignedToValue;
