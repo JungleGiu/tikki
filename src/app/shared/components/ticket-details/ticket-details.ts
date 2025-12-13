@@ -51,9 +51,15 @@ export class TicketDetails implements OnInit {
   users = signal<User[]>([]);
   toastService = inject(ToastAppService);
   newLocation: any = null;
-
+  userRole = this.auth.appUser()?.role_id;
+  userDepartment = this.auth.appUser()?.department_id;
   ngOnInit() {
     const filtered = this.auth.users();
+    if (this.userRole === 1) {
+      this.users.set(filtered.filter((u) => u.department_id === this.userDepartment));
+    } else if (this.userRole === 2) {
+      this.users.set(this.auth.users().filter((u) => u.id === this.auth.appUser()?.id));
+    }
   }
   // Priority and Status mappings
   priorityOptions = [
@@ -146,6 +152,10 @@ export class TicketDetails implements OnInit {
       status: finalStatusValue,
       company_ref: this.ticket.company_ref,
       resolved_at: resolvedAt,
+      title: this.editForm.value.title ? this.editForm.value.title : this.ticket.title,
+      description: this.editForm.value.description
+        ? this.editForm.value.description
+        : this.ticket.description,
     };
 
     try {

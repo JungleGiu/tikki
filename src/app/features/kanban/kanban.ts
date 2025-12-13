@@ -35,11 +35,16 @@ export class Kanban implements OnInit, OnDestroy {
   pendingNewStatus = signal<number | null>(null);
   isLocalUpdate = signal<boolean>(false);
 
+  constructor() {
+    // React to ticket changes and update kanban columns
+    effect(() => {
+      const tickets = this.supabaseAuth.tickets();
+      this.updateKanbanColumns(tickets);
+    });
+  }
 
-  ngOnInit() {
-    const tickets = this.supabaseAuth.tickets();
-    this.updateKanbanColumns(tickets);
-    this.supabaseDb.ticketsUpdatesListener((payload) => {
+  async ngOnInit() {
+    await this.supabaseDb.ticketsUpdatesListener((payload) => {
       this.handleTicketUpdate(payload);
     });
   }
@@ -52,11 +57,28 @@ export class Kanban implements OnInit, OnDestroy {
       this.isLocalUpdate.set(false);
       return;
     }
-    const updatedTicket = payload.new;
+    const eventType = payload.eventType;
     const currentTickets = this.supabaseAuth.tickets();
-    const updatedTickets = currentTickets.map((ticket) =>
-      ticket.id === updatedTicket.id ? updatedTicket : ticket
-    );
+    let updatedTickets: Ticket[];
+
+    if (eventType === 'INSERT') {
+      // Add new ticket
+      const newTicket = payload.new as Ticket;
+      updatedTickets = [...currentTickets, newTicket];
+    } else if (eventType === 'UPDATE') {
+      // Update existing ticket
+      const updatedTicket = payload.new as Ticket;
+      updatedTickets = currentTickets.map((ticket) =>
+        ticket.id === updatedTicket.id ? updatedTicket : ticket
+      );
+    } else if (eventType === 'DELETE') {
+      // Remove deleted ticket
+      const deletedTicket = payload.old as Ticket;
+      updatedTickets = currentTickets.filter((ticket) => ticket.id !== deletedTicket.id);
+    } else {
+      return;
+    }
+
     this.supabaseAuth.tickets.set(updatedTickets);
   }
 
@@ -116,7 +138,6 @@ export class Kanban implements OnInit, OnDestroy {
     const optimisticTickets = originalTickets.map((t) => (t.id === ticket.id ? updatedTicket : t));
     this.supabaseAuth.tickets.set(optimisticTickets);
 
-
     this.isLocalUpdate.set(true);
 
     const updateData: updateTicketDTO = {
@@ -127,7 +148,7 @@ export class Kanban implements OnInit, OnDestroy {
 
     this.supabaseDb.updateTicket(updateData, ticket.id).catch((error) => {
       console.error('Error updating ticket status:', error);
-     
+
       this.supabaseAuth.tickets.set(originalTickets);
     });
   }

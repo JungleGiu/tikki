@@ -10,20 +10,38 @@ import { RealtimeChannel } from '@supabase/supabase-js';
   providedIn: 'root',
 })
 export class SupabaseDb {
-private ticketsUpdatesChannel: RealtimeChannel | null = null;
+  private ticketsUpdatesChannel: RealtimeChannel | null = null;
 
   constructor(private toastService: ToastAppService) {}
 
   async ticketsUpdatesListener(onChange: (payload: any) => void): Promise<void> {
     if (this.ticketsUpdatesChannel) {
-    await supabase.removeChannel(this.ticketsUpdatesChannel);
+      await supabase.removeChannel(this.ticketsUpdatesChannel);
     }
     try {
       this.ticketsUpdatesChannel = await supabase
         .channel('tickets-updates')
-        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'ticket' }, payload => {
-          onChange(payload);
-        })
+        .on(
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'ticket' },
+          (payload) => {
+            onChange(payload);
+          }
+        )
+        .on(
+          'postgres_changes',
+          { event: 'UPDATE', schema: 'public', table: 'ticket' },
+          (payload) => {
+            onChange(payload);
+          }
+        )
+        .on(
+          'postgres_changes',
+          { event: 'DELETE', schema: 'public', table: 'ticket' },
+          (payload) => {
+            onChange(payload);
+          }
+        )
         .subscribe((status) => {
           if (status === 'SUBSCRIBED') {
             console.log('Subscribed to tickets updates channel');
@@ -42,7 +60,7 @@ private ticketsUpdatesChannel: RealtimeChannel | null = null;
   async getTickets() {
     const { data, error } = await supabase.from('ticket').select('*');
     if (error) throw new AppError(error.code);
-   
+
     return data as Ticket[];
   }
   async getTicketById(id: string) {
@@ -61,8 +79,7 @@ private ticketsUpdatesChannel: RealtimeChannel | null = null;
       await this.getTickets();
       return updatedTicket;
     } catch (error) {
-      console.error('Error in updateTicket:', error);
-      throw error;
+      throw new AppError(error instanceof AppError ? error.code : 'UNKNOWN');
     }
   }
 

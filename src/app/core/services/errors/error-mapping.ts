@@ -19,6 +19,7 @@ export class ErrorMapping {
       'auth/email-already-in-use': 'Email already in use',
       'auth/invalid-email': 'Invalid email',
       'auth/weak-password': 'Weak password',
+      '42501': 'Insufficient privileges to perform this action',
       user_already_exists: 'Email already in use',
       invalid_credentials: 'Invalid email or password',
       UNKNOWN: 'Something went wrong, try again.',
