@@ -14,6 +14,7 @@ import {
 import { KanbanCard } from '../../shared/components/kanban-card/kanban-card';
 import { updateTicketDTO } from '../../core/models/ticket';
 import { KanbanAssign } from '../../shared/components/kanban-assign/kanban-assign';
+import { AppError } from '../../core/services/errors/app-error';
 
 interface KanColumn {
   title: string;
@@ -147,9 +148,9 @@ export class Kanban implements OnInit, OnDestroy {
     };
 
     this.supabaseDb.updateTicket(updateData, ticket.id).catch((error) => {
-      console.error('Error updating ticket status:', error);
-
       this.supabaseAuth.tickets.set(originalTickets);
+      throw new AppError('Error updating ticket status:', error);
+
     });
   }
 

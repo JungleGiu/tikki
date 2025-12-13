@@ -9,6 +9,7 @@ import { PriorityPipe } from '../../pipes/priority-pipe';
 import { DepartmentPipe } from '../../pipes/department-pipe';
 import { Ticket } from '../../../core/models/ticket';
 import { Badge } from '../badge/badge';
+import { AppError } from '../../../core/services/errors/app-error';
 export type SendMessageDTO = {
   chatId: string;
   senderId: string;
@@ -67,7 +68,7 @@ export class OpenChat implements OnDestroy{
       }
     }
   } catch (error) {
-    console.error('Scroll error:', error);
+    throw new AppError('Scroll error:', error);
   }
   }
   ngOnDestroy(): void {

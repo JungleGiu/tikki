@@ -170,7 +170,6 @@ export class TicketDetails implements OnInit {
       this.reset();
     } catch (error) {
       this.toastService.showError('Error updating ticket');
-      console.error(error);
     }
   }
 
@@ -206,7 +205,6 @@ export class TicketDetails implements OnInit {
       this.reset();
     } catch (error) {
       this.toastService.showError('Error creating ticket');
-      console.error(error);
     }
   }
   async onDelete(id: string) {

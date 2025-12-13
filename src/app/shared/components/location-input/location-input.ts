@@ -123,7 +123,6 @@ export class LocationInput implements OnInit, OnDestroy {
       this.results.set(filteredResults.slice(0, 5));
     } catch (error: any) {
       this.results.set([]);
-      console.error(error);
       throw new AppError(error.code || 'UNKNOWN_ERROR');
     }
   }

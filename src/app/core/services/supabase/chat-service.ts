@@ -3,6 +3,7 @@ import { Chat, ChatMessage } from '../../models/chat';
 import { supabase } from './supabase-client';
 import { SendMessageDTO } from '../../../shared/components/chat-open/open-chat';
 import { RealtimeChannel } from '@supabase/supabase-js';
+import { AppError } from '../errors/app-error';
 @Injectable({
   providedIn: 'root',
 })
@@ -19,8 +20,7 @@ export class ChatService {
       .order('updated_at', { ascending: false });
 
     if (error) {
-      console.error('Error fetching user chats:', error);
-      return [];
+      throw new AppError('Error fetching user chats', error)
     }
     return data || [];
   }
@@ -34,8 +34,8 @@ export class ChatService {
       .single();
 
     if (error) {
-      console.error('Error fetching chat:', error);
-      return null;
+      throw new AppError('Error fetching chat:', error);
+    
     }
     return data;
   }
@@ -51,8 +51,7 @@ export class ChatService {
       .order('created_at', { ascending: true });
 
     if (error) {
-      console.error('Error fetching messages:', error);
-      return [];
+      throw new AppError('Error fetching messages:', error);
     }
     return data || [];
   }
@@ -67,7 +66,7 @@ export class ChatService {
       .maybeSingle();
 
     if (error) {
-      console.error('Error fetching last message preview:', error);
+      throw new AppError('Error fetching last message preview:', error);
     }
     return data as ChatMessage;
   }
@@ -89,8 +88,7 @@ export class ChatService {
       .single();
 
     if (error) {
-      console.error('Error sending message:', error);
-      return null;
+      throw new AppError('Error sending message:', error);
     }
     return data;
   }

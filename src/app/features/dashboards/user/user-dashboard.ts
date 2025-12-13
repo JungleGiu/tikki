@@ -6,6 +6,7 @@ import { Calendar } from '../../tools/calendar/calendar';
 import { Map } from '../../tools/map/map';
 import { Charts } from '../../tools/charts/charts';
 import { TicketsStatus } from '../../../shared/components/tickets-status/tickets-status';
+import { AppError } from '../../../core/services/errors/app-error';
 
 @Component({
   selector: 'app-user',
@@ -27,15 +28,11 @@ export class UserDashboard {
   );
 
   constructor() {
-    console.log('UserDashboard constructor called');
-
     effect(() => {
-      const tickets = this.session.tickets();
-      console.log('Session tickets changed:', tickets.length);
+      const tickets = this.session.tickets();  
       this.tickets.set(tickets);
 
       const myTickets = this.myTickets();
-      console.log('My tickets:', myTickets.length);
       this.updateDashboardData(myTickets);
     });
   }
@@ -70,7 +67,7 @@ export class UserDashboard {
         ));
       })
       .catch((error) => {
-        console.error('Failed to refresh data:', error);
+        throw new AppError('Failed to refresh data:', error);
       });
   }
 }

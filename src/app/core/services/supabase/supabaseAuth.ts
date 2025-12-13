@@ -31,7 +31,6 @@ export class supabaseAuth {
         }
       })
       .catch((error) => {
-        console.error(error);
         throw new AppError(error.code);
       });
     this.supabaseAuth.auth.onAuthStateChange((_event, session) => {
@@ -58,7 +57,7 @@ export class supabaseAuth {
       const usersData = await this.supabaseDb.getUsers();
       this.users.set(usersData);
     } catch (error) {
-      console.error('Failed to load user data:', error);
+      throw new AppError('Failed to load user data:', error);
     }
   }
 

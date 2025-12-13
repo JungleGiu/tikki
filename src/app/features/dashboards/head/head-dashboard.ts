@@ -6,6 +6,7 @@ import { Calendar } from '../../tools/calendar/calendar';
 import { Map } from '../../tools/map/map';
 import { Charts } from '../../tools/charts/charts';
 import { TicketsStatus } from '../../../shared/components/tickets-status/tickets-status';
+import { AppError } from '../../../core/services/errors/app-error';
 @Component({
   selector: 'app-head-dashboard',
   imports: [Calendar, Map, Charts, TicketsStatus],
@@ -30,15 +31,11 @@ export class HeadDashboard {
   });
 
   constructor() {
-    console.log('HeadDashboard constructor called');
-
     effect(() => {
       const tickets = this.session.tickets();
-      console.log('Session tickets changed:', tickets.length);
       this.tickets.set(tickets);
 
       const deptTickets = this.departmentTickets();
-      console.log('Department tickets:', deptTickets.length);
       this.updateDashboardData(deptTickets);
     });
   }
@@ -71,7 +68,7 @@ export class HeadDashboard {
         this.session.tickets.set(freshTickets);
       })
       .catch((error) => {
-        console.error('Failed to refresh data:', error);
+        throw new AppError('Failed to refresh data:', error);
       });
   }
 }

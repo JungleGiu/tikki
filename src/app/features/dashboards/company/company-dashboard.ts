@@ -6,6 +6,7 @@ import { Calendar } from '../../tools/calendar/calendar';
 import { Map } from '../../tools/map/map';
 import { Charts } from '../../tools/charts/charts';
 import { TicketsStatus } from '../../../shared/components/tickets-status/tickets-status';
+import { AppError } from '../../../core/services/errors/app-error';
 
 @Component({
   selector: 'app-company-dashboard',
@@ -46,7 +47,7 @@ export class CompanyDashboard implements OnInit {
       this.tickets.set(allTickets);
       this.session.tickets.set(allTickets);
     } catch (error) {
-      console.error('Failed to load company tickets:', error);
+      throw new AppError('Failed to load company tickets:', error);
     }
   }
 

@@ -48,7 +48,7 @@ export class SupabaseDb {
           }
         });
     } catch (error) {
-      console.error('Error in ticketsUpdatesListener:', error);
+      throw new AppError('Error in ticketsUpdatesListener:', error);
     }
   }
   async unsubscribeFromTicketUpdates(): Promise<void> {

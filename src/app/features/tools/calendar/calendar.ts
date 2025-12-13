@@ -69,7 +69,6 @@ export class Calendar {
 
   openTicket(ticket: Ticket) {
     this.isVisible.set(true);
-    console.log('Opening ticket from calendar:', ticket.id);
     this.ticket.set(ticket);
   }
   onrechargeData() {
