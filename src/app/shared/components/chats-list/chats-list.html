@@ -17,7 +17,8 @@
           }}</app-badge>
         </div>
       </header>
-      <p>{{ getLastMessageText(chat) }}</p>
+      <span>{{getLastMessageText(chat)?.sender_id === supabaseAuth.authUser()?.id ? 'You: ' : (getLastMessageText(chat)?.sender_id | userName) + ': '}}</span>
+      <p>{{ getLastMessageText(chat)?.message??''.length > 50 ? getLastMessageText(chat)?.message?.substring(0, 50) + '...' : getLastMessageText(chat)?.message }}</p>
     </article>
     }
   </div>

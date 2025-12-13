@@ -117,9 +117,9 @@ export class ChatsList implements OnChanges{
     return chatsWithLastMessage.map((item) => item.chat);
   }
 
-  getLastMessageText(chat: Chat): string {
+  getLastMessageText(chat: Chat): ChatMessage | undefined {
     const lastMessage = this.lastMessagesLoaded().find((m) => m.chat_id === chat.id);
-    return lastMessage?.message || '';
+    return lastMessage
   }
 
   getTicketRefInfo(chat: Chat): Ticket | null {
