@@ -7,9 +7,10 @@ import { User } from '../../../core/models/user';
 import { Feature } from '../../../layout/auth-layout/auth-layout';
 import { ChatService } from '../../../core/services/supabase/chat-service';
 import { Chat } from '../../../core/models/chat';
+import { NgClass } from '@angular/common';
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, RouterLinkActive, RolePipe],
+  imports: [RouterLink, RouterLinkActive, RolePipe, NgClass],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
 })
@@ -36,7 +37,11 @@ export class Navbar {
     })
   }
 
-
+ toggleMobileMenu() {
+    const nav = document.querySelector('nav');
+    nav?.classList.toggle('none');
+    nav?.classList.toggle('mobile-nav');
+  }
   isActive() {
     return this.router.url.includes('/chat');
   }

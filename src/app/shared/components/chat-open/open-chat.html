@@ -6,7 +6,7 @@
             <app-badge [variant]="relatedTicket()?.department_id ?? 0 | departmentPipe">{{relatedTicket()?.department_id ?? 0 | departmentPipe}}</app-badge>
             <app-badge [variant]="relatedTicket()?.priority?? 0 | priority">{{relatedTicket()?.priority?? 0 | priority}}</app-badge>
             <h4>{{relatedTicket()?.title}}</h4>
-            <p>{{relatedTicket()?.description!.length > 50 ? relatedTicket()?.description?.substring(0, 50) + '...' : relatedTicket()?.description}}</p>
+            <p class="description">{{relatedTicket()?.description!.length > 50 ? relatedTicket()?.description?.substring(0, 50) + '...' : relatedTicket()?.description}}</p>
               <button (click)="openTicketDetails()"  ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M3 18V16H16V18H3ZM19.6 17L14.6 12L19.6 7L21 8.4L17.4 12L21 15.6L19.6 17ZM3 13V11H13V13H3ZM3 8V6H16V8H3Z" fill="#FEF7FF"/>
 </svg></button>

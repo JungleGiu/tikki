@@ -111,7 +111,42 @@ article {
 flex-direction: row-reverse;
 transform: translateX(-5rem);
 }
+@media (max-width: 1024px) {
+    section{
+      display : flex;
+      flex-direction: column;
+      align-items: center;
+      justify-items: center;
+    }
+    header{
+        hgroup{
+            margin: 0 2rem;
+            h1{
+                font-size: 5rem;
+            }
+            h2{
+                font-size: 2.5rem;
+                line-height: 2.5rem;
+                margin: 0 0 0 1rem;
+            }
+        }
+    }
+    .description{
+        width: 100%;
+    margin: 0 auto;
+     }
 
+     #feature-2{
+        flex-direction: row-reverse;
+        transform: translateX(5rem);
+     }
+    article{
+        img{
+            width: 15rem;
+        }
+        width: 100%;
+    }
+}
 @media (max-width: 768px) {
     section {
         width: 95%;
@@ -121,7 +156,9 @@ transform: translateX(-5rem);
     header {
         flex-direction: column;
         margin-bottom: 2rem;
+        align-items: center;
     }
+
 
     hgroup {
         margin: 0 2rem;
@@ -139,8 +176,9 @@ transform: translateX(-5rem);
     }
 
     .buttons {
+    
         width: 100%;
-        margin: 1.5rem 0 0 0;
+        margin: 0 auto;
     }
 
     article {
@@ -169,56 +207,3 @@ transform: translateX(-5rem);
     }
 }
 
-// Mobile breakpoint (480px and below)
-@media (max-width: 480px) {
-    section {
-        width: 100%;
-        margin: 0.5rem auto;
-    }
-
-    hgroup {
-        margin: 0 1rem;
-        
-        h1 {
-            font-size: 2.5rem;
-        }
-        
-        h2 {
-            font-size: 1.2rem;
-            line-height: 1.5rem;
-            margin: 0;
-        }
-    }
-
-    article {
-        padding: 1rem;
-        
-        img {
-            width: 10rem;
-            margin: 0.5rem 0;
-        }
-    }
-
-    .description {
-        margin: 0 1rem 2rem;
-        font-size: 1rem;
-        gap: 1rem;
-    }
-
-    .feature-text {
-        h4 {
-            font-size: 1.3rem;
-        }
-        
-        p {
-            font-size: 0.9rem;
-        }
-    }
-
-    .buttons {
-        button {
-            font-size: 1rem;
-            padding: 0.5rem 1.5rem;
-        }
-    }
-}

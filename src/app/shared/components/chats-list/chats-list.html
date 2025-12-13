@@ -11,14 +11,14 @@
       <header>
         <h4>{{ toOrFrom(chat) | userName }}</h4>
         <div class="badges">
-          <p>{{ getTicketRefInfo(chat)?.title }}</p>
+          <p class="ticket-title">{{ getTicketRefInfo(chat)?.title }}</p>
           <app-badge [variant]="getTicketRefInfo(chat)?.department_id ?? 0 | departmentPipe">{{
             getTicketRefInfo(chat)?.department_id ?? 0 | departmentPipe
           }}</app-badge>
         </div>
       </header>
       <span>{{getLastMessageText(chat)?.sender_id === supabaseAuth.authUser()?.id ? 'You: ' : (getLastMessageText(chat)?.sender_id | userName) + ': '}}</span>
-      <p>{{ getLastMessageText(chat)?.message??''.length > 50 ? getLastMessageText(chat)?.message?.substring(0, 50) + '...' : getLastMessageText(chat)?.message }}</p>
+      <p>{{ getLastMessageText(chat)?.message??''.length > 30 ? getLastMessageText(chat)?.message?.substring(0, 50) + '...' : getLastMessageText(chat)?.message }}</p>
     </article>
     }
   </div>

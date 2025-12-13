@@ -14,3 +14,17 @@
 h2 {
     margin: 0 0 1rem 0;
 }
+
+@media (max-width: 1024px) {
+    .kanban-column{
+        width: 14rem;
+        height: 80dvh;
+    }
+}
+
+@media (max-width: 768px) {
+    .kanban-column{
+        width: 10rem;
+        height: 80dvh;
+    }
+}

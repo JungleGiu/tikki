@@ -6,3 +6,7 @@
     margin: auto;
    width: 90%;
 }
+
+@media (max-width: 1024px) {
+#kanban{gap: 0.5rem}
+}

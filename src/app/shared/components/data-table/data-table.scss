@@ -20,8 +20,30 @@ td {
   button {
     @include tikki-vertical-gradient-border(3rem, 2px, --primary-color);
     @include button();
+    padding: 0.5rem ;
   }
 }
 .department {
   padding: 0;
+}
+
+
+@media (max-width: 1025px) {
+  table {
+    font-size: 0.9rem;
+  }
+
+
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding : 0.5rem 0.5rem;
+  }
+  tbody {
+   overflow-x: scroll;
+  }
+  td {
+    padding: 0.5rem;
+  }
 }

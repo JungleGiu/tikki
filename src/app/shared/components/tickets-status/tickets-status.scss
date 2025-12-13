@@ -29,3 +29,13 @@ background-color: #f4ed84;
  .completed {
 background-color: #98f486;
  }
+
+
+@media (max-width: 768px) {
+section {
+    gap: 2rem;
+}
+  .ticket-status-item{
+ font-size: 0.9rem;
+  }
+}

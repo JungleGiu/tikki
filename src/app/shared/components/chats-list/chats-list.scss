@@ -107,3 +107,23 @@ gap: 0.5rem;
 }
 
 
+@media (max-width: 1024px) {
+  aside{
+   width: 15rem;
+   height: 80dvh;
+  }
+  article {
+    height: fit-content;
+    overflow: hidden;
+    .ticket-title{
+      font-weight: 400;
+      display: inline;
+    }
+    span{
+      display: none;
+    }
+    p{
+      display: none;
+  }
+  }
+}
