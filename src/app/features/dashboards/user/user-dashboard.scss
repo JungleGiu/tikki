@@ -32,3 +32,33 @@ section {
   min-height: 100vh;
  margin-bottom: 5rem;
 }
+
+@media (max-width: 1024px) {
+  .bento {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    width: 80%;
+    height: 100dvh;
+  }
+
+  .right-section{
+    grid-row: 1 / 2;
+    grid-column: 1 / 4;
+    gap: 1rem;
+    height: min-content;
+    flex-direction: column;
+    justify-content: space-between;
+    margin :0 ;
+
+  }
+  .left-section{
+    grid-row:2/ 3;
+    grid-column: 1 / 4;
+    display: block;
+  }
+  app-calendar{
+    grid-row: 3 / 4;
+    grid-column: 1 / 4;
+    margin-top: 1rem;
+  }
+}

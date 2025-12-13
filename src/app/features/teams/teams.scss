@@ -22,3 +22,17 @@ button {
   @include tikki-vertical-gradient-border(3rem, 2px, --primary-color);
   @include button();
 }
+
+@media (max-width: 1024px) {
+  .card {
+    width: 90%;
+    padding : 0.8rem 0.8rem;
+    overflow: scroll;
+    scrollbar-width: none;
+  }
+  button {
+    @include tikki-vertical-gradient-border(2rem, 2px, --primary-color);
+    @include button();
+    padding : 0.5rem 0.5rem;
+  }
+}
