@@ -47,7 +47,7 @@ export class CompanyDashboard implements OnInit {
       this.tickets.set(allTickets);
       this.session.tickets.set(allTickets);
     } catch (error) {
-      throw new AppError('Failed to load company tickets:', error);
+      throw new AppError(error instanceof AppError ? error.code : 'UNKNOWN');
     }
   }
 

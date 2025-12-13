@@ -76,3 +76,21 @@ export function formatTimestamptzForDisplay(timestamp: string | Date | null | un
     return '';
   }
 }
+
+/**
+ * Gets the current timestamp in ISO format suitable for Supabase timestamptz columns
+ * @returns ISO string of current time in UTC
+ */
+export function getCurrentTimestamp(): string {
+  return new Date().toISOString();
+}
+
+/**
+ * Formats a timestamptz for calendar display (date only, e.g., "Dec 6, 2025")
+ * Alias for formatTimestamptzForDisplay for semantic clarity in calendar contexts
+ * @param timestamp ISO string or Date from Supabase
+ * @returns Formatted date string
+ */
+export function formatTimestampForCalendar(timestamp: string | Date | null | undefined): string {
+  return formatTimestamptzForDisplay(timestamp);
+}

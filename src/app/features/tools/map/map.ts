@@ -49,7 +49,7 @@ export class Map implements AfterViewInit, OnChanges {
   private initMap(): void {
     if (!this.map) {
       L.Icon.Default.imagePath = config.leaflet.mapImage;
-      this.map = L.map('map').setView([45.0, 10.0], 5);
+      this.map = L.map('map').setView([45.0, 10.0], 4);
       L.tileLayer(config.leaflet.mapTitle, {
         attribution: config.leaflet.mapAttribution,
       }).addTo(this.map);

@@ -68,7 +68,7 @@ export class HeadDashboard {
         this.session.tickets.set(freshTickets);
       })
       .catch((error) => {
-        throw new AppError('Failed to refresh data:', error);
+        throw new AppError(error instanceof AppError ? error.code : 'UNKNOWN');
       });
   }
 }

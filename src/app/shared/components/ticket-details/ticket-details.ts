@@ -22,7 +22,11 @@ import { UserNamePipe } from '../../pipes/user-name-pipe';
 import { LocationInput } from '../location-input/location-input';
 import { Badge } from '../badge/badge';
 import { ConfirmDeleteDialog } from '../confirm-delete-dialog/confirm-delete-dialog';
-import { timestamptzToDateInput, dateInputToTimestamptz } from '../../utils/date-utils';
+import {
+  timestamptzToDateInput,
+  dateInputToTimestamptz,
+  getCurrentTimestamp,
+} from '../../utils/date-utils';
 @Component({
   selector: 'app-ticket-details',
   imports: [
@@ -59,8 +63,7 @@ export class TicketDetails implements OnInit {
       this.users.set(users.filter((u) => u.department_id === this.userDepartment));
     } else if (this.userRole === 2) {
       this.users.set(users.filter((u) => u.id === this.auth.appUser()?.id));
-    }
-    else if (this.userRole === 0) {
+    } else if (this.userRole === 0) {
       this.users.set(users);
     }
   }
@@ -146,7 +149,7 @@ export class TicketDetails implements OnInit {
 
     const finalAssignedTo = statusValue === 0 ? null : assignedToValue;
     const finalStatusValue = finalAssignedTo && statusValue === 0 ? (statusValue = 1) : statusValue;
-    const resolvedAt = statusValue === 3 ? new Date().toISOString() : null;
+    const resolvedAt = statusValue === 3 ? getCurrentTimestamp() : null;
 
     const updatedTicket: updateTicketDTO = {
       priority: this.editForm.value.priority

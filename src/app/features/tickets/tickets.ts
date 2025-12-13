@@ -108,7 +108,7 @@ export class Tickets implements OnInit {
       this.auth.tickets.set(tickets);
       this.closeTicketDetails();
     } catch (error) {
-      throw new AppError('Error reloading tickets:', error);
+      throw new AppError('DATA_FETCH_FAILED');
     }
   }
 }

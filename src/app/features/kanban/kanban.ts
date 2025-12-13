@@ -3,6 +3,7 @@ import { supabaseAuth } from '../../core/services/supabase/supabaseAuth';
 import { SupabaseDb } from '../../core/services/supabase/supabase-db';
 import { KanbanColumn } from '../../shared/components/kanban-column/kanban-column';
 import { Ticket } from '../../core/models/ticket';
+import { getCurrentTimestamp } from '../../shared/utils/date-utils';
 import {
   CdkDrag,
   CdkDropListGroup,
@@ -144,13 +145,12 @@ export class Kanban implements OnInit, OnDestroy {
     const updateData: updateTicketDTO = {
       status: newStatus,
       assigned_to: assignedToUserId,
-      resolved_at: newStatus === 3 ? new Date().toISOString() : null,
+      resolved_at: newStatus === 3 ? getCurrentTimestamp() : null,
     };
 
     this.supabaseDb.updateTicket(updateData, ticket.id).catch((error) => {
       this.supabaseAuth.tickets.set(originalTickets);
-      throw new AppError('Error updating ticket status:', error);
-
+      throw new AppError(error instanceof AppError ? error.code : 'UNKNOWN');
     });
   }
 

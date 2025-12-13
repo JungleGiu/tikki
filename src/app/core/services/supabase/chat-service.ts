@@ -4,6 +4,7 @@ import { supabase } from './supabase-client';
 import { SendMessageDTO } from '../../../shared/components/chat-open/open-chat';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { AppError } from '../errors/app-error';
+import { getCurrentTimestamp } from '../../../shared/utils/date-utils';
 @Injectable({
   providedIn: 'root',
 })
@@ -20,7 +21,7 @@ export class ChatService {
       .order('updated_at', { ascending: false });
 
     if (error) {
-      throw new AppError('Error fetching user chats', error)
+      throw new AppError(error.code);
     }
     return data || [];
   }
@@ -34,8 +35,7 @@ export class ChatService {
       .single();
 
     if (error) {
-      throw new AppError('Error fetching chat:', error);
-    
+      throw new AppError(error.code);
     }
     return data;
   }
@@ -51,7 +51,7 @@ export class ChatService {
       .order('created_at', { ascending: true });
 
     if (error) {
-      throw new AppError('Error fetching messages:', error);
+      throw new AppError(error.code);
     }
     return data || [];
   }
@@ -66,7 +66,7 @@ export class ChatService {
       .maybeSingle();
 
     if (error) {
-      throw new AppError('Error fetching last message preview:', error);
+      throw new AppError(error.code);
     }
     return data as ChatMessage;
   }
@@ -81,14 +81,14 @@ export class ChatService {
           chat_id: chatId,
           sender_id: senderId,
           message: message,
-          created_at: new Date().toISOString(),
+          created_at: getCurrentTimestamp(),
         },
       ])
       .select()
       .single();
 
     if (error) {
-      throw new AppError('Error sending message:', error);
+      throw new AppError(error.code);
     }
     return data;
   }
@@ -142,7 +142,7 @@ export class ChatService {
     return subscription;
   }
 
-    unsubscribeFromChatsUpdates(subscription: RealtimeChannel) {
+  unsubscribeFromChatsUpdates(subscription: RealtimeChannel) {
     supabase.removeChannel(subscription);
   }
 }

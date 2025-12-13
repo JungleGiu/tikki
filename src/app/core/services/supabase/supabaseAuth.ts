@@ -57,7 +57,7 @@ export class supabaseAuth {
       const usersData = await this.supabaseDb.getUsers();
       this.users.set(usersData);
     } catch (error) {
-      throw new AppError('Failed to load user data:', error);
+      throw new AppError(error instanceof AppError ? error.code : 'UNKNOWN');
     }
   }
 

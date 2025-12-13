@@ -68,7 +68,7 @@ export class OpenChat implements OnDestroy{
       }
     }
   } catch (error) {
-    throw new AppError('Scroll error:', error);
+    throw new AppError(error instanceof AppError ? error.code : 'UNKNOWN');
   }
   }
   ngOnDestroy(): void {
