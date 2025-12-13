@@ -1,8 +1,9 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Navbar } from '../../shared/components/navbar/navbar';
 import { supabaseAuth } from '../../core/services/supabase/supabaseAuth';
 import { getDashboardPathForRole } from '../../core/guards/role-guard';
+
 
 export interface Feature {
   key: string;
@@ -24,6 +25,7 @@ export class AuthLayout {
     if (!this.user) {
       this.authService.loadAppUser(this.authService.authUser()?.id!);
     }
+
   }
   allFeatures = computed(() => {
     const currentUser = this.user;

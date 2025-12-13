@@ -2,12 +2,15 @@
   <div class="logo"><img src="assets/tikki-logo.png" alt="Tikki App logo" /></div>
   <nav>
     @for (feature of featuresRoutes; track feature.key) {
-    <a
-      routerLink="{{ feature.path }}"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-      >{{ feature.label }}</a
-    >
+<a
+  routerLink="{{ feature.path }}"
+  routerLinkActive="active"
+  [routerLinkActiveOptions]="{ exact: true }"
+  >{{ feature.label }}
+  @if (feature.key === 'chat' && isUnread()) {
+    <span class="unread"></span>
+  }
+  </a>
     }
   </nav>
   <div class="user">
