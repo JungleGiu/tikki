@@ -102,7 +102,12 @@ export class TeamDialog {
       this.toast.showWarning('Please reset your password for your next login');
       return;
     }
-    this.submit.emit(this.userForm.value as User);
+    // In onboarding mode, preserve the original user's role_id
+    const userData = {
+      ...this.userForm.value,
+      role_id: this.user()?.role_id,
+    } as User;
+    this.submit.emit(userData);
     this.passwordChange.emit(this.passwordForm.value.password);
   }
 

@@ -4,7 +4,6 @@ import { Navbar } from '../../shared/components/navbar/navbar';
 import { supabaseAuth } from '../../core/services/supabase/supabaseAuth';
 import { getDashboardPathForRole } from '../../core/guards/role-guard';
 
-
 export interface Feature {
   key: string;
   path: string;
@@ -19,16 +18,15 @@ export interface Feature {
 })
 export class AuthLayout {
   authService = inject(supabaseAuth);
-  user = this.authService.appUser();
+  user = computed(() => this.authService.appUser());
 
   constructor() {
-    if (!this.user) {
+    if (!this.user()) {
       this.authService.loadAppUser(this.authService.authUser()?.id!);
     }
-
   }
   allFeatures = computed(() => {
-    const currentUser = this.user;
+    const currentUser = this.user();
     const dashboardPath = currentUser ? getDashboardPathForRole(currentUser.role_id) : 'dashboard';
     return [
       { key: 'dashboard', path: dashboardPath, label: 'Dashboard' },
@@ -46,7 +44,7 @@ export class AuthLayout {
   };
 
   computedRoutes = computed(() => {
-    const currentUser = this.user;
+    const currentUser = this.user();
     if (!currentUser) return [];
 
     const userFeatureKeys = this.roleFeatures[currentUser.role_id] || [];

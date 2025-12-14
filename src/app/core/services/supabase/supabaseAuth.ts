@@ -24,7 +24,6 @@ export class supabaseAuth {
       .then(({ data }) => {
         this.sessionSignal.set(data.session);
         this.isInitialized.set(true);
-        // Load user data if session exists
         if (data.session?.user) {
           this.loadAppUser(data.session.user.id);
           this.loadUserData();
@@ -44,7 +43,11 @@ export class supabaseAuth {
   }
 
   async loadAppUser(id: string) {
-    const { data, error } = await this.supabaseAuth.from('users').select('*').eq('id', id).single();
+    const { data, error } = await this.supabaseAuth
+      .from('users')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
     this.appUser.set(data ?? null);
     if (error) throw new AppError(error.code);
   }
@@ -99,6 +102,9 @@ export class supabaseAuth {
       .single();
 
     if (tableInsertError) throw new AppError('INSERT_FAILED');
+
+    // Set appUser signal immediately after insert to prevent race condition
+    this.appUser.set(tableUserData);
     return tableUserData;
   }
 
@@ -109,8 +115,11 @@ export class supabaseAuth {
       .from('users')
       .select('*')
       .eq('id', data.user?.id)
-      .single();
+      .maybeSingle();
     if (insertError) throw new AppError('INSERT_FAILED');
+
+    // Set appUser signal immediately after fetching to prevent race condition
+    this.appUser.set(userData);
     return userData;
   }
 

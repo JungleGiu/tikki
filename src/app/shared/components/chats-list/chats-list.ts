@@ -15,26 +15,30 @@ import { Chat, ChatMessage } from '../../../core/models/chat';
 import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
 import { UserNamePipe } from '../../pipes/user-name-pipe';
 import { SupabaseDb } from '../../../core/services/supabase/supabase-db';
-import { Badge } from "../badge/badge";
+import { Badge } from '../badge/badge';
 import { DepartmentPipe } from '../../pipes/department-pipe';
 import { RealtimeChannel } from '@supabase/supabase-js';
 
 @Component({
   selector: 'app-chats-list',
-  imports: [UserNamePipe, Badge,  DepartmentPipe],
+  imports: [UserNamePipe, Badge, DepartmentPipe],
   templateUrl: './chats-list.html',
   styleUrl: './chats-list.scss',
 })
-export class ChatsList implements OnChanges{
+export class ChatsList implements OnChanges {
   chatService = inject(ChatService);
   supabaseAuth = inject(supabaseAuth);
   supabaseDb = inject(SupabaseDb);
   @Input() chats = signal<Chat[]>([]);
   selectedChat = signal<Chat | null>(null);
-  @Output() chatSelectedEvent = new EventEmitter<{ chat: Chat; userId: string; relatedTicket: Ticket | null }>();
+  @Output() chatSelectedEvent = new EventEmitter<{
+    chat: Chat;
+    userId: string;
+    relatedTicket: Ticket | null;
+  }>();
   lastMessagesLoaded = signal<ChatMessage[]>([]);
   sortedChats = computed(() => this.sortChatsByLastMessage());
-  ticketRefsInfo = signal <Ticket[]>([]);
+  ticketRefsInfo = signal<Ticket[]>([]);
   chatSubscription: RealtimeChannel | null = null;
   constructor() {
     effect(() => {
@@ -60,26 +64,25 @@ export class ChatsList implements OnChanges{
     if (currentChats.length > 0) {
       this.loadLastMessages(currentChats);
       this.loadTicketRefInfo(currentChats);
-
     }
   }
 
-   private subscribeToChatsUpdates(): void {
+  private subscribeToChatsUpdates(): void {
     if (this.chatSubscription) return;
 
     this.chatSubscription = this.chatService.subscribeToChatsUpdates((updatedChat: Chat) => {
       const currentChats = this.chats();
-      const chatIndex = currentChats.findIndex(c => c.id === updatedChat.id);
-      
+      const chatIndex = currentChats.findIndex((c) => c.id === updatedChat.id);
+
       if (chatIndex !== -1) {
         const updatedChats = [...currentChats];
         updatedChats[chatIndex] = updatedChat;
         this.chats.set(updatedChats);
-        
-        this.chatService.getLastMessagePreview(updatedChat).then(message => {
+
+        this.chatService.getLastMessagePreview(updatedChat).then((message) => {
           const currentMessages = this.lastMessagesLoaded();
-          const messageIndex = currentMessages.findIndex(m => m.chat_id === updatedChat.id);
-          
+          const messageIndex = currentMessages.findIndex((m) => m.chat_id === updatedChat.id);
+
           if (messageIndex !== -1) {
             const updatedMessages = [...currentMessages];
             updatedMessages[messageIndex] = message;
@@ -102,7 +105,7 @@ export class ChatsList implements OnChanges{
 
   chatSelected(chat: Chat, userId: string) {
     this.selectedChat.set(chat);
-    this.chatSelectedEvent.emit({ chat, userId , relatedTicket: this.getTicketRefInfo(chat)});
+    this.chatSelectedEvent.emit({ chat, userId, relatedTicket: this.getTicketRefInfo(chat) });
   }
 
   sortChatsByLastMessage(): Chat[] {
@@ -119,11 +122,11 @@ export class ChatsList implements OnChanges{
 
   getLastMessageText(chat: Chat): ChatMessage | undefined {
     const lastMessage = this.lastMessagesLoaded().find((m) => m.chat_id === chat.id);
-    return lastMessage
+    return lastMessage;
   }
 
   getTicketRefInfo(chat: Chat): Ticket | null {
-    const ticket = this.ticketRefsInfo().find(t => t.id === chat.ticket_ref);
+    const ticket = this.ticketRefsInfo().find((t) => t.id === chat.ticket_ref);
     return ticket || null;
   }
 
@@ -138,14 +141,14 @@ export class ChatsList implements OnChanges{
     this.lastMessagesLoaded.set(lastMessages);
   }
   private async loadTicketRefInfo(chats: Chat[]): Promise<void> {
-   const ticketRefs = chats.map(chat => chat.ticket_ref);
-  const tickets : Ticket[] = [];
-   for (const ticketRef of ticketRefs) {
-   const ticket = await this.supabaseDb.getTicketById(ticketRef);
-    if (ticket) {
-      tickets.push(ticket);
+    const ticketRefs = chats.map((chat) => chat.ticket_ref);
+    const tickets: Ticket[] = [];
+    for (const ticketRef of ticketRefs) {
+      const ticket = await this.supabaseDb.getTicketById(ticketRef);
+      if (ticket) {
+        tickets.push(ticket);
+      }
     }
-   }
     this.ticketRefsInfo.set(tickets);
   }
 }

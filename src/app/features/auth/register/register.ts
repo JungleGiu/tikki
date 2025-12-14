@@ -2,13 +2,13 @@ import { Component, inject } from '@angular/core';
 import { config } from '../../../shared/config';
 import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
 import { Company } from '../../../core/models/user';
-import { Router } from '@angular/router';
+import { Router , RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AppError } from '../../../core/services/errors/app-error';
 import { getDashboardPathForRole } from '../../../core/guards/role-guard';
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })
@@ -49,9 +49,8 @@ export class Register {
       };
       this.auth
         .registerCompany(newAdmin, adminEmail, password)
-        .then(() => {
-          const user = this.auth.appUser();
-          if (user) {
+        .then((user) => {
+          if (user && user.role_id !== undefined) {
             this.router.navigate([getDashboardPathForRole(user.role_id)]);
           }
         })

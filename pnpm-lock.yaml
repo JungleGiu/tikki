@@ -47,6 +47,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.81.1
         version: 2.81.1
+      '@types/leaflet-markercluster':
+        specifier: ^1.0.3
+        version: 1.0.3
       chart.js:
         specifier: ^4.5.1
         version: 4.5.1
@@ -56,6 +59,9 @@ importers:
       leaflet-control-geocoder:
         specifier: ^3.3.1
         version: 3.3.1(leaflet@1.9.4)
+      leaflet-markercluster:
+        specifier: ^0.2.2
+        version: 0.2.2
       ngx-toastr-notifier:
         specifier: ^20.0.9
         version: 20.0.9(@angular/cdk@20.2.13(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.3.11(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.11(@angular/compiler@20.3.11)(rxjs@7.8.2))(@angular/material@20.2.14(39bcef1df0ff43a82d5110eb6b49d5d0))
@@ -1259,6 +1265,10 @@ packages:
   '@types/jasmine@5.1.12':
     resolution: {integrity: sha512-1BzPxNsFDLDfj9InVR3IeY0ZVf4o9XV+4mDqoCfyPkbsA7dYyKAPAb2co6wLFlHcvxPlt1wShm7zQdV7uTfLGA==}
 
+  '@types/leaflet-markercluster@1.0.3':
+    resolution: {integrity: sha512-GMVrmiFoNdYa0smv+OlnSulhso2BJVnRxNcYAG4l7rC2jCbhp72dvNoLSPnpdJ7MyMScImt9YHFEjLefHO11Uw==}
+    deprecated: '''@types/leaflet-markercluster'' is now ''@types/leaflet.markercluster''.'
+
   '@types/leaflet@1.9.21':
     resolution: {integrity: sha512-TbAd9DaPGSnzp6QvtYngntMZgcRk+igFELwR2N99XZn7RXUdKgsXMR+28bUO0rPsWp8MIu/f47luLIQuSLYv/w==}
 
@@ -2067,6 +2077,13 @@ packages:
     resolution: {integrity: sha512-DOLZLAbTq5mKzbvXt6O4HOWeJ03QofwYBbEjcp4Upg1JyWcrVSkfOKWIwbB4bOSPb40cdFoe59DOxGa1Sj10yQ==}
     peerDependencies:
       leaflet: ^1.6.0 || ^2.0.0
+
+  leaflet-engine@0.4.5:
+    resolution: {integrity: sha512-EIuC/PWPMs/uSvZUmUmPIUwhPiye9pwqWhwz3eDMHbiDU2K+uNe4gFwjPYOG5Hsm7Ztc4FCFgM2+X9bZm7YQZg==}
+
+  leaflet-markercluster@0.2.2:
+    resolution: {integrity: sha512-1hldmxVdFX4jDoZIq00HIGAgL5PfzbHggQ2BYp1+bJKzhyBZHN50LXPm5JxCFftiBfJ8KWe5CGMHEpsCuLjcWg==}
+    deprecated: '**OUT-DATED PACKAGE SINCE 2013** Use leaflet.markercluster (with a dot) npm package instead'
 
   leaflet@1.9.4:
     resolution: {integrity: sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA==}
@@ -4076,6 +4093,10 @@ snapshots:
 
   '@types/jasmine@5.1.12': {}
 
+  '@types/leaflet-markercluster@1.0.3':
+    dependencies:
+      '@types/leaflet': 1.9.21
+
   '@types/leaflet@1.9.21':
     dependencies:
       '@types/geojson': 7946.0.16
@@ -4979,6 +5000,12 @@ snapshots:
       leaflet: 1.9.4
     optionalDependencies:
       open-location-code: 1.0.3
+
+  leaflet-engine@0.4.5: {}
+
+  leaflet-markercluster@0.2.2:
+    dependencies:
+      leaflet-engine: 0.4.5
 
   leaflet@1.9.4: {}
 

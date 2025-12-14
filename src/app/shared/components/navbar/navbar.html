@@ -1,28 +1,34 @@
 <header>
-  <button class="menu" (click)="toggleMobileMenu()" >
-   <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
- <path d="M4 16H28M4 8H28M4 24H28" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
- </svg>
- </button>
+  <button class="menu" (click)="toggleMobileMenu()">
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M4 16H28M4 8H28M4 24H28"
+        stroke="#FFFFFF"
+        stroke-width="3"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </button>
   <div class="logo"><img src="assets/tikki-logo.png" alt="Tikki App logo" /></div>
   <nav [ngClass]="">
     @for (feature of featuresRoutes; track feature.key) {
-<a
-  routerLink="{{ feature.path }}"
-  routerLinkActive="active"
-  [routerLinkActiveOptions]="{ exact: true }"
-  >{{ feature.label }}
-  @if (feature.key === 'chat' && isUnread()) {
-    <span class="unread"></span>
-  }
-  </a>
+    <a
+      routerLink="{{ feature.path }}"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      >{{ feature.label }}
+      @if (feature.key === 'chat' && isUnread()) {
+      <span class="unread"></span>
+      }
+    </a>
     }
   </nav>
   <div class="user">
     <img src="assets/advisors.png" alt="User avatar" />
     <hgroup>
-      <h1>{{ user?.name }}</h1>
-      <span>{{ user?.role_id ?? 0 | rolePipe }} </span>
+      <h1>{{ appUser()?.name }}</h1>
+      <span>{{ appUser()?.role_id ?? 0 | rolePipe }} </span>
     </hgroup>
     <button (click)="logout()">Logout</button>
   </div>

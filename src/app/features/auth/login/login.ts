@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router , RouterLink} from '@angular/router';
 import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AppError } from '../../../core/services/errors/app-error';
@@ -7,7 +7,7 @@ import { getDashboardPathForRole } from '../../../core/guards/role-guard';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })

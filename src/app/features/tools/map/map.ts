@@ -9,7 +9,9 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { config } from '../../../shared/config';
+
 import * as L from 'leaflet';
+
 import { TicketDetails } from '../../../shared/components/ticket-details/ticket-details';
 import { Ticket } from '../../../core/models/ticket';
 @Component({
@@ -34,7 +36,6 @@ export class Map implements AfterViewInit, OnChanges {
   }
 
   private rebuildMap(): void {
- 
     if (this.map) {
       this.map.eachLayer((layer) => {
         if (layer instanceof L.Marker) {

@@ -71,6 +71,10 @@ export class OnBoarding implements OnInit {
       await this.database.updateUserFromSelf(newUser as Partial<User>, this.user()!.id!);
       await this.auth.supabaseAuth.auth.updateUser({ password });
 
+      // Update the appUser signal with the updated user data
+      const updatedUser = await this.database.getUserById(this.user()!.id!);
+      this.auth.appUser.set(updatedUser);
+
       this.toast.showSuccess('User updated successfully');
       this.router.navigate([getDashboardPathForRole(user.role_id)]);
     } catch (error: any) {

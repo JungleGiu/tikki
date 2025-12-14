@@ -67,7 +67,6 @@
           <option disabled value="0">Select role</option>
           <option value="1">Head of Department</option>
           <option value="2">User</option>
-          <option value="3">Issuer</option>
         </select>
         @if (role.invalid && role.touched) { @if (role.errors?.['required']) {
         <span>Role is required to register a new user</span>

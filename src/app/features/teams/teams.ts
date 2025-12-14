@@ -91,7 +91,7 @@ export class Teams {
 
     const { success } = await this.auth.createUserViaFunction(user);
     if (success) {
-      this.toast.showSuccess('User created successfully');
+      this.toast.showSuccess('User created successfully, an email has been sent for password and profile setup.');
     }
   }
 

@@ -8,7 +8,18 @@ section {
   width: 100%;
   padding: 2rem;
 }
-
+.logo {
+  width: 12rem;
+  cursor: pointer;
+  position: absolute;
+  left : 5%;
+  align-self: self-start;
+  justify-self: self-start;
+  img {
+    width: 100%;
+    height: fit-content;
+  }
+}
 header {
   display: flex;
   flex-direction: row;

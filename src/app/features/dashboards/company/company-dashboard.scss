@@ -29,7 +29,8 @@ section {
   align-items: center;
   min-height: 100vh;
  margin-bottom: 5rem;
-}@media (max-width: 1024px) {
+}
+@media (max-width: 1024px) {
   .bento {
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
