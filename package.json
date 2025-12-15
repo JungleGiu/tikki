@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "node -r dotenv/config mynode.js && ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -37,6 +37,7 @@
     "@supabase/supabase-js": "^2.81.1",
     "@types/leaflet-markercluster": "^1.0.3",
     "chart.js": "^4.5.1",
+    "dotenv": "^17.2.3",
     "leaflet": "^1.9.4",
     "leaflet-control-geocoder": "^3.3.1",
     "leaflet-markercluster": "^0.2.2",

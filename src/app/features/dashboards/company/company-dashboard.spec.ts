@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Dashboard } from './company-dashboard';
+import { CompanyDashboard as Dashboard } from './company-dashboard';
 import { provideZonelessChangeDetection } from '@angular/core';
 
 describe('Dashboard', () => {
