@@ -133,8 +133,9 @@ export class Teams {
     this.locationSelected.set(null);
   }
 
-  private refreshUsersList() {
-    const users = this.auth.users();
+  private async refreshUsersList() {
+     await this.auth.loadUserData();
+    const users =  this.auth.users();
     this.allUsers.set(users);
     if (this.roleId === 0) {
       const filteredUsers = users.filter((user: User) => user.id !== this.auth.authUser()?.id);
