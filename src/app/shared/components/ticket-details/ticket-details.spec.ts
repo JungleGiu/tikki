@@ -4,9 +4,12 @@ import { provideZonelessChangeDetection, NO_ERRORS_SCHEMA } from '@angular/core'
 import { Ticket } from '../../../core/models/ticket';
 import {
   mockTicketQueued,
+  mockTicketAssigned,
   mockManagerUser,
   mockEmployeeUser,
   mockEmployeeUser2,
+  mockLocationNewYork,
+  mockLocationLondon,
 } from '../../test-utils/test-mocks';
 import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
 import { SupabaseDb } from '../../../core/services/supabase/supabase-db';
@@ -158,14 +161,14 @@ describe('TicketDetails', () => {
   it('should correctly create a ticket when data is valid', async () => {
     // Ensure createTicket is set to resolve
     (dbMock.createTicket as jasmine.Spy).and.resolveTo(mockTicketQueued as Ticket);
-    
+
     component.createForm.patchValue({
-      department_id: '1',
-      title: 'New Ticket',
-      description: 'New Description',
-      priority: '2',
+      department_id: mockTicketQueued.department_id.toString(),
+      title: mockTicketQueued.title,
+      description: mockTicketQueued.description,
+      priority: mockTicketQueued.priority.toString(),
       deadline: '2025-12-25',
-      status: '0',
+      status: mockTicketQueued.status.toString(),
     });
     fixture.detectChanges();
 
@@ -178,8 +181,8 @@ describe('TicketDetails', () => {
   it('should show warning when creating ticket without department', async () => {
     component.createForm.patchValue({
       department_id: '',
-      title: 'New Ticket',
-      description: 'New Description',
+      title: mockTicketQueued.title,
+      description: mockTicketQueued.description,
       deadline: '2025-12-25',
     });
     fixture.detectChanges();
@@ -194,9 +197,9 @@ describe('TicketDetails', () => {
     (dbMock.createTicket as jasmine.Spy).and.rejectWith('Database error');
 
     component.createForm.patchValue({
-      department_id: '1',
-      title: 'New Ticket',
-      description: 'New Description',
+      department_id: mockTicketQueued.department_id.toString(),
+      title: mockTicketQueued.title,
+      description: mockTicketQueued.description,
       deadline: '2025-12-25',
     });
     fixture.detectChanges();
@@ -210,7 +213,7 @@ describe('TicketDetails', () => {
   it('should correctly update a ticket when data is valid', async () => {
     // Ensure updateTicket is set to resolve
     (dbMock.updateTicket as jasmine.Spy).and.resolveTo(mockTicketQueued as Ticket);
-    
+
     component.mode.set('edit');
     fixture.detectChanges();
 
@@ -218,11 +221,11 @@ describe('TicketDetails', () => {
     await new Promise((resolve) => Promise.resolve().then(resolve));
 
     component.editForm.patchValue({
-      title: 'Updated Title',
-      description: 'Updated Description',
-      priority: '1',
+      title: mockTicketAssigned.title,
+      description: mockTicketAssigned.description,
+      priority: mockTicketAssigned.priority.toString(),
       deadline: '2025-12-25',
-      status: '1',
+      status: mockTicketAssigned.status.toString(),
       assigned_to: mockEmployeeUser.id?.toString(),
     });
     fixture.detectChanges();
@@ -240,10 +243,10 @@ describe('TicketDetails', () => {
     await new Promise((resolve) => Promise.resolve().then(resolve));
 
     component.editForm.patchValue({
-      title: 'Updated Title',
-      description: 'Updated Description',
-      status: '1', // Assigned status
-      assigned_to: null, // No assignment
+      title: mockTicketQueued.title,
+      description: mockTicketQueued.description,
+      status: mockTicketAssigned.status.toString(), // Try to assign (status 1)
+      assigned_to: null, // But no assignment
     });
     fixture.detectChanges();
 
@@ -257,14 +260,14 @@ describe('TicketDetails', () => {
 
   it('should auto-assign status to 1 (Assigned) when assigning user from status 0 (Queued)', async () => {
     component.mode.set('edit');
-    component.ticket.status = 0; // Start with Queued
+    component.ticket.status = mockTicketQueued.status; // Queued status
     fixture.detectChanges();
 
     await new Promise((resolve) => Promise.resolve().then(resolve));
 
     component.editForm.patchValue({
       assigned_to: mockEmployeeUser.id?.toString(),
-      status: '0', // Keep as Queued
+      status: mockTicketQueued.status.toString(), // Keep as Queued
     });
     fixture.detectChanges();
 
@@ -288,8 +291,8 @@ describe('TicketDetails', () => {
     await new Promise((resolve) => Promise.resolve().then(resolve));
 
     component.editForm.patchValue({
-      title: 'Updated Title',
-      description: 'Updated Description',
+      title: mockTicketAssigned.title,
+      description: mockTicketAssigned.description,
     });
     fixture.detectChanges();
 
@@ -312,8 +315,8 @@ describe('TicketDetails', () => {
     await new Promise((resolve) => Promise.resolve().then(resolve));
 
     component.editForm.patchValue({
-      title: 'Updated Title',
-      description: 'Updated Description',
+      title: mockTicketAssigned.title,
+      description: mockTicketAssigned.description,
     });
     fixture.detectChanges();
 
@@ -364,19 +367,17 @@ describe('TicketDetails', () => {
 
   // ===== LOCATION TESTS =====
   it('should update newLocation when onLocationSelected is called', () => {
-    const mockLocation = { lat: '10.5', lon: '20.5', name: 'Test Location' };
-    component.onLocationSelected(mockLocation);
-    expect(component.newLocation).toEqual(mockLocation);
+    component.onLocationSelected(mockLocationNewYork);
+    expect(component.newLocation).toEqual(mockLocationNewYork);
   });
 
   it('should use new location in created ticket', async () => {
-    const mockLocation = { lat: '10.5', lon: '20.5', name: 'Test Location' };
-    component.newLocation = mockLocation;
+    component.newLocation = mockLocationLondon;
 
     component.createForm.patchValue({
-      department_id: '1',
-      title: 'New Ticket',
-      description: 'New Description',
+      department_id: mockTicketQueued.department_id.toString(),
+      title: mockTicketQueued.title,
+      description: mockTicketQueued.description,
       deadline: '2025-12-25',
     });
     fixture.detectChanges();
@@ -384,16 +385,16 @@ describe('TicketDetails', () => {
     await component.onCreateSubmit();
 
     const call = (dbMock.createTicket as jasmine.Spy).calls.mostRecent();
-    expect(call.args[0].location).toEqual(mockLocation);
+    expect(call.args[0].location).toEqual(mockLocationLondon);
   });
 
   // ===== SIGNAL UPDATES TESTS =====
   it('should emit recharge event when reset is called', async () => {
     spyOn(component.recharge, 'emit');
     component.createForm.patchValue({
-      department_id: '1',
-      title: 'New Ticket',
-      description: 'New Description',
+      department_id: mockTicketQueued.department_id.toString(),
+      title: mockTicketQueued.title,
+      description: mockTicketQueued.description,
       deadline: '2025-12-25',
     });
     fixture.detectChanges();
