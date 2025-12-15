@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TicketDetails } from './ticket-details';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { Ticket } from '../../../core/models/ticket';

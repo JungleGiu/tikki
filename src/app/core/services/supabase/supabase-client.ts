@@ -1,10 +1,10 @@
 
 import { createClient } from '@supabase/supabase-js';
-import { development } from '../../../../environments/env';
+import { environment } from '../../../../environments/environment.development';
 
 export const initializeSupabase = () => {
-  const url = development.supabase.authentication.SUPABASE_URL;
-  const key = development.supabase.authentication.SUPABASE_KEY;
+  const url = environment.SUPABASE_URL;
+  const key = environment.SUPABASE_KEY;
   if (!url || url.trim() === '') {
     throw new Error('Supabase URL is required');
   }
