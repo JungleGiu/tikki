@@ -8,7 +8,7 @@ import {
   mockEmployeeUser,
   mockEmployeeUser2,
 } from '../../test-utils/test-mocks';
-import { supabaseAuth as AuthToken } from '../../../core/services/supabase/supabaseAuth';
+
 import { SupabaseDb } from '../../../core/services/supabase/supabase-db';
 import { ToastAppService } from '../../../core/services/toast/toast-service';
 
