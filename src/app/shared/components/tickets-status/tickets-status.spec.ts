@@ -8,13 +8,16 @@ describe('TicketsStatus', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TicketsStatus]
-    })
-    .compileComponents();
+      imports: [TicketsStatus],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TicketsStatus);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
