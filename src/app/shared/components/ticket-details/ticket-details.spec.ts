@@ -167,7 +167,7 @@ describe('TicketDetails', () => {
       title: mockTicketQueued.title,
       description: mockTicketQueued.description,
       priority: mockTicketQueued.priority.toString(),
-      deadline: '2025-12-25',
+      deadline: '2025-12-2 5',
       status: mockTicketQueued.status.toString(),
     });
     fixture.detectChanges();
