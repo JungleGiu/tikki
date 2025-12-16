@@ -27,7 +27,6 @@ export class Navbar implements OnDestroy {
   appUser = this.auth.appUser;
 
   constructor() {
-
     this.chatSubscription = this.chatService.subscribeToChatsUpdates((chat: Chat) => {
       if (chat && !this.isActive()) {
         this.isUnread.set(true);

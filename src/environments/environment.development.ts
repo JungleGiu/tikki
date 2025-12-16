@@ -1,4 +1,4 @@
 export const environment = {
-SUPABASE_URL: 'https://xirparfjvocconxftofr.supabase.co',
-SUPABASE_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnBhcmZqdm9jY29ueGZ0b2ZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5MzcyOTQsImV4cCI6MjA3ODUxMzI5NH0.u_nK47eVyZowLTO7ymk7tHAgSj6bzlPRUITiW-aAz4w',
+SUPABASE_URL: '',
+SUPABASE_KEY: '',
 };
