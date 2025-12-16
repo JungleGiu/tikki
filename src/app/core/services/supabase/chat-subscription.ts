@@ -13,11 +13,7 @@ export class ChatSubscription {
 
   initializeSubscription(): void {
     if (this.chatSubscription) return;
-
-    console.log('Initializing global chat subscription...');
     this.chatSubscription = this.chatService.subscribeToChatsUpdates((updatedChat: Chat) => {
-      console.log('Chat updated, notifying all subscribers:', updatedChat);
-      // Call all registered callbacks
       this.callbacks.forEach((callback) => callback(updatedChat));
     });
   }

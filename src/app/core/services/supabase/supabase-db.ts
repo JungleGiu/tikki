@@ -44,7 +44,7 @@ export class SupabaseDb {
         )
         .subscribe((status) => {
           if (status === 'SUBSCRIBED') {
-            console.log('Subscribed to tickets updates channel');
+            console.log('Subscribed to tickets updates channel');  
           }
         });
     } catch (error) {

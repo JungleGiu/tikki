@@ -7,11 +7,11 @@
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div class="field">
         <label> Email</label>
-        <input formControlName="email" type="email" placeholder="Email" />
+        <input formControlName="email" autocomplete="email" type="email" placeholder="Email" />
       </div>
       <div class="field">
         <label> Password</label>
-        <input formControlName="password" type="password" placeholder="Password" />
+        <input formControlName="password" autocomplete="current-password" type="password" placeholder="Password" />
       </div>
     </form>
     <div class="button">

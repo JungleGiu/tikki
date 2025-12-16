@@ -113,13 +113,14 @@ nav{
     align-items: center;
     gap: 0;
     position: absolute;
-    top: 5%;
-    left: -5%;
+    top: 6%;
+    left: -3%;
     width: 20%;
     height: 23%;
-    z-index: 1;
-    background-color: var(--background-color);
-    border: 2px solid var(--primary-color);
-    border-radius: 2rem;
+    z-index: 100;
+     a {
+      width: 8rem;
+        text-align: center;
+     }
   }
 }
