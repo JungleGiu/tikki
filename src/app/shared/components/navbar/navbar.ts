@@ -5,35 +5,37 @@ import { supabaseAuth } from '../../../core/services/supabase/supabaseAuth';
 import { RolePipe } from '../../pipes/role-pipe';
 import { User } from '../../../core/models/user';
 import { Feature } from '../../../layout/auth-layout/auth-layout';
-import { ChatService } from '../../../core/services/supabase/chat-service';
 import { Chat } from '../../../core/models/chat';
 import { NgClass } from '@angular/common';
-import { RealtimeChannel } from '@supabase/supabase-js';
+import { ChatSubscription } from '../../../core/services/supabase/chat-subscription';
 @Component({
   selector: 'app-navbar',
   imports: [RouterLink, RouterLinkActive, RolePipe, NgClass],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
 })
-export class Navbar implements OnDestroy {
+export class Navbar {
   auth = inject(supabaseAuth);
   router = inject(Router);
   @Input() user: User | null = null;
   @Input() featuresRoutes: Feature[] = [];
-  chatService = inject(ChatService);
+  chatSubscription = inject(ChatSubscription);
   isUnread = signal<boolean>(false);
   currentUrl = toSignal(this.router.events);
-  chatSubscription: RealtimeChannel | null = null;
   appUser = this.auth.appUser;
+  private chatUpdateCallback!: (chat: Chat) => void;
 
   constructor() {
-    this.chatSubscription = this.chatService.subscribeToChatsUpdates((chat: Chat) => {
+    this.chatUpdateCallback = (chat: Chat) => {
       if (chat && !this.isActive()) {
         this.isUnread.set(true);
       }
-    });
+    };
+
+    this.chatSubscription.subscribe(this.chatUpdateCallback);
+
     effect(() => {
-      this.currentUrl(); 
+      this.currentUrl();
       if (this.isActive()) {
         this.isUnread.set(false);
       }
@@ -54,8 +56,6 @@ export class Navbar implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.chatSubscription) {
-      this.chatService.unsubscribeFromChatsUpdates(this.chatSubscription);
-    }
+    this.chatSubscription.unsubscribe(this.chatUpdateCallback);
   }
 }

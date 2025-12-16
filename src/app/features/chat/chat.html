@@ -1,5 +1,5 @@
 <section>
-    <app-open-chat [relatedTicket]="relatedTicket" [chat]="selectedChat" [toUserId]="toUserId"></app-open-chat>
+    <app-open-chat [relatedTicket]="relatedTicket" [chat]="selectedChat" [toUserId]="toUserId" (newMessageEvent)="onNewMessage($event)"></app-open-chat>
 
-    <app-chats-list [chats]="chats" (chatSelectedEvent)="onChatSelected($event)"></app-chats-list>
+    <app-chats-list [chats]="chats" (chatSelectedEvent)="onChatSelected($event)" ></app-chats-list>
 </section>

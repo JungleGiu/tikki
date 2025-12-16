@@ -1,4 +1,4 @@
-import { Component, effect, Input, signal, inject, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, effect, Input, signal, inject, OnDestroy, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 import { Chat, ChatMessage } from '../../../core/models/chat';
 import { ChatService } from '../../../core/services/supabase/chat-service';
 import { UserNamePipe } from '../../pipes/user-name-pipe';
@@ -26,6 +26,7 @@ export class OpenChat implements OnDestroy{
   @Input() chat = signal<Chat | null>(null);
   @Input() toUserId = signal<string | null>(null);
   @Input() relatedTicket = signal<Ticket | null>(null);
+  @Output() newMessageEvent = new EventEmitter<SendMessageDTO>();
   chatMessages = signal<ChatMessage[]>([]);
   chatService = inject(ChatService);
   supabaseAuth = inject(supabaseAuth);
@@ -37,16 +38,24 @@ export class OpenChat implements OnDestroy{
   constructor() {
     effect(() => {
       const chat = this.chat();
-      if (chat) {
-        this.chatService.getChatMessages(chat.id).then((messages) => {
-          this.chatMessages.set(messages);
-        });
-        this.subscription = this.chatService.subscribeToChatMessages(chat.id, (newMessage) => {
-          this.chatMessages.set([...this.chatMessages(), newMessage]);
-        });
-      } else {
-        this.chatMessages.set([]);
+ if (this.subscription) {
+    this.chatService.unsubscribeFromChat(this.subscription);
+    this.subscription = null;
+  }
+
+  if (chat) {
+    this.chatService.getChatMessages(chat.id).then((messages) => {
+      this.chatMessages.set(messages);
+    });
+    this.subscription = this.chatService.subscribeToChatMessages(chat.id, (newMessage) => {
+      // Filter to only this chat
+      if (newMessage.chat_id === chat.id) {
+        this.chatMessages.set([...this.chatMessages(), newMessage]);
       }
+    });
+  } else {
+    this.chatMessages.set([]);
+  }
     });
        effect(() => {
         this.chatMessages();
@@ -91,8 +100,11 @@ export class OpenChat implements OnDestroy{
       message: messageText,
     };
 
-    await this.chatService.sendMessage(message);
+    const sentMessage = await this.chatService.sendMessage(message);
     this.message.set('');
+    if (sentMessage && this.chat()) {
+      this.newMessageEvent.emit(message);
+    }
   }
 
   openTicketDetails() {

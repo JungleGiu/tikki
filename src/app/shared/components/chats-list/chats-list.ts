@@ -8,6 +8,7 @@ import {
   effect,
   computed,
   OnChanges,
+  OnDestroy,
 } from '@angular/core';
 import { Ticket } from '../../../core/models/ticket';
 import { ChatService } from '../../../core/services/supabase/chat-service';
@@ -17,16 +18,16 @@ import { UserNamePipe } from '../../pipes/user-name-pipe';
 import { SupabaseDb } from '../../../core/services/supabase/supabase-db';
 import { Badge } from '../badge/badge';
 import { DepartmentPipe } from '../../pipes/department-pipe';
-import { RealtimeChannel } from '@supabase/supabase-js';
-
+import { ChatSubscription } from '../../../core/services/supabase/chat-subscription';
 @Component({
   selector: 'app-chats-list',
   imports: [UserNamePipe, Badge, DepartmentPipe],
   templateUrl: './chats-list.html',
   styleUrl: './chats-list.scss',
 })
-export class ChatsList implements OnChanges {
+export class ChatsList implements OnChanges, OnDestroy {
   chatService = inject(ChatService);
+  chatSubscription = inject(ChatSubscription);
   supabaseAuth = inject(supabaseAuth);
   supabaseDb = inject(SupabaseDb);
   @Input() chats = signal<Chat[]>([]);
@@ -39,14 +40,40 @@ export class ChatsList implements OnChanges {
   lastMessagesLoaded = signal<ChatMessage[]>([]);
   sortedChats = computed(() => this.sortChatsByLastMessage());
   ticketRefsInfo = signal<Ticket[]>([]);
-  chatSubscription: RealtimeChannel | null = null;
+  private chatUpdateCallback!: (chat: Chat) => void;
   constructor() {
-    effect(() => {
+    this.chatUpdateCallback = async (updatedChat: Chat) => {
+      const currentChats = this.chats();
+      const chatIndex = currentChats.findIndex((c) => c.id === updatedChat.id);
+
+      if (chatIndex !== -1) {
+        const updatedChats = [...currentChats];
+        updatedChats[chatIndex] = updatedChat;
+        this.chats.set(updatedChats);
+
+        const message = await this.chatService.getLastMessagePreview(updatedChat);
+        if (message) {
+          const currentMessages = this.lastMessagesLoaded();
+          const messageIndex = currentMessages.findIndex((m) => m.chat_id === updatedChat.id);
+
+          if (messageIndex !== -1) {
+            const updatedMessages = [...currentMessages];
+            updatedMessages[messageIndex] = message;
+            this.lastMessagesLoaded.set(updatedMessages);
+          } else {
+            this.lastMessagesLoaded.set([...currentMessages, message]);
+          }
+        }
+      }
+    };
+
+    this.chatSubscription.subscribe(this.chatUpdateCallback);
+
+    effect(async () => {
       const currentChats = this.chats();
       if (currentChats.length > 0) {
-        this.loadLastMessages(currentChats);
-        this.loadTicketRefInfo(currentChats);
-        this.subscribeToChatsUpdates();
+        await this.loadLastMessages(currentChats);
+        await this.loadTicketRefInfo(currentChats);
       }
     });
 
@@ -59,41 +86,18 @@ export class ChatsList implements OnChanges {
       }
     });
   }
-  ngOnChanges(): void {
+  async ngOnChanges(): Promise<void> {
     const currentChats = this.chats();
     if (currentChats.length > 0) {
-      this.loadLastMessages(currentChats);
-      this.loadTicketRefInfo(currentChats);
+      await this.loadLastMessages(currentChats);
+      await this.loadTicketRefInfo(currentChats);
     }
   }
 
-  private subscribeToChatsUpdates(): void {
-    if (this.chatSubscription) return;
-
-    this.chatSubscription = this.chatService.subscribeToChatsUpdates((updatedChat: Chat) => {
-      const currentChats = this.chats();
-      const chatIndex = currentChats.findIndex((c) => c.id === updatedChat.id);
-
-      if (chatIndex !== -1) {
-        const updatedChats = [...currentChats];
-        updatedChats[chatIndex] = updatedChat;
-        this.chats.set(updatedChats);
-
-        this.chatService.getLastMessagePreview(updatedChat).then((message) => {
-          const currentMessages = this.lastMessagesLoaded();
-          const messageIndex = currentMessages.findIndex((m) => m.chat_id === updatedChat.id);
-
-          if (messageIndex !== -1) {
-            const updatedMessages = [...currentMessages];
-            updatedMessages[messageIndex] = message;
-            this.lastMessagesLoaded.set(updatedMessages);
-          } else {
-            this.lastMessagesLoaded.set([...currentMessages, message]);
-          }
-        });
-      }
-    });
+  ngOnDestroy(): void {
+    this.chatSubscription.unsubscribe(this.chatUpdateCallback);
   }
+
   toOrFrom(chat: Chat): string {
     const currentUserId = this.supabaseAuth.authUser()?.id;
     if (chat.created_by === currentUserId) {
@@ -109,15 +113,9 @@ export class ChatsList implements OnChanges {
   }
 
   sortChatsByLastMessage(): Chat[] {
-    const chatsWithLastMessage = this.chats().map((chat) => {
-      const lastMessage = this.lastMessagesLoaded().find((m) => m.chat_id === chat.id);
-      return {
-        chat,
-        lastMessageTime: lastMessage ? new Date(lastMessage.created_at) : new Date(0),
-      };
-    });
-    chatsWithLastMessage.sort((a, b) => b.lastMessageTime.getTime() - a.lastMessageTime.getTime());
-    return chatsWithLastMessage.map((item) => item.chat);
+    const sorted = [...this.chats()];
+    sorted.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
+    return sorted;
   }
 
   getLastMessageText(chat: Chat): ChatMessage | undefined {
