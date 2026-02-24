@@ -3,7 +3,7 @@
 > Modern ticket management system built with Angular 20 for streamlined team collaboration and project tracking.
 
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://tikki-beige.vercel.app/)
-[![Angular](https://img.shields.io/badge/Angular-18-red)](https://angular.io/)
+[![Angular](https://img.shields.io/badge/Angular-20-red)](https://angular.io/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
 
 **[Live Demo](https://tikki-beige.vercel.app/)** | **[Report Bug](https://github.com/JungleGiu/tikki/issues)** | **[Request Feature](https://github.com/JungleGiu/tikki/issues)**
