@@ -6,7 +6,8 @@
     "start": "node -r dotenv/config mynode.js && ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+   "test:happy-ticket": "ng test  --include='src/app/features/kanban/kanban.spec.ts' --include='src/app/shared/components/ticket-details/ticket-details.spec.ts'"
   },
   "prettier": {
     "printWidth": 100,

@@ -148,10 +148,15 @@ export class Kanban implements OnInit, OnDestroy {
       resolved_at: newStatus === 3 ? getCurrentTimestamp() : null,
     };
 
-    this.supabaseDb.updateTicket(updateData, ticket.id).catch((error) => {
-      this.supabaseAuth.tickets.set(originalTickets);
-      throw new AppError(error instanceof AppError ? error.code : 'UNKNOWN');
-    });
+    this.supabaseDb
+      .updateTicket(updateData, ticket.id)
+      .catch((error) => {
+        this.supabaseAuth.tickets.set(originalTickets);
+        throw new AppError(error instanceof AppError ? error.code : 'UNKNOWN');
+      })
+      .catch(() => {
+       
+      });
   }
 
   onAssignConfirm(userId: string | null) {
