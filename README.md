@@ -102,7 +102,7 @@
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **[Angular 18](https://angular.io/)** - Progressive web framework
+- **[Angular 20](https://angular.io/)** - Progressive web framework
 - **[TypeScript](https://www.typescriptlang.org/)** - Typed superset of JavaScript
 - **[RxJS](https://rxjs.dev/)** - Reactive programming library
 - **[Angular Material](https://material.angular.io/)** / **[Tailwind CSS](https://tailwindcss.com/)** - UI components and styling
